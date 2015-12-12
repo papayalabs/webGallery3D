@@ -113,7 +113,9 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
         var xPosMax = 300;
         var xPos = xPosMin;
         var frameCounter = 0;
-        var isMoving = false;
+        
+        var triggerPosX = false;
+        var triggerNegX = false;
 
         var directionalLight1 = new THREE.DirectionalLight(0xffffff, 1);       
         directionalLight1.position.set(xPos, 300, -300);
@@ -125,29 +127,38 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
             function (scene, camObject, delta) {
 
                 frameCounter++;
-                if (camObject && (isMoving || frameCounter % 40 == 0)) {
+                if (camObject && (triggerPosX || triggerNegX || frameCounter % 40 == 0)) {
 
                     
                     var vector = new THREE.Vector3(0, 0, -1);
                     vector.applyEuler(camObject.rotation, camObject.eulerOrder);
-                    //console.log(vector.x);
 
-                    if (vector.x < 0 && xPos < xPosMax) {
+                    if (vector.x < -0.8 && xPos < xPosMax && !triggerNegX) {
+                        triggerPosX = true;                       
+                    }
+                    else if(xPos >= xPosMax){
+                        triggerPosX = false;
+                    }
+
+                    if (vector.x > 0.8 && xPos > xPosMin && !triggerPosX) {                        
+                        triggerNegX = true;
+                    }
+                    else if (xPos <= xPosMin) {
+                        triggerNegX = false;
+                    }
+
+                    
+                    if (triggerPosX) {
                         // move light to positive x
                         xPos += 100 * delta;
                         directionalLight1.position.x = xPos;
-                        isMoving = true;
+                       
                     }
-                    else if (vector.x > 0 && xPos > xPosMin) {
+                    else if (triggerNegX) {
                         // move light to negative x
                         xPos -= 100 * delta;
-                        directionalLight1.position.x = xPos;
-                        isMoving = true;
-                    }
-                    else
-                    {
-                        isMoving = false;
-                    }
+                        directionalLight1.position.x = xPos;                      
+                    }                  
                 }
             });
 
