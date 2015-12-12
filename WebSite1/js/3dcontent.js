@@ -68,6 +68,23 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
     };
 
 
+    var loadimage2 = function () {
+        try {
+            loader1.load('models/img2.json', function (object) {
+
+                object.scale.multiplyScalar(0.014);
+                object.position.set(-50, 0, 200);
+                setShadowFlags(object, true, true);
+                engine.addObject(object, undefined, true);
+
+            }, onProgress, onError);
+        }
+        catch (ex)
+        { }
+    };
+
+
+
     var loadSkyBox = function () {
         try {
             var imagePrefix = "images/purplenebula_";
@@ -136,7 +153,7 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 
                     
                     var vector = new THREE.Vector3(0, 0, -1);
-                    vector.applyEuler(camObject.rotation, camObject.eulerOrder);
+                    vector.applyEuler(camObject.rotation, camObject.rotation.order);
 
                     if (vector.x < -0.9 && xPos < xPosMax && !triggerNegX) {
                         triggerPosX = true;                       
@@ -222,8 +239,7 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 	loadHouse();
 	loadLight();	
 	loadimage1();
-	
-	//engine.addObject(new THREE.AxisHelper(100));
+	loadimage2();
 	
 	engine.start();
 	
