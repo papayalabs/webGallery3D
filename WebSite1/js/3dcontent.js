@@ -84,10 +84,14 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
                 }));
             var skyMaterial = new THREE.MeshFaceMaterial(materialArray);
             var skyBox = new THREE.Mesh(skyGeometry, skyMaterial);
-            engine.addObject(skyBox, function (scene) {
-                var me = engine.getMe();
-                var pos = me.position;
-                skyBox.position.set(pos.x, pos.y, pos.z);
+
+            engine.addObject(skyBox,
+                // callback which gets executed every rendered frame. Moves the skybox with the camera
+                function (scene, camObject, delta) {
+                    if (camObject) {
+                        var pos = camObject.position;
+                        skyBox.position.set(pos.x, pos.y, pos.z);
+                    }
                 });
 
         }
@@ -105,19 +109,50 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
         sphere.position.set(0, 0, 0);
         engine.addObject(sphere);
 
+        var xPosMin = -300;
+        var xPosMax = 300;
+        var xPos = xPosMin;
+        var frameCounter = 0;
+        var isMoving = false;
+
         var directionalLight1 = new THREE.DirectionalLight(0xffffff, 1);       
-        directionalLight1.position.set(-300, 300, -300);
+        directionalLight1.position.set(xPos, 300, -300);
         directionalLight1.target = sphere;
         configureLight(directionalLight1);
-        engine.addObject(directionalLight1);
+
+        engine.addObject(directionalLight1,
+            // callback which gets executed every rendered frame. Checks if the light must be moved
+            function (scene, camObject, delta) {
+
+                frameCounter++;
+                if (camObject && (isMoving || frameCounter % 40 == 0)) {
+
+                    
+                    var vector = new THREE.Vector3(0, 0, -1);
+                    vector.applyEuler(camObject.rotation, camObject.eulerOrder);
+                    //console.log(vector.x);
+
+                    if (vector.x < 0 && xPos < xPosMax) {
+                        // move light to positive x
+                        xPos += 100 * delta;
+                        directionalLight1.position.x = xPos;
+                        isMoving = true;
+                    }
+                    else if (vector.x > 0 && xPos > xPosMin) {
+                        // move light to negative x
+                        xPos -= 100 * delta;
+                        directionalLight1.position.x = xPos;
+                        isMoving = true;
+                    }
+                    else
+                    {
+                        isMoving = false;
+                    }
+                }
+            });
 
 
-        //var directionalLight2 = new THREE.DirectionalLight(0xffffff, 1);
-        //directionalLight2.position.set(300, 300, -300);
-        //directionalLight2.target = sphere;
-        //configureLight(directionalLight2);
-        //engine.addObject(directionalLight2);
-       
+      
 	};
 
 	

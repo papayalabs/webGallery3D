@@ -8439,9 +8439,9 @@
 					,"index": 0
 					,"type": 1
 					,"value": [
-						 0.05
-						,0.05
-						,0.05
+						 0
+						,0
+						,0
 					]
 				}
 				,{
@@ -8534,9 +8534,9 @@
 					,"index": 0
 					,"type": 1
 					,"value": [
-						 0
-						,0
-						,0
+						 0.1
+						,0.1
+						,0.1
 					]
 				}
 				,{
@@ -8556,9 +8556,9 @@
 					,"index": 0
 					,"type": 1
 					,"value": [
-						 0.2
-						,0.2
-						,0.2
+						 0.1
+						,0.1
+						,0.1
 					]
 				}
 				,{
@@ -8907,9 +8907,9 @@
 					,"index": 0
 					,"type": 1
 					,"value": [
-						 0.854902
-						,0.764706
-						,0.65098
+						 0.3
+						,0.2
+						,0.1
 					]
 				}
 				,{
@@ -8956,7 +8956,7 @@
 					,"semantic": 0
 					,"index": 0
 					,"type": 4
-					,"value": 3
+					,"value": 8
 				}
 				,{
 					 "key": "$tex.file"
@@ -8989,6 +8989,88 @@
 				,{
 					 "key": "$tex.uvtrafo"
 					,"semantic": 1
+					,"index": 0
+					,"type": 1
+					,"value": [
+						 0
+						,0
+						,1
+						,1
+						,0
+					]
+				}
+				,{
+					 "key": "$tex.file"
+					,"semantic": 5
+					,"index": 0
+					,"type": 3
+					,"value": "LABEL1.PNG"
+				}
+				,{
+					 "key": "$tex.blend"
+					,"semantic": 5
+					,"index": 0
+					,"type": 1
+					,"value": 0
+				}
+				,{
+					 "key": "$tex.mapmodeu"
+					,"semantic": 5
+					,"index": 0
+					,"type": 4
+					,"value": 3
+				}
+				,{
+					 "key": "$tex.mapmodev"
+					,"semantic": 5
+					,"index": 0
+					,"type": 4
+					,"value": 3
+				}
+				,{
+					 "key": "$tex.uvtrafo"
+					,"semantic": 5
+					,"index": 0
+					,"type": 1
+					,"value": [
+						 0
+						,0
+						,1
+						,1
+						,0
+					]
+				}
+				,{
+					 "key": "$tex.file"
+					,"semantic": 11
+					,"index": 0
+					,"type": 3
+					,"value": "A1020604.JPG"
+				}
+				,{
+					 "key": "$tex.blend"
+					,"semantic": 11
+					,"index": 0
+					,"type": 1
+					,"value": 1
+				}
+				,{
+					 "key": "$tex.mapmodeu"
+					,"semantic": 11
+					,"index": 0
+					,"type": 4
+					,"value": 0
+				}
+				,{
+					 "key": "$tex.mapmodev"
+					,"semantic": 11
+					,"index": 0
+					,"type": 4
+					,"value": 0
+				}
+				,{
+					 "key": "$tex.uvtrafo"
+					,"semantic": 11
 					,"index": 0
 					,"type": 1
 					,"value": [

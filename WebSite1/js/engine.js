@@ -100,7 +100,7 @@ define(["three.min", "PointerLockControls"], function()
 		}
 		
 		renderCallbacks.forEach(function(c){
-			c(scene);
+			c(scene, camObject, delta);
 		})
 		
 		renderer.render( scene, camera );
@@ -110,9 +110,7 @@ define(["three.min", "PointerLockControls"], function()
 			
 	return {
 
-	    getMe : function() {
-	        return controls.getObject();
-	    },
+	  
 		
 		// get the lock.
 		getLock : function() {
