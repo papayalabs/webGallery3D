@@ -14,7 +14,8 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
         }
     };
 
-    var onError = function ( xhr ) {
+    var onError = function (xhr) {
+
     };
 	
    
@@ -53,7 +54,7 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 
     var loadimage1 = function () {
         try {
-            loader1.load('models/imagecol1.json', function (object) {
+            loader1.load('models/img1lb.json', function (object) {
 
                 object.scale.multiplyScalar(0.04);
                 object.position.set(96, -20, 0);              
