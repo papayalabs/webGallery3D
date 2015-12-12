@@ -112,10 +112,15 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
         var xPosMin = -300;
         var xPosMax = 300;
         var xPos = xPosMin;
+        var zPosMin = -300;
+        var zPosMax = 300;
+        var zPos = zPosMin;
         var frameCounter = 0;
         
         var triggerPosX = false;
         var triggerNegX = false;
+        var triggerPosZ = false;
+        var triggerNegZ = false;
 
         var directionalLight1 = new THREE.DirectionalLight(0xffffff, 1);       
         directionalLight1.position.set(xPos, 300, -300);
@@ -127,27 +132,40 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
             function (scene, camObject, delta) {
 
                 frameCounter++;
-                if (camObject && (triggerPosX || triggerNegX || frameCounter % 40 == 0)) {
+                if (camObject && (triggerPosX || triggerNegX || triggerPosZ || triggerNegZ || frameCounter % 40 == 0)) {
 
                     
                     var vector = new THREE.Vector3(0, 0, -1);
                     vector.applyEuler(camObject.rotation, camObject.eulerOrder);
 
-                    if (vector.x < -0.8 && xPos < xPosMax && !triggerNegX) {
+                    if (vector.x < -0.9 && xPos < xPosMax && !triggerNegX) {
                         triggerPosX = true;                       
                     }
                     else if(xPos >= xPosMax){
                         triggerPosX = false;
                     }
 
-                    if (vector.x > 0.8 && xPos > xPosMin && !triggerPosX) {                        
+                    if (vector.x > 0.9 && xPos > xPosMin && !triggerPosX) {                        
                         triggerNegX = true;
                     }
                     else if (xPos <= xPosMin) {
                         triggerNegX = false;
                     }
 
-                    
+                    if (vector.z < -0.9 && zPos < zPosMax && !triggerNegZ) {
+                        triggerPosZ = true;
+                    }
+                    else if (zPos >= zPosMax) {
+                        triggerPosZ = false;
+                    }
+
+                    if (vector.z > 0.9 && zPos > zPosMin && !triggerPosZ) {
+                        triggerNegZ = true;
+                    }
+                    else if (zPos <= zPosMin) {
+                        triggerNegZ = false;
+                    }
+
                     if (triggerPosX) {
                         // move light to positive x
                         xPos += 100 * delta;
@@ -158,7 +176,19 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
                         // move light to negative x
                         xPos -= 100 * delta;
                         directionalLight1.position.x = xPos;                      
-                    }                  
+                    }
+
+                    if (triggerPosZ) {
+                        // move light to positive z
+                        zPos += 100 * delta;
+                        directionalLight1.position.z = zPos;
+
+                    }
+                    else if (triggerNegZ) {
+                        // move light to negative z
+                        zPos -= 100 * delta;
+                        directionalLight1.position.z = zPos;
+                    }
                 }
             });
 
