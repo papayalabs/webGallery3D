@@ -216,8 +216,8 @@ define(["three.min", "PointerLockControls"], function()
 			
 			scene = new THREE.Scene();
 
-			//var light = new THREE.AmbientLight(0x404040); // soft white light
-			//scene.add(light);
+			var light = new THREE.AmbientLight(0x404040); // soft white light
+			scene.add(light);
 
 			controls = new THREE.PointerLockControls( camera );
 			scene.add( controls.getObject() );

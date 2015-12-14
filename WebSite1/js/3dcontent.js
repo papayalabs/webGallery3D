@@ -54,7 +54,7 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 
     var loadimage1 = function () {
         try {
-            loader1.load('models/img1lb.json', function (object) {
+            loader1.load('models/imageCols.json', function (object) {
 
                 object.scale.multiplyScalar(0.04);
                 object.position.set(96, -20, 0);              
@@ -68,22 +68,7 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
     };
 
 
-    var loadimage2 = function () {
-        try {
-            loader1.load('models/img2.json', function (object) {
-
-                object.scale.multiplyScalar(0.014);
-                object.position.set(-50, 0, 200);
-                setShadowFlags(object, true, true);
-                engine.addObject(object, undefined, true);
-
-            }, onProgress, onError);
-        }
-        catch (ex)
-        { }
-    };
-
-
+   
 
     var loadSkyBox = function () {
         try {
@@ -126,11 +111,16 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
         sphere.position.set(0, 0, 0);
         engine.addObject(sphere);
 
-        var xPosMin = -300;
-        var xPosMax = 300;
+        var speed = 300;
+        var wayX = 300;
+        var wayZ = 300;
+        var angle = 0.8;
+
+        var xPosMin = -wayX;
+        var xPosMax = wayX;
         var xPos = xPosMin;
-        var zPosMin = -300;
-        var zPosMax = 300;
+        var zPosMin = -wayZ;
+        var zPosMax = wayZ;
         var zPos = zPosMin;
         var frameCounter = 0;
         
@@ -140,7 +130,7 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
         var triggerNegZ = false;
 
         var directionalLight1 = new THREE.DirectionalLight(0xffffff, 1);       
-        directionalLight1.position.set(xPos, 300, -300);
+        directionalLight1.position.set(xPos, 250, zPosMax);
         directionalLight1.target = sphere;
         configureLight(directionalLight1);
 
@@ -149,34 +139,34 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
             function (scene, camObject, delta) {
 
                 frameCounter++;
-                if (camObject && (triggerPosX || triggerNegX || triggerPosZ || triggerNegZ || frameCounter % 40 == 0)) {
+                if (camObject && (triggerPosX || triggerNegX || triggerPosZ || triggerNegZ || frameCounter % 20 == 0)) {
 
                     
                     var vector = new THREE.Vector3(0, 0, -1);
                     vector.applyEuler(camObject.rotation, camObject.rotation.order);
 
-                    if (vector.x < -0.9 && xPos < xPosMax && !triggerNegX) {
+                    if (vector.x < -angle && xPos < xPosMax && !triggerNegX) {
                         triggerPosX = true;                       
                     }
                     else if(xPos >= xPosMax){
                         triggerPosX = false;
                     }
 
-                    if (vector.x > 0.9 && xPos > xPosMin && !triggerPosX) {                        
+                    if (vector.x > angle && xPos > xPosMin && !triggerPosX) {
                         triggerNegX = true;
                     }
                     else if (xPos <= xPosMin) {
                         triggerNegX = false;
                     }
 
-                    if (vector.z < -0.9 && zPos < zPosMax && !triggerNegZ) {
+                    if (vector.z < -angle && zPos < zPosMax && !triggerNegZ) {
                         triggerPosZ = true;
                     }
                     else if (zPos >= zPosMax) {
                         triggerPosZ = false;
                     }
 
-                    if (vector.z > 0.9 && zPos > zPosMin && !triggerPosZ) {
+                    if (vector.z > angle && zPos > zPosMin && !triggerPosZ) {
                         triggerNegZ = true;
                     }
                     else if (zPos <= zPosMin) {
@@ -185,25 +175,25 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 
                     if (triggerPosX) {
                         // move light to positive x
-                        xPos += 100 * delta;
+                        xPos += speed * delta;
                         directionalLight1.position.x = xPos;
                        
                     }
                     else if (triggerNegX) {
                         // move light to negative x
-                        xPos -= 100 * delta;
+                        xPos -= speed * delta;
                         directionalLight1.position.x = xPos;                      
                     }
 
                     if (triggerPosZ) {
                         // move light to positive z
-                        zPos += 100 * delta;
+                        zPos += speed * delta;
                         directionalLight1.position.z = zPos;
 
                     }
                     else if (triggerNegZ) {
                         // move light to negative z
-                        zPos -= 100 * delta;
+                        zPos -= speed * delta;
                         directionalLight1.position.z = zPos;
                     }
                 }
@@ -215,11 +205,11 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 
 	
     var configureLight = function (directionalLight) {
-        var d = 200;
+        var d = 400;
 
         directionalLight.castShadow = true;
         directionalLight.shadowCameraVisible = true;
-        directionalLight.shadowDarkness = 0.8;
+        directionalLight.shadowDarkness = 0.7;
         directionalLight.shadowMapWidth = 4096;
         directionalLight.shadowMapHeight = 4096;
         directionalLight.shadowCameraLeft = -d;
@@ -239,7 +229,6 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 	loadHouse();
 	loadLight();	
 	loadimage1();
-	loadimage2();
 	
 	engine.start();
 	
