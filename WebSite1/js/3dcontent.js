@@ -104,12 +104,18 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
     var loadLight = function () {
 
        
-        var sphere = new THREE.Mesh(
-            new THREE.SphereGeometry(2, 16, 8),
-            new THREE.MeshBasicMaterial({ color: 0xffffff }));
+        var boxTarget = new THREE.Mesh(
+            new THREE.BoxGeometry( 0, 0, 0 ),
+            new THREE.MeshBasicMaterial({ color: 0x000000 }));
 
-        sphere.position.set(0, 0, 0);
+        var sphere = new THREE.Mesh(
+            new THREE.SphereGeometry(50, 32, 16),
+            new THREE.MeshBasicMaterial({ color: 0xFFFFFF }));
+
+        boxTarget.position.set(0, 0, 0);
+        engine.addObject(boxTarget);
         engine.addObject(sphere);
+        
 
         var speed = 300;
         var wayX = 300;
@@ -131,7 +137,7 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 
         var directionalLight1 = new THREE.DirectionalLight(0xffffff, 1);       
         directionalLight1.position.set(xPos, 250, zPosMax);
-        directionalLight1.target = sphere;
+        directionalLight1.target = boxTarget;
         configureLight(directionalLight1);
 
         engine.addObject(directionalLight1,
@@ -196,6 +202,8 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
                         zPos -= speed * delta;
                         directionalLight1.position.z = zPos;
                     }
+
+                    sphere.position.set(directionalLight1.position.x,directionalLight1.position.y,directionalLight1.position.z );
                 }
             });
 
@@ -208,7 +216,7 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
         var d = 400;
 
         directionalLight.castShadow = true;
-        directionalLight.shadowCameraVisible = true;
+        //directionalLight.shadowCameraVisible = true;
         directionalLight.shadowDarkness = 0.7;
         directionalLight.shadowMapWidth = 4096;
         directionalLight.shadowMapHeight = 4096;
