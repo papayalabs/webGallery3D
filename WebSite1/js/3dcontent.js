@@ -138,11 +138,21 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 		var triggerNegX = false;
 		var triggerPosZ = false;
 		var triggerNegZ = false;
+		var d = 400;
 
 		var directionalLight1 = new THREE.DirectionalLight(0xffffff, 1);       
 		directionalLight1.position.set(xPos, 250, zPos);
-		directionalLight1.target = boxTarget;
-		configureLight(directionalLight1);
+		directionalLight1.target = boxTarget;		
+		directionalLight1.castShadow = true;
+	    //directionalLight.shadowCameraVisible = true;
+		directionalLight1.shadowDarkness = 0.7;
+		directionalLight1.shadowMapWidth = 4096;
+		directionalLight1.shadowMapHeight = 4096;
+		directionalLight1.shadowCameraLeft = -d;
+		directionalLight1.shadowCameraRight = d;
+		directionalLight1.shadowCameraTop = d;
+		directionalLight1.shadowCameraBottom = -d;
+		directionalLight1.shadowCameraFar = 7000;
 
 		engine.addObject(directionalLight1,
 			// callback which gets executed every rendered frame. Checks if the light must be moved
@@ -216,34 +226,11 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 	};
 
 	
-	var configureLight = function (directionalLight) {
-		var d = 400;
-
-		directionalLight.castShadow = true;
-		//directionalLight.shadowCameraVisible = true;
-		directionalLight.shadowDarkness = 0.7;
-		directionalLight.shadowMapWidth = 4096;
-		directionalLight.shadowMapHeight = 4096;
-		directionalLight.shadowCameraLeft = -d;
-		directionalLight.shadowCameraRight = d;
-		directionalLight.shadowCameraTop = d;
-		directionalLight.shadowCameraBottom = -d;
-		directionalLight.shadowCameraFar = 7000;
-
+	
 		
-	};
-
-	
-	//engine.getLock();	
-	engine.init();
-	
+	engine.init();	
 	loadSkyBox();
 	loadHouse();
 	loadLight();	
-	loadimage1();
-	
-	//engine.start();
-	
-				
-
+	loadimage1();	
 });

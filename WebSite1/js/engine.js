@@ -117,7 +117,9 @@ define(["three.min", "PointerLockControls"], function()
 			
 			var blocker = document.getElementById( 'blocker' );
 			var instructions = document.getElementById( 'instructions' );
-			
+			var messageSpan = document.getElementById('messageSpan');
+			messageSpan.innerHTML = 'Click to play';
+
 			var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
 
 			if ( havePointerLock ) {
@@ -202,10 +204,11 @@ define(["three.min", "PointerLockControls"], function()
 
 				instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
 
-						//controlsEnabled = true;
-						//controls.enabled = true;
+				//instructions.style.display = 'none';
+				//controlsEnabled = true;
+				//controls.enabled = true;
 
-						//blocker.style.display = 'none';
+				//blocker.style.display = 'none';
 			}
 
 		},
