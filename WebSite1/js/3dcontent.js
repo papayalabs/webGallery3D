@@ -7,7 +7,9 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 
 	manager.onProgress = function (item, loaded, total) {
 	    var percentComplete = loaded / total * 100;
-	    console.log(Math.round(percentComplete, 2) + '% downloaded');		
+	    var msg = Math.round(percentComplete, 2) + '% downloaded';
+	    engine.setLoadMessage(msg);
+	    console.log(msg);		
 	};
 
 	manager.onLoad = function () {

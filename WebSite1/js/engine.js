@@ -111,6 +111,10 @@ define(["three.min", "PointerLockControls"], function()
 	return {
 
 	  
+	    setLoadMessage : function(msg) {
+	        var messageSpan = document.getElementById('messageSpan');
+	        messageSpan.innerHTML = msg;
+	    },
 		
 		// get the lock.
 		getLock : function() {
