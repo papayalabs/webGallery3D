@@ -1,34 +1,27 @@
 define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 {
-	var manager = new THREE.LoadingManager();
+    var manager = new THREE.LoadingManager();
+    var loader1 = new THREE.AssimpJSONLoader(manager);
+    var deg90 = Math.PI / 2;
+
 
 	manager.onProgress = function (item, loaded, total) {
-		console.log(item, loaded, total);
+	    var percentComplete = loaded / total * 100;
+	    console.log(Math.round(percentComplete, 2) + '% downloaded');		
 	};
+
 	manager.onLoad = function () {
-		console.log('all items loaded');
+	    console.log('all items loaded');
+	    engine.getLock();
+	    engine.start();
 	};
+
 	manager.onError = function () {
 		console.log('there has been an error');
 	};
 
-	var loader1 = new THREE.AssimpJSONLoader(manager);
-	var deg90 = Math.PI / 2;
 	
-  
-	
-	
-	var onProgress = function ( xhr ) {
-		if ( xhr.lengthComputable ) {
-			var percentComplete = xhr.loaded / xhr.total * 100;
-			console.log( Math.round(percentComplete, 2) + '% downloaded' );
-		}
-	};
-
-	var onError = function (xhr) {
-
-	};
-	
+  	
    
 	var setShadowFlags = function (obj, cast, receive) {
 
@@ -57,7 +50,7 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 				setShadowFlags(object, true, true);
 				engine.addObject(object, undefined, true);
 
-			}, onProgress, onError);
+			});
 		}
 		catch (ex)
 		{ }
@@ -72,7 +65,7 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 				setShadowFlags(object, true, true);
 				engine.addObject(object, undefined, true);
 
-			}, onProgress, onError);
+			});
 		}
 		catch (ex)
 		{ }
@@ -138,7 +131,7 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 		var xPos = xPosMin;
 		var zPosMin = -wayZ;
 		var zPosMax = wayZ;
-		var zPos = zPosMin;
+		var zPos = zPosMax;
 		var frameCounter = 0;
 		
 		var triggerPosX = false;
@@ -147,7 +140,7 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 		var triggerNegZ = false;
 
 		var directionalLight1 = new THREE.DirectionalLight(0xffffff, 1);       
-		directionalLight1.position.set(xPos, 250, zPosMax);
+		directionalLight1.position.set(xPos, 250, zPos);
 		directionalLight1.target = boxTarget;
 		configureLight(directionalLight1);
 
@@ -241,7 +234,7 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 	};
 
 	
-	engine.getLock();	
+	//engine.getLock();	
 	engine.init();
 	
 	loadSkyBox();
@@ -249,7 +242,7 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 	loadLight();	
 	loadimage1();
 	
-	engine.start();
+	//engine.start();
 	
 				
 

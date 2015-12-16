@@ -312,20 +312,9 @@ define(["three.min", "PointerLockControls"], function()
 		},
 
 	
-		
-		getRenderer : function() {
-			return renderer;
-		},
-		
 		start : function(callback) {
 			animationFrameCallback = callback;
 			animate();
-		}
-		
-		
-		
-	}
-	
-	
-	
+		}				
+	}		
 });
