@@ -122,7 +122,7 @@ define(["three.min", "PointerLockControls"], function()
 			var blocker = document.getElementById( 'blocker' );
 			var instructions = document.getElementById( 'instructions' );
 			var messageSpan = document.getElementById('messageSpan');
-			messageSpan.innerHTML = 'Click to play';
+			messageSpan.innerHTML = 'Klicken, um zu Starten';
 
 			var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
 

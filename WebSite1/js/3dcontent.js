@@ -7,7 +7,7 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 
 	manager.onProgress = function (item, loaded, total) {
 	    var percentComplete = loaded / total * 100;
-	    var msg = Math.round(percentComplete, 2) + '% downloaded';
+	    var msg = Math.round(percentComplete, 2) + '% heruntergeladen';
 	    engine.setLoadMessage(msg);
 	    console.log(msg);		
 	};
@@ -47,9 +47,9 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 				object.rotation.x = deg90 * -1;
 				object.rotation.z = 0;
 				object.rotation.y = 0;
-				object.position.y = -20;
+				object.position.y = 0;
 			   
-				setShadowFlags(object, true, true);
+				setShadowFlags(object, false, true);
 				engine.addObject(object, undefined, true);
 
 			});
@@ -60,10 +60,10 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 
 	var loadimage1 = function () {
 		try {
-			loader1.load('models/imageCols.json', function (object) {
-
+			loader1.load('models/image1.json', function (object) {
+			    object.rotation.z = deg90 * 0.5;
 				object.scale.multiplyScalar(0.04);
-				object.position.set(96, -20, 0);              
+				object.position.set(250, 0, -200);              
 				setShadowFlags(object, true, true);
 				engine.addObject(object, undefined, true);
 
@@ -73,6 +73,21 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 		{ }
 	};
 
+
+	var loadimage2 = function () {
+	    try {
+	        loader1.load('models/image2.json', function (object) {
+
+	            object.scale.multiplyScalar(0.12);
+	            object.position.set(0, 0, -300);
+	            setShadowFlags(object, true, true);
+	            engine.addObject(object, undefined, true);
+
+	        });
+	    }
+	    catch (ex)
+	    { }
+	};
 
    
 
@@ -234,5 +249,6 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 	loadSkyBox();
 	loadHouse();
 	loadLight();	
-	loadimage1();	
+	loadimage1();
+	loadimage2();
 });
