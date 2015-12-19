@@ -61,9 +61,9 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 	var loadimage1 = function () {
 		try {
 			loader1.load('models/image1.json', function (object) {
-			    object.rotation.z = deg90 * 0.5;
+			    object.rotation.z = deg90 * 0.2;			    
 				object.scale.multiplyScalar(0.04);
-				object.position.set(250, 0, -200);              
+				object.position.set(250, 10, -170);              
 				setShadowFlags(object, true, true);
 				engine.addObject(object, undefined, true);
 
