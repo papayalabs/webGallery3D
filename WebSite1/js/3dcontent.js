@@ -52,7 +52,7 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 				setShadowFlags(object, false, true);
 				engine.addObject(object, undefined, true);
 
-			});
+			}, undefined, undefined, 'images');
 		}
 		catch (ex)
 		{ }
@@ -67,7 +67,7 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 				setShadowFlags(object, true, true);
 				engine.addObject(object, undefined, true);
 
-			});
+			}, undefined, undefined, 'images');
 		}
 		catch (ex)
 		{ }
@@ -83,7 +83,7 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 	            setShadowFlags(object, true, true);
 	            engine.addObject(object, undefined, true);
 
-	        });
+	        }, undefined, undefined, 'images');
 	    }
 	    catch (ex)
 	    { }
@@ -93,7 +93,7 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 
 	var loadSkyBox = function () {
 		try {
-			var imagePrefix = "images/purplenebula_";
+			var imagePrefix = "images/skybox/purplenebula_";
 			//var directions = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
 			var directions = ["ft", "bk", "up", "dn", "rt", "lf"];
 			var imageSuffix = ".png";
