@@ -14,7 +14,7 @@ define(["three.min"], function () {
         pitchObject.add(camera);
 
         var yawObject = new THREE.Object3D();
-        yawObject.position.y = 50;
+        yawObject.position.y = 70;
         yawObject.add(pitchObject);
 
         var PI_2 = Math.PI / 2;

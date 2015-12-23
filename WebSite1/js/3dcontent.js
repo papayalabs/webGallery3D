@@ -41,7 +41,7 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 	
 	var loadHouse = function () {
 		try {
-			loader1.load('models/galleryv2.json', function (object) {
+			loader1.load('models/galleryBox.json', function (object) {
 
 
 				object.rotation.x = deg90 * -1;
