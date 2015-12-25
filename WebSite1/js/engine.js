@@ -1,11 +1,10 @@
-define(["three.min", "PointerLockControls"], function()
+define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function ()
 {
 	var camera, scene, renderer;
 	
 	var controls;
 	var objects = [];
-	var raycaster;
-	var animationFrameCallback;
+	var raycaster;	
 	var renderCallbacks = [];		
 	var controlsEnabled = false;
 	var moveForward = false;
@@ -16,6 +15,9 @@ define(["three.min", "PointerLockControls"], function()
 	var prevTime = performance.now();
 	var velocity = new THREE.Vector3();
 	
+	var manager = new THREE.LoadingManager();
+	var loader1 = new THREE.AssimpJSONLoader(manager);
+
     
 	function onWindowResize() {
 
@@ -93,11 +95,6 @@ define(["three.min", "PointerLockControls"], function()
 			prevTime = time;
 
 		}
-
-		if(animationFrameCallback !== undefined)
-		{
-			animationFrameCallback(scene);
-		}
 		
 		renderCallbacks.forEach(function(c){
 			c(scene, camObject, delta);
@@ -121,118 +118,138 @@ define(["three.min", "PointerLockControls"], function()
 	    }
 	};
 		
+
+    // get the lock.
+    var getLock = function() {
+			
+        var blocker = document.getElementById( 'blocker' );
+        var instructions = document.getElementById( 'instructions' );
+        var messageSpan = document.getElementById('messageSpan');
+        messageSpan.innerHTML = 'Klicken, um zu Starten';
+
+        var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
+
+        if ( havePointerLock ) {
+
+            var element = document.body;
+
+            var pointerlockchange = function ( event ) {
+
+                if ( document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element ) {
+
+                    controlsEnabled = true;
+                    controls.enabled = true;
+
+                    blocker.style.display = 'none';
+
+                } else {
+
+                    controls.enabled = false;
+
+                    blocker.style.display = '-webkit-box';
+                    blocker.style.display = '-moz-box';
+                    blocker.style.display = 'box';
+
+                    instructions.style.display = '';
+
+                }
+
+            }
+
+            var pointerlockerror = function ( event ) {
+
+                instructions.style.display = '';
+
+            }
+
+            // Hook pointer lock state change events
+            document.addEventListener( 'pointerlockchange', pointerlockchange, false );
+            document.addEventListener( 'mozpointerlockchange', pointerlockchange, false );
+            document.addEventListener( 'webkitpointerlockchange', pointerlockchange, false );
+
+            document.addEventListener( 'pointerlockerror', pointerlockerror, false );
+            document.addEventListener( 'mozpointerlockerror', pointerlockerror, false );
+            document.addEventListener( 'webkitpointerlockerror', pointerlockerror, false );
+
+            instructions.addEventListener( 'click', function ( event ) {
+
+                instructions.style.display = 'none';
+
+                // Ask the browser to lock the pointer
+                element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
+
+                if ( /Firefox/i.test( navigator.userAgent ) ) {
+
+                    var fullscreenchange = function ( event ) {
+
+                        if ( document.fullscreenElement === element || document.mozFullscreenElement === element || document.mozFullScreenElement === element ) {
+
+                            document.removeEventListener( 'fullscreenchange', fullscreenchange );
+                            document.removeEventListener( 'mozfullscreenchange', fullscreenchange );
+
+                            element.requestPointerLock();
+                        }
+
+                    }
+
+                    document.addEventListener( 'fullscreenchange', fullscreenchange, false );
+                    document.addEventListener( 'mozfullscreenchange', fullscreenchange, false );
+
+                    element.requestFullscreen = element.requestFullscreen || element.mozRequestFullscreen || element.mozRequestFullScreen || element.webkitRequestFullscreen;
+
+                    element.requestFullscreen();
+
+                } else {
+
+                    element.requestPointerLock();
+
+                }
+
+            }, false );
+
+        } else {
+
+            instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
+
+            //instructions.style.display = 'none';
+            //controlsEnabled = true;
+            //controls.enabled = true;
+
+            //blocker.style.display = 'none';
+        }
+
+    };
+
+    var setLoadMessage = function (msg) {
+        var messageSpan = document.getElementById('messageSpan');
+        messageSpan.innerHTML = msg;
+    };
+		
+		
 			
 	return {
 
 	  
-	    setLoadMessage : function(msg) {
-	        var messageSpan = document.getElementById('messageSpan');
-	        messageSpan.innerHTML = msg;
-	    },
-		
-		// get the lock.
-		getLock : function() {
-			
-			var blocker = document.getElementById( 'blocker' );
-			var instructions = document.getElementById( 'instructions' );
-			var messageSpan = document.getElementById('messageSpan');
-			messageSpan.innerHTML = 'Klicken, um zu Starten';
-
-			var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
-
-			if ( havePointerLock ) {
-
-				var element = document.body;
-
-				var pointerlockchange = function ( event ) {
-
-					if ( document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element ) {
-
-						controlsEnabled = true;
-						controls.enabled = true;
-
-						blocker.style.display = 'none';
-
-					} else {
-
-						controls.enabled = false;
-
-						blocker.style.display = '-webkit-box';
-						blocker.style.display = '-moz-box';
-						blocker.style.display = 'box';
-
-						instructions.style.display = '';
-
-					}
-
-				}
-
-				var pointerlockerror = function ( event ) {
-
-					instructions.style.display = '';
-
-				}
-
-				// Hook pointer lock state change events
-				document.addEventListener( 'pointerlockchange', pointerlockchange, false );
-				document.addEventListener( 'mozpointerlockchange', pointerlockchange, false );
-				document.addEventListener( 'webkitpointerlockchange', pointerlockchange, false );
-
-				document.addEventListener( 'pointerlockerror', pointerlockerror, false );
-				document.addEventListener( 'mozpointerlockerror', pointerlockerror, false );
-				document.addEventListener( 'webkitpointerlockerror', pointerlockerror, false );
-
-				instructions.addEventListener( 'click', function ( event ) {
-
-					instructions.style.display = 'none';
-
-					// Ask the browser to lock the pointer
-					element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
-
-					if ( /Firefox/i.test( navigator.userAgent ) ) {
-
-						var fullscreenchange = function ( event ) {
-
-							if ( document.fullscreenElement === element || document.mozFullscreenElement === element || document.mozFullScreenElement === element ) {
-
-								document.removeEventListener( 'fullscreenchange', fullscreenchange );
-								document.removeEventListener( 'mozfullscreenchange', fullscreenchange );
-
-								element.requestPointerLock();
-							}
-
-						}
-
-						document.addEventListener( 'fullscreenchange', fullscreenchange, false );
-						document.addEventListener( 'mozfullscreenchange', fullscreenchange, false );
-
-						element.requestFullscreen = element.requestFullscreen || element.mozRequestFullscreen || element.mozRequestFullScreen || element.webkitRequestFullscreen;
-
-						element.requestFullscreen();
-
-					} else {
-
-						element.requestPointerLock();
-
-					}
-
-				}, false );
-
-			} else {
-
-				instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
-
-				//instructions.style.display = 'none';
-				//controlsEnabled = true;
-				//controls.enabled = true;
-
-				//blocker.style.display = 'none';
-			}
-
-		},
+	    loader: loader1,
 		
 		// Setup the scene
-		init : function() {
+		init: function () {
+
+		    manager.onProgress = function (item, loaded, total) {
+		        var percentComplete = loaded / total * 100;
+		        var msg = Math.round(percentComplete, 2) + '% heruntergeladen';
+		        setLoadMessage(msg);
+		    };
+
+		    manager.onLoad = function () {
+		        getLock();		       
+		        animate();
+		    };
+
+		    manager.onError = function () {
+		        console.log('there has been an error');
+		    };
+
 			camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 11000 );
 			
 			scene = new THREE.Scene();
@@ -340,9 +357,6 @@ define(["three.min", "PointerLockControls"], function()
 		},
 
 	
-		start : function(callback) {
-			animationFrameCallback = callback;
-			animate();
-		}				
+					
 	}		
 });

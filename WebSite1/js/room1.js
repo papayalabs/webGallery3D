@@ -1,33 +1,13 @@
-define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
+define(["engine", "three.min"], function (engine)
 {
-    var manager = new THREE.LoadingManager();
-    var loader1 = new THREE.AssimpJSONLoader(manager);
+   
     var deg90 = Math.PI / 2;
 
-
-	manager.onProgress = function (item, loaded, total) {
-	    var percentComplete = loaded / total * 100;
-	    var msg = Math.round(percentComplete, 2) + '% heruntergeladen';
-	    engine.setLoadMessage(msg);	    		
-	};
-
-	manager.onLoad = function () {	    
-	    engine.getLock();
-	    engine.start();
-	};
-
-	manager.onError = function () {
-		console.log('there has been an error');
-	};
-
-	
-  	
    
-	
-	
+
 	var loadHouse = function () {
 		try {
-			loader1.load('models/room1/galleryBox.json', function (object) {
+			engine.loader.load('models/room1/galleryBox.json', function (object) {
 
 
 				object.rotation.x = deg90 * -1;
@@ -46,7 +26,7 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 
 	var loadimage1 = function () {
 		try {
-		    loader1.load('models/room1/image1l.json', function (object) {
+		    engine.loader.load('models/room1/image1l.json', function (object) {
 			    object.rotation.z = deg90 * 0.2;			    
 				object.scale.multiplyScalar(0.04);
 				object.position.set(250, 10, -170);              
@@ -62,7 +42,7 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 
 	var loadimage2 = function () {
 	    try {
-	        loader1.load('models/room1/image2.json', function (object) {
+	        engine.loader.load('models/room1/image2.json', function (object) {
 
 	            object.scale.multiplyScalar(0.12);
 	            object.position.set(0, 0, -300);
@@ -227,14 +207,16 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 
 	  
 	};
-
-	
-	
 		
-	engine.init();	
-	loadSkyBox();
-	loadHouse();
-	loadLight();	
-	loadimage1();
-	loadimage2();
+
+	return {
+	    show: function () {
+	        loadSkyBox();
+	        loadHouse();
+	        loadLight();
+	        loadimage1();
+	        loadimage2();
+	    },
+
+	};
 });
