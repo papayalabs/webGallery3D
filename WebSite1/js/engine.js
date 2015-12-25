@@ -3,7 +3,8 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function ()
 	var camera, scene, renderer;
 	
 	var controls;
-	var objects = [];
+	var collisionObjects = [];
+	var untouchableObjects = [];
 	var raycaster;	
 	var renderCallbacks = [];		
 	var controlsEnabled = false;
@@ -77,7 +78,7 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function ()
 			    raycaster.set(camObject.position, moveDirection);
 
                 // detect collisions. Note: Only one ray is used to detect the collision, but this ray always points in the direction of the movement
-			    var intersections = raycaster.intersectObjects(objects, true);
+			    var intersections = raycaster.intersectObjects(collisionObjects, true);
 			    isCollision = intersections.length > 0;
 			}
 
@@ -346,7 +347,9 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function ()
 		addObject : function(mesh, renderCallback, doRegisterForCollision) {
 			
 		    if (doRegisterForCollision === true) {
-		        objects.push(mesh);
+		        collisionObjects.push(mesh);
+		    } else {
+		        untouchableObjects.push(mesh);
 		    }
 
 			scene.add( mesh );
@@ -357,6 +360,22 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function ()
 		},
 
 	
+		removeAddedObjects: function () {
+		    collisionObjects.forEach(
+                function (mesh) {
+                    scene.remove(mesh);
+                });
+
+		    untouchableObjects.forEach(
+                function (mesh) {
+                    scene.remove(mesh);
+                });
+
+
+		    untouchableObjects.length = 0;
+		    collisionObjects.length = 0;
+		    renderCallbacks.length = 0;
+		},
 					
 	}		
 });
