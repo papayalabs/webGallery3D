@@ -1,7 +1,7 @@
 define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function ()
 {
 	var camera, scene, renderer;
-	
+	var skyBox;
 	var controls;
 	var collisionObjects = [];
 	var untouchableObjects = [];
@@ -92,7 +92,10 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function ()
 			camObject.translateX(velocity.x * delta);
 			camObject.translateZ(velocity.z * delta);
 
-		
+			if (skyBox) {
+			    skyBox.position.set(camObject.position.x, camObject.position.y, camObject.position.z);
+			}
+
 			prevTime = time;
 
 		}
@@ -227,6 +230,29 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function ()
     };
 		
 		
+
+    var loadSkyBox = function () {
+        try {
+            var imagePrefix = "images/skybox/purplenebula_";           
+            var directions = ["ft", "bk", "up", "dn", "rt", "lf"];
+            var imageSuffix = ".png";
+            var skyGeometry = new THREE.CubeGeometry(5000, 5000, 5000);
+
+            var materialArray = [];
+            for (var i = 0; i < 6; i++)
+                materialArray.push(new THREE.MeshBasicMaterial({
+                    map: THREE.ImageUtils.loadTexture(imagePrefix + directions[i] + imageSuffix),
+                    side: THREE.BackSide
+                }));
+            var skyMaterial = new THREE.MeshFaceMaterial(materialArray);
+            skyBox = new THREE.Mesh(skyGeometry, skyMaterial);
+
+            scene.add(skyBox);
+          
+        }
+        catch (ex)
+        { }
+    };
 			
 	return {
 
@@ -254,6 +280,8 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function ()
 			camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 11000 );
 			
 			scene = new THREE.Scene();
+
+			loadSkyBox();
 
 			var light = new THREE.AmbientLight(0x404040); // soft white light
 			scene.add(light);

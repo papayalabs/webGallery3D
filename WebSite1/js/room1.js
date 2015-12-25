@@ -57,36 +57,7 @@ define(["engine", "three.min"], function (engine)
 
    
 
-	var loadSkyBox = function () {
-		try {
-			var imagePrefix = "images/skybox/purplenebula_";
-			//var directions = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
-			var directions = ["ft", "bk", "up", "dn", "rt", "lf"];
-			var imageSuffix = ".png";
-			var skyGeometry = new THREE.CubeGeometry(5000, 5000, 5000);
-
-			var materialArray = [];
-			for (var i = 0; i < 6; i++)
-				materialArray.push(new THREE.MeshBasicMaterial({
-					map: THREE.ImageUtils.loadTexture(imagePrefix + directions[i] + imageSuffix),
-					side: THREE.BackSide
-				}));
-			var skyMaterial = new THREE.MeshFaceMaterial(materialArray);
-			var skyBox = new THREE.Mesh(skyGeometry, skyMaterial);
-
-			engine.addObject(skyBox,
-				// callback which gets executed every rendered frame. Moves the skybox with the camera
-				function (scene, camObject, delta) {
-					if (camObject) {
-						var pos = camObject.position;
-						skyBox.position.set(pos.x, pos.y, pos.z);
-					}
-				});
-
-		}
-		catch (ex)
-		{ }
-	};
+	
 	
 	var loadLight = function () {
 
@@ -200,7 +171,10 @@ define(["engine", "three.min"], function (engine)
 						directionalLight1.position.z = zPos;
 					}
 
-					sphere.position.set(directionalLight1.position.x,directionalLight1.position.y,directionalLight1.position.z );
+					sphere.position.set(directionalLight1.position.x, directionalLight1.position.y, directionalLight1.position.z);
+
+
+					//if (camObject.position.z > 100) { engine.removeAddedObjects(); }
 				}
 			});
 
@@ -210,8 +184,7 @@ define(["engine", "three.min"], function (engine)
 		
 
 	return {
-	    show: function () {
-	        loadSkyBox();
+	    show: function () {	       
 	        loadHouse();
 	        loadLight();
 	        loadimage1();
