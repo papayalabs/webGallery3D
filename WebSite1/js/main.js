@@ -1,3 +1,3 @@
-requirejs(["3dcontent"], function(content) {
+requirejs(["room1"], function(content) {
     
 });

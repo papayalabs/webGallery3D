@@ -41,7 +41,7 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 	
 	var loadHouse = function () {
 		try {
-			loader1.load('models/galleryBox.json', function (object) {
+			loader1.load('models/room1/galleryBox.json', function (object) {
 
 
 				object.rotation.x = deg90 * -1;
@@ -60,7 +60,7 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 
 	var loadimage1 = function () {
 		try {
-			loader1.load('models/image1l.json', function (object) {
+		    loader1.load('models/room1/image1l.json', function (object) {
 			    object.rotation.z = deg90 * 0.2;			    
 				object.scale.multiplyScalar(0.04);
 				object.position.set(250, 10, -170);              
@@ -76,7 +76,7 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 
 	var loadimage2 = function () {
 	    try {
-	        loader1.load('models/image2.json', function (object) {
+	        loader1.load('models/room1/image2.json', function (object) {
 
 	            object.scale.multiplyScalar(0.12);
 	            object.position.set(0, 0, -300);
