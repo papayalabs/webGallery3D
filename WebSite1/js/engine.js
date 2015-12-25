@@ -106,6 +106,20 @@ define(["three.min", "PointerLockControls"], function()
 		renderer.render( scene, camera );
 
 	};
+
+
+	var setShadow = function (obj, cast, receive) {
+
+	    if (obj === undefined)
+	        return;
+
+	    obj.castShadow = cast;
+	    obj.receiveShadow = receive;
+
+	    if (obj.children != undefined) {
+	        obj.children.forEach(function (c) { setShadow(c, cast, receive) });
+	    }
+	};
 		
 			
 	return {
@@ -304,6 +318,13 @@ define(["three.min", "PointerLockControls"], function()
 			
 		},
 		
+
+		setShadowFlags : function (obj, cast, receive) {
+
+		    setShadow(obj, cast, receive);
+		},
+
+
 		// Add a new object into the scene and to the collision detection
 		addObject : function(mesh, renderCallback, doRegisterForCollision) {
 			

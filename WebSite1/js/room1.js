@@ -8,12 +8,10 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 	manager.onProgress = function (item, loaded, total) {
 	    var percentComplete = loaded / total * 100;
 	    var msg = Math.round(percentComplete, 2) + '% heruntergeladen';
-	    engine.setLoadMessage(msg);
-	    console.log(msg);		
+	    engine.setLoadMessage(msg);	    		
 	};
 
-	manager.onLoad = function () {
-	    console.log('all items loaded');
+	manager.onLoad = function () {	    
 	    engine.getLock();
 	    engine.start();
 	};
@@ -25,19 +23,7 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 	
   	
    
-	var setShadowFlags = function (obj, cast, receive) {
-
-		if (obj === undefined)
-			return;
-
-		obj.castShadow = cast;
-		obj.receiveShadow = receive;
-
-		if (obj.children != undefined) {
-			obj.children.forEach(function (c) { setShadowFlags(c, cast, receive) });
-		}
-	};
-
+	
 	
 	var loadHouse = function () {
 		try {
@@ -49,7 +35,7 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 				object.rotation.y = 0;
 				object.position.y = 0;
 			   
-				setShadowFlags(object, false, true);
+				engine.setShadowFlags(object, false, true);
 				engine.addObject(object, undefined, true);
 
 			}, undefined, undefined, 'images');
@@ -64,7 +50,7 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 			    object.rotation.z = deg90 * 0.2;			    
 				object.scale.multiplyScalar(0.04);
 				object.position.set(250, 10, -170);              
-				setShadowFlags(object, true, true);
+				engine.setShadowFlags(object, true, true);
 				engine.addObject(object, undefined, true);
 
 			}, undefined, undefined, 'images');
@@ -80,7 +66,7 @@ define(["three.min", "AssimpJSONLoader", "engine"], function(a,b, engine)
 
 	            object.scale.multiplyScalar(0.12);
 	            object.position.set(0, 0, -300);
-	            setShadowFlags(object, true, true);
+	            engine.setShadowFlags(object, true, true);
 	            engine.addObject(object, undefined, true);
 
 	        }, undefined, undefined, 'images');
