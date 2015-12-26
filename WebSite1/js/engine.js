@@ -11,7 +11,9 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
     var moveBackward = false;
     var moveLeft = false;
     var moveRight = false;
-
+   
+    var isLockInitialized = false;
+    var isLoadingComplete = false;
     var prevTime = performance.now();
     var velocity = new THREE.Vector3();
 
@@ -93,14 +95,14 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
                 skyBox.position.set(camObject.position.x, camObject.position.y, camObject.position.z);
             }
 
+            renderCallbacks.forEach(function (c) {
+                c(scene, camObject, delta);
+            })
+
             prevTime = time;
 
         }
-
-        renderCallbacks.forEach(function (c) {
-            c(scene, camObject, delta);
-        })
-
+        
         renderer.render(scene, camera);
 
     };
@@ -151,23 +153,23 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
     };
 
     // get the lock.
-    var getLock = function () {
+    var initializeLock = function () {
 
-        
+       
         var instructions = document.getElementById('instructions');               
         var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
 
-        if (havePointerLock) {
-
-            setLoadMessage('Klicken, um zu Starten');
-
-            var element = document.body;
-        
+        if (havePointerLock) {           
+            var element = document.body;        
             var pointerlockchange = function (event) {
 
-                if (document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element) {
+                var isLocked = document.pointerLockElement === element
+                    || document.mozPointerLockElement === element
+                    || document.webkitPointerLockElement === element;
+
+                if (isLocked) {                   
                     hideBlocker();
-                } else {
+                } else {                  
                     showBlocker();
                 }
 
@@ -179,7 +181,7 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
 
             };
 
-            var enterLock = function () {
+            var enterLock = function (event) {
 
                
                 instructions.style.display = 'none';
@@ -222,7 +224,16 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
             document.addEventListener('mozpointerlockerror', pointerlockerror, false);
             document.addEventListener('webkitpointerlockerror', pointerlockerror, false);
 
-            instructions.addEventListener('click', function (event) { enterLock(); }, false);
+            
+            instructions.addEventListener('click', function (event) {
+                if (isLoadingComplete) {                   
+                   enterLock();                   
+                }
+                
+            }, false);
+
+            isLockInitialized = true;
+            
 
         } else {
 
@@ -256,8 +267,16 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
 
     return {
 
-
+        // Gets the loader which can be used to load models for the rooms
         loader: loader1,
+
+        // Hides the visual blocker. Can be used when all models are already in the cache of the room
+        // and no other models need to be loaded
+        hideBlockerOverride: function () {
+            setLoadMessage('Klicken, um fortzufahren');
+            isLoadingComplete = true;
+            hideBlocker();
+        },
 
         // Setup the scene
         init: function () {
@@ -269,8 +288,14 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
             };
 
             manager.onLoad = function () {
-                getLock();
-                animate();
+                console.log('Loader complete event');
+                setLoadMessage('Klicken, um zu Starten');
+                isLoadingComplete = true;
+                if (!isLockInitialized) {              
+                    initializeLock();
+                } else {
+                    hideBlocker();
+                }
             };
 
             manager.onError = function () {
@@ -364,9 +389,11 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
             document.body.appendChild(renderer.domElement);
 
             window.addEventListener('resize', onWindowResize, false);
+
+            animate();
         },
 
-
+        // Sets the shadow flags for the given model
         setShadowFlags: function (obj, cast, receive) {
 
             setShadow(obj, cast, receive);
@@ -388,9 +415,10 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
             }
         },
 
-
+        // Removes all objects from the scene exept the skybox.
         removeAddedObjects: function () {
 
+            isLoadingComplete = false;
             setLoadMessage('Lade neuen Raum. ESC für Mauscursor');
             showBlocker();
            

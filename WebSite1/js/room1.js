@@ -1,49 +1,91 @@
 define(["engine", "three.min"], function (engine) {
 
+    var testdone = false;
+
+    var house;
+    var image1;
+    var image2;
+
     var deg90 = Math.PI / 2;
 
     var loadHouse = function () {
+       
         try {
-            engine.loader.load('models/room1/galleryBox.json', function (object) {
 
-
-                object.rotation.x = deg90 * -1;
-                object.rotation.z = 0;
-                object.rotation.y = 0;
-                object.position.y = 0;
-
+            var addToEngine = function (object) {                
                 engine.setShadowFlags(object, false, true);
-                engine.addObject(object, undefined, true);
+                engine.addObject(object, undefined, true);               
+            };
 
-            }, undefined, undefined, 'images');
-        } catch (ex) {}
+            if (house === undefined) {
+                engine.loader.load('models/room1/galleryBox.json', function (object) {
+                    house = object;
+                    object.rotation.x = deg90 * -1;
+                    object.rotation.z = 0;
+                    object.rotation.y = 0;
+                    object.position.y = 0;
+                    addToEngine(object);
+                }, undefined, undefined, 'images');
+                return false;
+            }
+            else {
+                addToEngine(house);
+                return true;
+            }
+
+        } catch (ex) { }       
     };
 
     var loadimage1 = function () {
+        
         try {
-            engine.loader.load('models/room1/image1l.json', function (object) {
-                object.rotation.z = deg90 * 0.2;
-                object.scale.multiplyScalar(0.04);
-                object.position.set(250, 10, -170);
+
+            var addToEngine = function (object) {
                 engine.setShadowFlags(object, true, true);
                 engine.addObject(object, undefined, true);
+            };
 
-            }, undefined, undefined, 'images');
-        } catch (ex) {}
+            if (image1 === undefined) {
+                engine.loader.load('models/room1/image1l.json', function (object) {
+                    image1 = object;
+                    object.rotation.z = deg90 * 0.2;
+                    object.scale.multiplyScalar(0.04);
+                    object.position.set(250, 10, -170);
+                    addToEngine(object);
+
+                }, undefined, undefined, 'images');
+                return false;
+            } else {
+                addToEngine(image1);
+                return true;
+            }
+        } catch (ex) { }       
     };
 
 
     var loadimage2 = function () {
+        
         try {
-            engine.loader.load('models/room1/image2.json', function (object) {
 
-                object.scale.multiplyScalar(0.12);
-                object.position.set(0, 0, -300);
+            var addToEngine = function (object) {
                 engine.setShadowFlags(object, true, true);
                 engine.addObject(object, undefined, true);
+            };
 
-            }, undefined, undefined, 'images');
-        } catch (ex) {}
+            if (image2 === undefined) {
+                engine.loader.load('models/room1/image2.json', function (object) {
+                    image2 = object;
+                    object.scale.multiplyScalar(0.12);
+                    object.position.set(0, 0, -300);
+                    addToEngine(object);
+
+                }, undefined, undefined, 'images');
+                return false;
+            } else {
+                addToEngine(image2);
+                return true;
+            }
+        } catch (ex) { }       
     };
 
 
@@ -162,22 +204,36 @@ define(["engine", "three.min"], function (engine) {
 
                     sphere.position.set(directionalLight1.position.x, directionalLight1.position.y, directionalLight1.position.z);
 
+                    // Uncomment this for testing if loading a new room will work
 
-                    //if (camObject.position.z > 100) { engine.removeAddedObjects(); }
+                    //if (camObject.position.z > 100 && !testdone)
+                    //{
+                    //    testdone = true;
+                    //    engine.removeAddedObjects();
+                    //    checkLoadRoom();
+                    //}
                 }
             });
 
+    };
 
+    var checkLoadRoom = function () {
+
+        loadLight();
+        var isHouseCached = loadHouse();
+        var isImage1Cached = loadimage1();
+        var isImage2Cached = loadimage2();
+
+        if (isHouseCached & isImage1Cached & isImage2Cached) {
+            engine.hideBlockerOverride();
+        }
 
     };
 
 
     return {
         show: function () {
-            loadHouse();
-            loadLight();
-            loadimage1();
-            loadimage2();
+            checkLoadRoom();           
         },
 
     };
