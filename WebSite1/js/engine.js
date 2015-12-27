@@ -401,6 +401,14 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
             setShadow(obj, cast, receive);
         },
 
+        // Sets the camera to a new position
+        setCamera: function(x, y, z) {
+            var camObject = controls.getObject();
+            camObject.position.x = x;
+            camObject.position.y = y;
+            camObject.position.z = z;
+
+        },
 
         // Add a new object into the scene and to the collision detection
         addObject: function (mesh, renderCallback, doRegisterForCollision) {
@@ -412,6 +420,13 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
             }
 
             scene.add(mesh);
+            if (renderCallback !== undefined) {
+                renderCallbacks.push(renderCallback);
+            }
+        },
+
+        // Add a callback which gets executed every frame
+        addRenderCallback : function(renderCallback) {
             if (renderCallback !== undefined) {
                 renderCallbacks.push(renderCallback);
             }

@@ -1,6 +1,6 @@
 define(["engine", "three.min"], function (engine) {
 
-    var testdone = false;
+    var leaveCallback;
 
     var house;
     var image1;
@@ -145,6 +145,8 @@ define(["engine", "three.min"], function (engine) {
         directionalLight1.shadowCameraBottom = -d;
         directionalLight1.shadowCameraFar = 7000;
 
+        sphere.position.set(directionalLight1.position.x, directionalLight1.position.y, directionalLight1.position.z);
+
         engine.addObject(directionalLight1,
             // callback which gets executed every rendered frame. Checks if the light must be moved
             function (scene, camObject, delta) {
@@ -202,22 +204,30 @@ define(["engine", "three.min"], function (engine) {
                         directionalLight1.position.z = zPos;
                     }
 
-                    sphere.position.set(directionalLight1.position.x, directionalLight1.position.y, directionalLight1.position.z);
-
-                    // Uncomment this for testing if loading a new room will work
-
-                    if (camObject.position.z > 100 && !testdone)
-                    {
-                        testdone = true;
-                        engine.removeAddedObjects();
-                        checkLoadRoom();
-                    }
+                    sphere.position.set(directionalLight1.position.x, directionalLight1.position.y, directionalLight1.position.z);                   
                 }
             });
 
     };
 
-    var checkLoadRoom = function () {
+    var loadRoom = function () {
+
+        engine.setCamera(0, 70, 0);
+        engine.addRenderCallback(function (scene, camObject, delta) {
+            // This callback will be executed every frame. Check the position to see if a new room must be loaded
+
+            if (camObject.position.z > 100) {
+               
+                if (leaveCallback !== undefined) {
+
+                    // delete all objects and callbacks in the scene execpt the skybox
+                    engine.removeAddedObjects();
+
+                    // load the new room
+                    leaveCallback();
+                }
+            }
+        });
 
         loadLight();
         var isHouseCached = loadHouse();
@@ -232,8 +242,13 @@ define(["engine", "three.min"], function (engine) {
 
 
     return {
+
+        setLeaveCallback: function(callback) {
+            leaveCallback = callback;
+        },
+        
         show: function () {
-            checkLoadRoom();           
+            loadRoom();
         },
 
     };
