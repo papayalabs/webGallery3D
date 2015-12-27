@@ -3,9 +3,7 @@ define(["engine", "three.min"], function (engine) {
     var leaveCallback;
 
     var house;
-    var image1;
-    var image2;
-
+   
     var deg90 = Math.PI / 2;
 
     var loadHouse = function () {
@@ -18,7 +16,7 @@ define(["engine", "three.min"], function (engine) {
             };
 
             if (house === undefined) {
-                engine.loader.load('models/room1/gallerybox2.json', function (object) {
+                engine.loader.load('models/room2/gallerybox3.json', function (object) {
                     house = object;                    
                     object.rotation.z = 0;
                     object.rotation.y = 0;
@@ -35,60 +33,7 @@ define(["engine", "three.min"], function (engine) {
         } catch (ex) { }       
     };
 
-    var loadimage1 = function () {
-        
-        try {
-
-            var addToEngine = function (object) {
-                engine.setShadowFlags(object, true, true);
-                engine.addObject(object, undefined, true);
-            };
-
-            if (image1 === undefined) {
-                engine.loader.load('models/room1/image1l.json', function (object) {
-                    image1 = object;                    
-                    object.scale.multiplyScalar(0.04);
-                    object.position.set(200, 10, 0);
-                    addToEngine(object);
-
-                });
-                return false;
-            } else {
-                addToEngine(image1);
-                return true;
-            }
-        } catch (ex) { }       
-    };
-
-
-    var loadimage2 = function () {
-        
-        try {
-
-            var addToEngine = function (object) {
-                engine.setShadowFlags(object, true, true);
-                engine.addObject(object, undefined, true);
-            };
-
-            if (image2 === undefined) {
-                engine.loader.load('models/room1/image2.json', function (object) {
-                    image2 = object;
-                    object.scale.multiplyScalar(0.12);
-                    object.position.set(0, 0, -200);
-                    addToEngine(object);
-
-                });
-                return false;
-            } else {
-                addToEngine(image2);
-                return true;
-            }
-        } catch (ex) { }       
-    };
-
-
-
-
+   
 
     var loadLight = function () {
 
@@ -217,11 +162,11 @@ define(["engine", "three.min"], function (engine) {
         },
         
         show: function () {
-            engine.setCamera(0, 70, -100);
+            engine.setCamera(-80, 70, -300);
             engine.addRenderCallback(function (scene, camObject, delta) {
                 // This callback will be executed every frame. Check the position to see if a new room must be loaded
 
-                if (camObject.position.z > 300) {
+                if (camObject.position.z <-350) {
 
                     if (leaveCallback !== undefined) {
 
@@ -236,10 +181,8 @@ define(["engine", "three.min"], function (engine) {
 
             loadLight();
             var isHouseCached = loadHouse();
-            var isImage1Cached = loadimage1();
-            var isImage2Cached = loadimage2();
-
-            if (isHouseCached & isImage1Cached & isImage2Cached) {
+           
+            if (isHouseCached ) {
                 engine.hideBlockerOverride();
             }
         },
