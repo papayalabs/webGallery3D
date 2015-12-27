@@ -212,12 +212,20 @@ define(["engine", "three.min"], function (engine) {
 
     return {
 
+        
+
         setLeaveCallback: function(callback) {
             leaveCallback = callback;
         },
         
-        show: function () {
-            engine.setCamera(0, 70, -100);
+        show: function (doorname) {
+
+            if (doorname === undefined) {
+                engine.setCamera(0, 70, -100);
+            } else {
+                engine.setCamera(90, 70, 250);
+            }
+            
             engine.addRenderCallback(function (scene, camObject, delta) {
                 // This callback will be executed every frame. Check the position to see if a new room must be loaded
 

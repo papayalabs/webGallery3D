@@ -132,6 +132,16 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
 
 
     var showBlocker = function () {
+
+        velocity.x = 0;
+        velocity.z = 0;
+
+        moveForward = false;
+        moveBackward = false;
+        moveLeft = false;
+        moveRight = false;
+
+
         controlsEnabled = false;
         controls.enabled = false;
 
@@ -402,7 +412,16 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
         },
 
         // Sets the camera to a new position
-        setCamera: function(x, y, z) {
+        setCamera: function (x, y, z) {
+
+            velocity.x = 0;
+            velocity.z = 0;
+
+            moveForward = false;
+            moveBackward = false;
+            moveLeft = false;
+            moveRight = false;
+
             var camObject = controls.getObject();
             camObject.position.x = x;
             camObject.position.y = y;

@@ -4,10 +4,10 @@ requirejs(["engine", "room1", "room2"], function (engine, room1, room2) {
     engine.init();
 
     // Set the callback which gets executed when room1 is left
-    room1.setLeaveCallback(function () { room2.show(); });
+    room1.setLeaveCallback(function () { room2.show('door1'); });
 
     // Set the callback which gets executed when room1 is left
-    room2.setLeaveCallback(function () { room1.show(); });
+    room2.setLeaveCallback(function () { room1.show('door1'); });
 
     // Load room1
     room1.show();
