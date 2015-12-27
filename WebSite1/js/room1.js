@@ -18,9 +18,9 @@ define(["engine", "three.min"], function (engine) {
             };
 
             if (house === undefined) {
-                engine.loader.load('models/room1/galleryBox.json', function (object) {
+                engine.loader.load('models/room1/gallerybox2.json', function (object) {
                     house = object;
-                    object.rotation.x = deg90 * -1;
+                    //object.rotation.x = deg90 * -1;
                     object.rotation.z = 0;
                     object.rotation.y = 0;
                     object.position.y = 0;
@@ -48,9 +48,9 @@ define(["engine", "three.min"], function (engine) {
             if (image1 === undefined) {
                 engine.loader.load('models/room1/image1l.json', function (object) {
                     image1 = object;
-                    object.rotation.z = deg90 * 0.2;
+                    //object.rotation.z = deg90 * 0.2;
                     object.scale.multiplyScalar(0.04);
-                    object.position.set(250, 10, -170);
+                    object.position.set(200, 10, 0);
                     addToEngine(object);
 
                 }, undefined, undefined, 'images');
@@ -76,7 +76,7 @@ define(["engine", "three.min"], function (engine) {
                 engine.loader.load('models/room1/image2.json', function (object) {
                     image2 = object;
                     object.scale.multiplyScalar(0.12);
-                    object.position.set(0, 0, -300);
+                    object.position.set(0, 0, -200);
                     addToEngine(object);
 
                 }, undefined, undefined, 'images');
@@ -210,36 +210,7 @@ define(["engine", "three.min"], function (engine) {
 
     };
 
-    var loadRoom = function () {
-
-        engine.setCamera(0, 70, 0);
-        engine.addRenderCallback(function (scene, camObject, delta) {
-            // This callback will be executed every frame. Check the position to see if a new room must be loaded
-
-            if (camObject.position.z > 100) {
-               
-                if (leaveCallback !== undefined) {
-
-                    // delete all objects and callbacks in the scene execpt the skybox
-                    engine.removeAddedObjects();
-
-                    // load the new room
-                    leaveCallback();
-                }
-            }
-        });
-
-        loadLight();
-        var isHouseCached = loadHouse();
-        var isImage1Cached = loadimage1();
-        var isImage2Cached = loadimage2();
-
-        if (isHouseCached & isImage1Cached & isImage2Cached) {
-            engine.hideBlockerOverride();
-        }
-
-    };
-
+   
 
     return {
 
@@ -248,7 +219,31 @@ define(["engine", "three.min"], function (engine) {
         },
         
         show: function () {
-            loadRoom();
+            engine.setCamera(0, 70, -100);
+            engine.addRenderCallback(function (scene, camObject, delta) {
+                // This callback will be executed every frame. Check the position to see if a new room must be loaded
+
+                if (camObject.position.z > 300) {
+
+                    if (leaveCallback !== undefined) {
+
+                        // delete all objects and callbacks in the scene execpt the skybox
+                        engine.removeAddedObjects();
+
+                        // load the new room
+                        leaveCallback();
+                    }
+                }
+            });
+
+            loadLight();
+            var isHouseCached = loadHouse();
+            var isImage1Cached = loadimage1();
+            var isImage2Cached = loadimage2();
+
+            if (isHouseCached & isImage1Cached & isImage2Cached) {
+                engine.hideBlockerOverride();
+            }
         },
 
     };
