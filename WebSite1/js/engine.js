@@ -11,7 +11,7 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
     var moveBackward = false;
     var moveLeft = false;
     var moveRight = false;
-   
+    var isLocked = false;
     var isLockInitialized = false;
     var isLoadingComplete = false;
     var prevTime = performance.now();
@@ -163,7 +163,7 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
             var element = document.body;        
             var pointerlockchange = function (event) {
 
-                var isLocked = document.pointerLockElement === element
+                isLocked = document.pointerLockElement === element
                     || document.mozPointerLockElement === element
                     || document.webkitPointerLockElement === element;
 
@@ -224,8 +224,8 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
             document.addEventListener('mozpointerlockerror', pointerlockerror, false);
             document.addEventListener('webkitpointerlockerror', pointerlockerror, false);
 
-            
-            instructions.addEventListener('click', function (event) {
+            var messageSpan = document.getElementById('messageSpan');
+            messageSpan.addEventListener('click', function (event) {
                 if (isLoadingComplete) {                   
                    enterLock();                   
                 }
@@ -275,7 +275,9 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
         hideBlockerOverride: function () {
             setLoadMessage('Klicken, um fortzufahren');
             isLoadingComplete = true;
-            hideBlocker();
+            if (isLocked) {
+                hideBlocker();
+            }
         },
 
         // Setup the scene
@@ -293,7 +295,7 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
                 isLoadingComplete = true;
                 if (!isLockInitialized) {              
                     initializeLock();
-                } else {
+                } else if (isLocked) {
                     hideBlocker();
                 }
             };

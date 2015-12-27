@@ -44,10 +44,11 @@
 				box-align: center;
 
 				color: #ffffff;
-				text-align: center;
-
-				cursor: pointer;
-
+				text-align: center;				
 			}
+
+            #messageSpan {
+                cursor: pointer;
+            }
 
 	

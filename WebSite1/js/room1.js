@@ -206,12 +206,12 @@ define(["engine", "three.min"], function (engine) {
 
                     // Uncomment this for testing if loading a new room will work
 
-                    //if (camObject.position.z > 100 && !testdone)
-                    //{
-                    //    testdone = true;
-                    //    engine.removeAddedObjects();
-                    //    checkLoadRoom();
-                    //}
+                    if (camObject.position.z > 100 && !testdone)
+                    {
+                        testdone = true;
+                        engine.removeAddedObjects();
+                        checkLoadRoom();
+                    }
                 }
             });
 
