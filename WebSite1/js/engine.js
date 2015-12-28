@@ -398,13 +398,7 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
         // Sets the camera to a new position
         setCamera: function (pos) {
 
-            velocity.x = 0;
-            velocity.z = 0;
-
-            moveForward = false;
-            moveBackward = false;
-            moveLeft = false;
-            moveRight = false;
+            stopMovement();
 
             var camObject = controls.getObject();
             camObject.position.x = pos.x;
