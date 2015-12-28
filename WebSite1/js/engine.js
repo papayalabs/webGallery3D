@@ -1,4 +1,4 @@
-define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
+define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], function (blocker) {
     var camera, scene, renderer;
     var skyBox;
     var controls;
@@ -33,13 +33,13 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
 
     var animate = function () {
         requestAnimationFrame(animate);
-
+        var time = performance.now();
         if (controlsEnabled) {
 
 
 
             var moveDirection = new THREE.Vector3();
-            var time = performance.now();
+            
             var delta = (time - prevTime) / 1000;
 
             // Set speed and move-direction
@@ -97,12 +97,9 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
 
             renderCallbacks.forEach(function (c) {
                 c(scene, camObject, delta);
-            })
-
-            prevTime = time;
-
+            })            
         }
-        
+        prevTime = time;
         renderer.render(scene, camera);
 
     };
@@ -125,14 +122,7 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
 
    
 
-    var setLoadMessage = function (msg) {
-        var messageSpan = document.getElementById('messageSpan');
-        messageSpan.innerHTML = msg;
-    };
-
-
-    var showBlocker = function () {
-
+    var stopMovement = function () {
         velocity.x = 0;
         velocity.z = 0;
 
@@ -142,31 +132,17 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
         moveRight = false;
 
 
-        controlsEnabled = false;
-        controls.enabled = false;
-
-        var blocker = document.getElementById('blocker');
-        var instructions = document.getElementById('instructions');
-
-        blocker.style.display = '-webkit-box';
-        blocker.style.display = '-moz-box';
-        blocker.style.display = 'box';
-
-        instructions.style.display = '';
+       
     };
 
-    var hideBlocker = function () {
-        controlsEnabled = true;
-        controls.enabled = true;
-        var blocker = document.getElementById('blocker');
-        blocker.style.display = 'none';
-    };
+   
 
+   
     // get the lock.
     var initializeLock = function () {
 
        
-        var instructions = document.getElementById('instructions');               
+                     
         var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
 
         if (havePointerLock) {           
@@ -178,23 +154,28 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
                     || document.webkitPointerLockElement === element;
 
                 if (isLocked) {                   
-                    hideBlocker();
-                } else {                  
-                    showBlocker();
+                    controlsEnabled = true;
+                    controls.enabled = true;         
+                    blocker.hide();
+                } else {
+                    controlsEnabled = false;
+                    controls.enabled = false;
+                    stopMovement();
+                    blocker.show();
                 }
 
             };
 
             var pointerlockerror = function (event) {
 
-                instructions.style.display = '';
+                blocker.showError('An error occured during the locking.');
 
             };
 
             var enterLock = function (event) {
 
                
-                instructions.style.display = 'none';
+                blocker.hideInstructions();
 
                 // Ask the browser to lock the pointer
                 element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
@@ -246,8 +227,7 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
             
 
         } else {
-
-            instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
+            blocker.showError('Your browser doesn\'t seem to support Pointer Lock API');            
         }
 
     };
@@ -283,10 +263,12 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
         // Hides the visual blocker. Can be used when all models are already in the cache of the room
         // and no other models need to be loaded
         hideBlockerOverride: function () {
-            setLoadMessage('Klicken, um fortzufahren');
+            blocker.setLoadMessage('Klicken, um fortzufahren');
             isLoadingComplete = true;
             if (isLocked) {
-                hideBlocker();
+                controlsEnabled = true;
+                controls.enabled = true;
+                blocker.hide();
             }
         },
 
@@ -296,17 +278,19 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
             manager.onProgress = function (item, loaded, total) {
                 var percentComplete = loaded / total * 100;
                 var msg = Math.round(percentComplete, 2) + '% heruntergeladen';
-                setLoadMessage(msg);
+                blocker.setLoadMessage(msg);
             };
 
             manager.onLoad = function () {
                 console.log('Loader complete event');
-                setLoadMessage('Klicken, um zu Starten');
+                blocker.setLoadMessage('Klicken, um zu Starten');
                 isLoadingComplete = true;
                 if (!isLockInitialized) {              
                     initializeLock();
                 } else if (isLocked) {
-                    hideBlocker();
+                    controlsEnabled = true;
+                    controls.enabled = true;
+                    blocker.hide();
                 }
             };
 
@@ -455,8 +439,13 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
         removeAddedObjects: function () {
 
             isLoadingComplete = false;
-            setLoadMessage('Lade neuen Raum. ESC für Mauscursor');
-            showBlocker();
+            blocker.setLoadMessage('Lade neuen Raum. ESC für Mauscursor');
+
+            controlsEnabled = false;
+            controls.enabled = false;
+            stopMovement();
+            blocker.show();
+           
            
             collisionObjects.forEach(
                 function (mesh) {

@@ -80,7 +80,7 @@ define(["engine", "three.min"], function (engine) {
         var triggerNegZ = false;
         var d = 400;
 
-        var directionalLight1 = new THREE.DirectionalLight(0xffffff, 1);
+        var directionalLight1 = new THREE.DirectionalLight(0xff0000, 1.5);
         directionalLight1.position.set(xPos, 350, zPos);
         directionalLight1.target = boxTarget;
         directionalLight1.castShadow = true;
