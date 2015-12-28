@@ -412,7 +412,7 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
         },
 
         // Sets the camera to a new position
-        setCamera: function (x, y, z) {
+        setCamera: function (pos) {
 
             velocity.x = 0;
             velocity.z = 0;
@@ -423,9 +423,9 @@ define(["three.min", "PointerLockControls", "AssimpJSONLoader"], function () {
             moveRight = false;
 
             var camObject = controls.getObject();
-            camObject.position.x = x;
-            camObject.position.y = y;
-            camObject.position.z = z;
+            camObject.position.x = pos.x;
+            camObject.position.y = pos.y;
+            camObject.position.z = pos.z;
 
         },
 

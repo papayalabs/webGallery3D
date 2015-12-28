@@ -1,10 +1,16 @@
 define(["engine", "three.min"], function (engine) {
 
     var leaveCallback;
-
-    var house;
-   
+    var house;   
     var deg90 = Math.PI / 2;
+
+
+    var door1 = {
+        entryPosition: new THREE.Vector3(-80, 70, -250),
+        isLeaving: function (position) {
+            return position.z < -300;
+        }
+    };
 
     var loadHouse = function () {
        
@@ -157,23 +163,26 @@ define(["engine", "three.min"], function (engine) {
 
     return {
 
+        door: door1,
+
         setLeaveCallback: function(callback) {
             leaveCallback = callback;
         },
         
-        show: function (doorname) {
+        show: function (door) {
 
-            if (doorname === undefined) {
-                engine.setCamera(0, 70, 0);
+            if (door === door1) {
+                engine.setCamera(door1.entryPosition);
             } else {
-                engine.setCamera(-80, 70, -250);
+                engine.setCamera(new THREE.Vector3(0, 70, 0));
             }
 
+          
            
             engine.addRenderCallback(function (scene, camObject, delta) {
                 // This callback will be executed every frame. Check the position to see if a new room must be loaded
 
-                if (camObject.position.z <-350) {
+                if (door1.isLeaving(camObject.position)) {
 
                     if (leaveCallback !== undefined) {
 
@@ -181,7 +190,7 @@ define(["engine", "three.min"], function (engine) {
                         engine.removeAddedObjects();
 
                         // load the new room
-                        leaveCallback();
+                        leaveCallback(door1);
                     }
                 }
             });
