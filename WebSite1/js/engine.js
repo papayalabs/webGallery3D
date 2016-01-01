@@ -88,9 +88,16 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
                 velocity.z = 0;
             }
 
+            var len = velocity.length() * delta;
+            if (len > raycaster.far) {
+                console.log('Raycasting error: The moving-distance is bigger than the raycasting-length: ' + len);
+                velocity.x = 0;
+                velocity.z = 0;
+            }
+           
             camObject.translateX(velocity.x * delta);
             camObject.translateZ(velocity.z * delta);
-
+          
             if (skyBox) {
                 skyBox.position.set(camObject.position.x, camObject.position.y, camObject.position.z);
             }
@@ -123,16 +130,14 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
    
 
     var stopMovement = function () {
+        controlsEnabled = false;
+        controls.enabled = false;
         velocity.x = 0;
         velocity.z = 0;
-
         moveForward = false;
         moveBackward = false;
         moveLeft = false;
-        moveRight = false;
-
-
-       
+        moveRight = false;       
     };
 
    
@@ -157,9 +162,7 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
                     controlsEnabled = true;
                     controls.enabled = true;         
                     blocker.hide();
-                } else {
-                    controlsEnabled = false;
-                    controls.enabled = false;
+                } else {                  
                     stopMovement();
                     blocker.show();
                 }
@@ -311,35 +314,38 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
             scene.add(controls.getObject());
 
             var onKeyDown = function (event) {
+                if (controlsEnabled) {
 
-                switch (event.keyCode) {
+                   
+                    switch (event.keyCode) {
 
-                case 38: // up
-                case 87: // w
-                    moveForward = true;
-                    break;
+                        case 38: // up
+                        case 87: // w
+                            moveForward = true;
+                            break;
 
-                case 37: // left
-                case 65: // a
-                    moveLeft = true;
-                    break;
+                        case 37: // left
+                        case 65: // a
+                            moveLeft = true;
+                            break;
 
-                case 40: // down
-                case 83: // s
-                    moveBackward = true;
-                    break;
+                        case 40: // down
+                        case 83: // s
+                            moveBackward = true;
+                            break;
 
-                case 39: // right
-                case 68: // d
-                    moveRight = true;
-                    break;
+                        case 39: // right
+                        case 68: // d
+                            moveRight = true;
+                            break;
 
+                    }
                 }
-
             };
 
             var onKeyUp = function (event) {
 
+              
                 switch (event.keyCode) {
 
                 case 38: // up
@@ -398,6 +404,7 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
         // Sets the camera to a new position
         setCamera: function (pos) {
 
+
             stopMovement();
 
             var camObject = controls.getObject();
@@ -434,9 +441,7 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
 
             isLoadingComplete = false;
             blocker.setLoadMessage('Lade neuen Raum. ESC für Mauscursor');
-
-            controlsEnabled = false;
-            controls.enabled = false;
+            
             stopMovement();
             blocker.show();
            
