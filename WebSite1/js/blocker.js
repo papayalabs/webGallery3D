@@ -3,8 +3,9 @@
     var messageSpan = document.getElementById('messageSpan');
     var blocker = document.getElementById('blocker');
     var instructions = document.getElementById('instructions');
+    var instructionSpan = document.getElementById('instructionSpan');
 
-    var culture = 'en';
+    var culture = 'de';
 
     var setMessage = function (msg) {
         messageSpan.innerHTML = msg;
@@ -30,6 +31,11 @@
             'en': 'Click here to start.'
         },
 
+        'instructions' : {
+            'de': 'W, A, S, D oder Pfeiltasten für Bewegung<br />Umblicken mit der Maus',
+            'en': 'W, A, S, D or Arrows for movement<br />Lookaround with the mouse'
+        },
+
 
         'errorNoLockAPI': {
             'de': 'Ihr Browser unterstützt die Lock-API nicht...',
@@ -51,6 +57,7 @@
 
         setMessageInit: function () {
             setMessage(messages.init[culture])
+            instructionSpan.innerHTML = messages.instructions[culture];
         },
 
         setMessageProgress : function(percent) {
