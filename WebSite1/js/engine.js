@@ -14,9 +14,9 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
     var isLocked = false;
     var isLockInitialized = false;
     var isLoadingComplete = false;
+
     var prevTime = performance.now();
     var velocity = new THREE.Vector3();
-
     var manager = new THREE.LoadingManager();
     var loader1 = new THREE.AssimpJSONLoader(manager);
 
@@ -170,9 +170,7 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
             };
 
             var pointerlockerror = function (event) {
-
-                blocker.showError('An error occured during the locking.');
-
+                blocker.setErrorMessageLocking();
             };
 
             var enterLock = function (event) {
@@ -230,7 +228,7 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
             
 
         } else {
-            blocker.showError('Your browser doesn\'t seem to support Pointer Lock API');            
+            blocker.setErrorMessageNoAPI();
         }
 
     };
@@ -266,7 +264,7 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
         // Hides the visual blocker. Can be used when all models are already in the cache of the room
         // and no other models need to be loaded
         hideBlockerOverride: function () {
-            blocker.setLoadMessage('Klicken, um fortzufahren');
+            blocker.setMessageReady();
             isLoadingComplete = true;
             if (isLocked) {
                 controlsEnabled = true;
@@ -278,15 +276,17 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
         // Setup the scene
         init: function () {
 
+
+            blocker.setMessageInit();
+
             manager.onProgress = function (item, loaded, total) {
-                var percentComplete = loaded / total * 100;
-                var msg = Math.round(percentComplete, 2) + '% heruntergeladen';
-                blocker.setLoadMessage(msg);
+                var percentComplete = loaded / total * 100;               
+                blocker.setMessageProgress( Math.round(percentComplete, 2));
             };
 
             manager.onLoad = function () {
                 console.log('Loader complete event');
-                blocker.setLoadMessage('Klicken, um zu Starten');
+                blocker.setMessageReady();
                 isLoadingComplete = true;
                 if (!isLockInitialized) {              
                     initializeLock();
@@ -298,7 +298,7 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
             };
 
             manager.onError = function () {
-                console.log('there has been an error');
+                console.log('there has been an error during the loading');
             };
 
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 11000);
@@ -404,7 +404,6 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
         // Sets the camera to a new position
         setCamera: function (pos) {
 
-
             stopMovement();
 
             var camObject = controls.getObject();
@@ -440,7 +439,7 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
         removeAddedObjects: function () {
 
             isLoadingComplete = false;
-            blocker.setLoadMessage('Lade neuen Raum. ESC für Mauscursor');
+            blocker.setMessageProgress(0);
             
             stopMovement();
             blocker.show();
