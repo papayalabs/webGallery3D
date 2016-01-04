@@ -10978,7 +10978,7 @@
 					,"semantic": 0
 					,"index": 0
 					,"type": 1
-					,"value": 1
+					,"value": 0.4
 				}
 				,{
 					 "key": "$mat.bumpscaling"

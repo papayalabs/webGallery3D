@@ -15,6 +15,16 @@ define(["three.min"], function()
 	 * See webgl_loader_assimp2json example.
 	 */
 
+    /**
+    *
+    * Modifications by Holger Pfaff:
+    * - Added opacity of materials
+    *       
+    *
+    */
+
+
+
 	THREE.AssimpJSONLoader = function ( manager ) {
 
 		this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
@@ -192,8 +202,11 @@ define(["three.min"], function()
 			return geometry;
 		},
 
-		parseMaterial : function(json) {
-			var mat = null, 
+		parseMaterial: function (json) {
+
+            // hp :
+		    var opacity = 1;
+		    var mat = null,            
 			scope = this, i, prop, has_textures = [],
 
 			init_props = {
@@ -280,6 +293,10 @@ define(["three.min"], function()
 				}
 				else if (prop.key === '$mat.shininess') {
 					init_props.shininess = prop.value;
+				}				    
+				else if (prop.key === '$mat.opacity') {
+				    // hp : Read the opacity property and save it
+				    opacity = prop.value;
 				}
 			}
 
@@ -292,7 +309,13 @@ define(["three.min"], function()
 				}
 			}
 			
-			mat = new THREE.MeshPhongMaterial( init_props );
+			mat = new THREE.MeshPhongMaterial(init_props);
+
+		    // hp : Activate transparency for this material if the opacity is smaller than 1
+			if (opacity < 1 && opacity >= 0) {
+			    mat.transparent = true;
+			    mat.opacity = opacity;
+			}
 			return mat;
 		},
 
