@@ -6,9 +6,9 @@ define(["engine", "three.min"], function (engine) {
 
 
     var door1 = {
-        entryPosition: new THREE.Vector3(-80, 70, -250),
+        entryPosition: new THREE.Vector3(0, 70, -250),
         isLeaving: function (position) {
-            return position.z < -300;
+            return position.z < -340;
         }
     };
 
@@ -22,7 +22,7 @@ define(["engine", "three.min"], function (engine) {
             };
 
             if (house === undefined) {
-                engine.loader.load('models/room2/gallerybox3.json', function (object) {
+                engine.loader.load('models/room2/galleryglass.json', function (object) {
                     house = object;                    
                     object.rotation.z = 0;
                     object.rotation.y = 0;
@@ -61,17 +61,17 @@ define(["engine", "three.min"], function (engine) {
         engine.addObject(sphere);
 
 
-        var speed = 300;
-        var wayX = 300;
-        var wayZ = 300;
+        var speed = 350;
+        var wayX = 600;
+        var wayZ = 700;
         var angle = 0.8;
 
         var xPosMin = -wayX;
         var xPosMax = wayX;
-        var xPos = xPosMin;
+        var xPos = xPosMax;
         var zPosMin = -wayZ;
         var zPosMax = wayZ;
-        var zPos = zPosMax;
+        var zPos = zPosMin;
         var frameCounter = 0;
 
         var triggerPosX = false;
@@ -80,8 +80,8 @@ define(["engine", "three.min"], function (engine) {
         var triggerNegZ = false;
         var d = 400;
 
-        var directionalLight1 = new THREE.DirectionalLight(0xff0000, 1.5);
-        directionalLight1.position.set(xPos, 350, zPos);
+        var directionalLight1 = new THREE.DirectionalLight(0xffffff, 1.8);
+        directionalLight1.position.set(xPos, 500, zPos);
         directionalLight1.target = boxTarget;
         directionalLight1.castShadow = true;
         //directionalLight1.shadowCameraVisible = true;
