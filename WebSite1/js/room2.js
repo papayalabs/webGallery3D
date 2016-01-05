@@ -28,7 +28,7 @@ define(["engine", "three.min"], function (engine) {
                     object.rotation.y = 0;
                     object.position.y = 0;
                     addToEngine(object);
-                });
+                }, undefined, undefined, 'models/room2');
                 return false;
             }
             else {

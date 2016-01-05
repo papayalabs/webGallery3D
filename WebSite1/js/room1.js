@@ -32,7 +32,7 @@ define(["engine", "three.min"], function (engine) {
                     object.rotation.y = 0;
                     object.position.y = 0;
                     addToEngine(object);
-                });
+                }, undefined, undefined, 'models/room1');
                 return false;
             }
             else {
@@ -59,7 +59,7 @@ define(["engine", "three.min"], function (engine) {
                     object.position.set(200, 10, 0);
                     addToEngine(object);
 
-                });
+                }, undefined, undefined, 'models/room1');
                 return false;
             } else {
                 addToEngine(image1);
@@ -85,7 +85,7 @@ define(["engine", "three.min"], function (engine) {
                     object.position.set(0, 0, -200);
                     addToEngine(object);
 
-                });
+                }, undefined, undefined, 'models/room1');
                 return false;
             } else {
                 addToEngine(image2);
