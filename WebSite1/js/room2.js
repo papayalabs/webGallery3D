@@ -22,7 +22,7 @@ define(["engine", "three.min"], function (engine) {
             };
 
             if (house === undefined) {
-                engine.loader.load('models/room2/galleryglass.json', function (object) {
+                engine.loader.load('models/room2/galleryglassV1.json', function (object) {
                     house = object;                    
                     object.rotation.z = 0;
                     object.rotation.y = 0;
@@ -80,7 +80,7 @@ define(["engine", "three.min"], function (engine) {
         var triggerNegZ = false;
         var d = 400;
 
-        var directionalLight1 = new THREE.DirectionalLight(0xffffff, 1.8);
+        var directionalLight1 = new THREE.DirectionalLight(0xffffff, 1.4);
         directionalLight1.position.set(xPos, 500, zPos);
         directionalLight1.target = boxTarget;
         directionalLight1.castShadow = true;

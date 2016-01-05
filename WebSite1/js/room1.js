@@ -26,7 +26,7 @@ define(["engine", "three.min"], function (engine) {
             };
 
             if (house === undefined) {
-                engine.loader.load('models/room1/gallerybox2.json', function (object) {
+                engine.loader.load('models/room1/galleryboxV1.json', function (object) {
                     house = object;                    
                     object.rotation.z = 0;
                     object.rotation.y = 0;
