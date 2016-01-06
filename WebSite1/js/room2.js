@@ -1,7 +1,8 @@
 define(["engine", "three.min"], function (engine) {
 
     var leaveCallback;
-    var house;   
+    var house;
+    var image1;
     var deg90 = Math.PI / 2;
 
 
@@ -37,6 +38,45 @@ define(["engine", "three.min"], function (engine) {
             }
 
         } catch (ex) { }       
+    };
+
+
+    var loadimage1 = function () {
+
+        try {
+
+            var addToEngine = function (object) {
+                engine.setShadowFlags(object, true, true);
+                engine.addObject(object,
+                    function (scene, camObject, delta) {
+
+                        if (camObject) {
+
+                            var dist = camObject.position.distanceTo(object.position);
+                        
+                            if (dist > 250) {
+                                // rotate the cube, if the camera is far away, but stop if it comes near
+                                object.rotation.z += deg90 * 0.2 * delta;
+                            }
+                        }
+                        
+                    }, true);
+            };
+
+            if (image1 === undefined) {
+                engine.loader.load('models/room2/imageboxV1.json', function (object) {
+                    image1 = object;
+                    object.scale.multiplyScalar(0.7);
+                    object.position.set(0, 30, 400);
+                    addToEngine(object);
+
+                }, undefined, undefined, 'models/room2');
+                return false;
+            } else {
+                addToEngine(image1);
+                return true;
+            }
+        } catch (ex) { }
     };
 
    
@@ -80,7 +120,7 @@ define(["engine", "three.min"], function (engine) {
         var triggerNegZ = false;
         var d = 400;
 
-        var directionalLight1 = new THREE.DirectionalLight(0xffffff, 1.4);
+        var directionalLight1 = new THREE.DirectionalLight(0xffffff, 1.1);
         directionalLight1.position.set(xPos, 500, zPos);
         directionalLight1.target = boxTarget;
         directionalLight1.castShadow = true;
@@ -197,8 +237,9 @@ define(["engine", "three.min"], function (engine) {
 
             loadLight();
             var isHouseCached = loadHouse();
+            var isImage1Cached = loadimage1();
            
-            if (isHouseCached ) {
+            if (isHouseCached && isImage1Cached) {
                 engine.hideBlockerOverride();
             }
         },
