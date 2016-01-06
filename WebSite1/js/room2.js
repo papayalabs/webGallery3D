@@ -54,8 +54,8 @@ define(["engine", "three.min"], function (engine) {
 
                             var dist = camObject.position.distanceTo(object.position);
                         
-                            if (dist > 250) {
-                                // rotate the cube, if the camera is far away, but stop if it comes near
+                            // rotate the cube if the camera is far away
+                            if (dist > 250) {                                
                                 object.rotation.z += deg90 * 0.2 * delta;
                             }
                         }
@@ -211,6 +211,10 @@ define(["engine", "three.min"], function (engine) {
         
         show: function (door) {
 
+            // set a higher walking-spped for this room
+            engine.configureMovement(700.0);
+
+            // Set the camera-position
             if (door === door1) {
                 engine.setCamera(door1.entryPosition);
             } else {
@@ -235,6 +239,8 @@ define(["engine", "three.min"], function (engine) {
                 }
             });
 
+
+            // Load content and lights:
             loadLight();
             var isHouseCached = loadHouse();
             var isImage1Cached = loadimage1();

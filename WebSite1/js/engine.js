@@ -15,6 +15,8 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
     var isLockInitialized = false;
     var isLoadingComplete = false;
 
+    var speed = 400.0;
+    
     var prevTime = performance.now();
     var velocity = new THREE.Vector3();
     var manager = new THREE.LoadingManager();
@@ -48,18 +50,18 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
             velocity.z -= velocity.z * 10.0 * delta;
 
             if (moveForward) {
-                velocity.z -= 400.0 * delta;
+                velocity.z -= speed * delta;
                 moveDirection.z = -1;
             } else if (moveBackward) {
-                velocity.z += 400.0 * delta;
+                velocity.z += speed * delta;
                 moveDirection.z = 1;
             }
 
             if (moveLeft) {
-                velocity.x -= 400.0 * delta;
+                velocity.x -= speed * delta;
                 moveDirection.x = -1;
             } else if (moveRight) {
-                velocity.x += 400.0 * delta;
+                velocity.x += speed * delta;
                 moveDirection.x = 1;
             }
 
@@ -461,5 +463,16 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
             renderCallbacks.length = 0;
         },
 
+        // Sets the speed of movement and the length of the collision detection
+        configureMovement: function (speedInc) {
+
+            if (speedInc) {
+                speed = speedInc;
+            } else {
+                speed = 400.0;
+            }
+
+            raycaster.far = speed / 20;          
+        },
     }
 });

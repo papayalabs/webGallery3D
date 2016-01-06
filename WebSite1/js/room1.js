@@ -11,7 +11,7 @@ define(["engine", "three.min"], function (engine) {
     var door1 = {
         entryPosition: new THREE.Vector3(90, 70, 250),
         isLeaving: function (position) {
-            return position.z > 300;
+            return position.z > 260;
         }
     };
 
@@ -227,6 +227,9 @@ define(["engine", "three.min"], function (engine) {
         },
         
         show: function (door) {
+
+            // Set default walking-spped for this room
+            engine.configureMovement();
 
             if (door === door1) {
                 engine.setCamera(door1.entryPosition);
