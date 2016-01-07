@@ -2,6 +2,7 @@
 
     var messageSpan = document.getElementById('messageSpan');
     var blocker = document.getElementById('blocker');
+    var logo = document.getElementById('logo');
     var instructions = document.getElementById('instructions');
     var instructionSpan = document.getElementById('instructionSpan');
 
@@ -27,13 +28,13 @@
         },
 
         'ready': {
-            'de': 'Hier klicken, um zu starten.',
-            'en': 'Click here to start.'
+            'de': 'Bereit. Auf das Bild klicken, um zu starten',
+            'en': 'Ready. Click on the image to start.'
         },
 
         'instructions' : {
-            'de': 'W, A, S, D oder Pfeiltasten für Bewegung<br />Umblicken mit der Maus',
-            'en': 'W, A, S, D or Arrows for movement<br />Lookaround with the mouse'
+            'de': 'W, A, S, D oder Pfeiltasten für Bewegung.<br />Umblicken mit der Maus.<br />ESC, um die Räume zu verlassen',
+            'en': 'W, A, S, D or Arrows for movement.<br />Lookaround with the mouse.<br />ESC for leaving.'
         },
 
 
@@ -76,6 +77,11 @@
         setErrorMessageLocking: function () {
             instructions.style.display = '';
             instructions.innerHTML = messages.errorOnLocking[culture];
+        },
+
+
+        setStartCallback: function(callback){
+            logo.addEventListener('click', callback, false);
         },
 
         show: function () {                  

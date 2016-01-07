@@ -217,14 +217,12 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
             document.addEventListener('pointerlockerror', pointerlockerror, false);
             document.addEventListener('mozpointerlockerror', pointerlockerror, false);
             document.addEventListener('webkitpointerlockerror', pointerlockerror, false);
-
-            var messageSpan = document.getElementById('messageSpan');
-            messageSpan.addEventListener('click', function (event) {
-                if (isLoadingComplete) {                   
-                   enterLock();                   
+            
+            blocker.setStartCallback(function (event) {
+                if (isLoadingComplete) {
+                    enterLock();
                 }
-                
-            }, false);
+            });
 
             isLockInitialized = true;
             
