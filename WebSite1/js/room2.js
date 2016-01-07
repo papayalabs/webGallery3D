@@ -101,16 +101,14 @@ define(["engine", "three.min"], function (engine) {
         engine.addObject(sphere);
 
 
-        var speed = 350;
-        var wayX = 600;
-        var wayZ = 700;
+        var speed = 350;       
         var angle = 0.8;
 
-        var xPosMin = -wayX;
-        var xPosMax = wayX;
+        var xPosMin = -500;
+        var xPosMax = 500;
         var xPos = xPosMax;
-        var zPosMin = -wayZ;
-        var zPosMax = wayZ;
+        var zPosMin = -200;
+        var zPosMax = 600;
         var zPos = zPosMin;
         var frameCounter = 0;
 
