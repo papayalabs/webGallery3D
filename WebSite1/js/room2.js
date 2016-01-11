@@ -116,7 +116,7 @@ define(["engine", "three.min"], function (engine) {
         var triggerNegX = false;
         var triggerPosZ = false;
         var triggerNegZ = false;
-        var d = 400;
+        var d = 1200;
 
         var directionalLight1 = new THREE.DirectionalLight(0xffffff, 1.1);
         directionalLight1.position.set(xPos, 500, zPos);
@@ -130,7 +130,7 @@ define(["engine", "three.min"], function (engine) {
         directionalLight1.shadowCameraRight = d;
         directionalLight1.shadowCameraTop = d;
         directionalLight1.shadowCameraBottom = -d;
-        directionalLight1.shadowCameraFar = 7000;
+        directionalLight1.shadowCameraFar = 1500;
 
         sphere.position.set(directionalLight1.position.x, directionalLight1.position.y, directionalLight1.position.z);
 
