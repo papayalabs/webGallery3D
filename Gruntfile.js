@@ -14,7 +14,7 @@ module.exports = function(grunt) {
     },
 	jshint: {
 	  // define the files to lint
-	  files: ['gruntfile.js', 'WebSite1/**/*.js', '!WebSite1/**/*.min.js', '!WebSite1/js/require.js'],
+	  files: ['gruntfile.js', 'WebSite1/**/*.js', '!WebSite1/**/*.min.js'],
 	  // configure JSHint (documented at http://www.jshint.com/docs/)
 	  options: {
 		  // more options here if you want to override JSHint defaults
