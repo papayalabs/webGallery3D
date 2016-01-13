@@ -58,7 +58,7 @@ define(["three.min"], function () {
 
                 return v;
 
-            }
+            };
 
         }();
 

@@ -158,7 +158,7 @@ define(["engine", "three.min"], function (engine) {
             function (scene, camObject, delta) {
 
                 frameCounter++;
-                if (camObject && (triggerPosX || triggerNegX || triggerPosZ || triggerNegZ || frameCounter % 20 == 0)) {
+                if (camObject && (triggerPosX || triggerNegX || triggerPosZ || triggerNegZ || frameCounter % 20 === 0)) {
 
 
                     var vector = new THREE.Vector3(0, 0, -1);

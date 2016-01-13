@@ -57,7 +57,7 @@
     return {
 
         setMessageInit: function () {
-            setMessage(messages.init[culture])
+            setMessage(messages.init[culture]);
             instructionSpan.innerHTML = messages.instructions[culture];
         },
 
@@ -66,7 +66,7 @@
         },
 
         setMessageReady : function() {
-            setMessage(messages.ready[culture])
+            setMessage(messages.ready[culture]);
         },
 
         setErrorMessageNoAPI: function () {
@@ -104,5 +104,5 @@
             instructions.style.display = 'none';
         },
 
-    }
+    };
 });

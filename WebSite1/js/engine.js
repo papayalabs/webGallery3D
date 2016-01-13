@@ -30,7 +30,7 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
 
         renderer.setSize(window.innerWidth, window.innerHeight);
 
-    };
+    }
 
 
     var animate = function () {
@@ -106,7 +106,7 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
 
             renderCallbacks.forEach(function (c) {
                 c(scene, camObject, delta);
-            })            
+            });            
         }
         prevTime = time;
         renderer.render(scene, camera);
@@ -122,9 +122,9 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
         obj.castShadow = cast;
         obj.receiveShadow = receive;
 
-        if (obj.children != undefined) {
+        if (obj.children !== undefined) {
             obj.children.forEach(function (c) {
-                setShadow(c, cast, receive)
+                setShadow(c, cast, receive);
             });
         }
     };
@@ -156,9 +156,7 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
             var element = document.body;        
             var pointerlockchange = function (event) {
 
-                isLocked = document.pointerLockElement === element
-                    || document.mozPointerLockElement === element
-                    || document.webkitPointerLockElement === element;
+                isLocked = document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element;
 
                 if (isLocked) {                   
                     controlsEnabled = true;
@@ -195,7 +193,7 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
                             element.requestPointerLock();
                         }
 
-                    }
+                    };
 
                     document.addEventListener('fullscreenchange', fullscreenchange, false);
                     document.addEventListener('mozfullscreenchange', fullscreenchange, false);
@@ -472,5 +470,5 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
 
             raycaster.far = speed / 20;          
         },
-    }
+    };
 });
