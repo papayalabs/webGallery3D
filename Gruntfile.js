@@ -3,15 +3,18 @@ module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    uglify: {
-      options: {
-        banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
-      },
-      build: {
-        src: 'WebSite1/**/*.js',
-        dest: 'build/<%= pkg.name %>.min.js'
-      }
-    },
+    
+	requirejs: {
+	  compile: {
+		options: {
+		  baseUrl: "WebSite1/js",
+		  mainConfigFile: "WebSite1/js/main.js",
+		  name: "main", // assumes a production build using almond 
+		  out: "WebSite1/build/optimized.min.js"
+		}
+	  }
+	},
+	
 	jshint: {
 	  // define the files to lint
 	  files: ['gruntfile.js', 'WebSite1/**/*.js', '!WebSite1/**/*.min.js'],
@@ -29,12 +32,13 @@ module.exports = function(grunt) {
 	}
   });
 
-  // Load the plugin that provides the "uglify" task.
-  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-requirejs');
   
+   
+  // Load the plugin that provides the "jshint" task.
   grunt.loadNpmTasks('grunt-contrib-jshint');
 
   // Default task(s).
-  grunt.registerTask('default', ['jshint', 'uglify']);
+  grunt.registerTask('default', ['jshint', 'requirejs']);
 
 };
