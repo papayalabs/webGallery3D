@@ -97,6 +97,62 @@ define(["three.min"], function()
 		parseMesh : function(json) {
 			var vertex, geometry, i, e, in_data, src;
 
+			var convertTextureCoords = function (in_uv, out_faces, out_vertex_uvs) {
+				var i, e, face, a, b, c;
+
+				for (i = 0, e = out_faces.length; i < e; ++ i) {
+					face = out_faces[i];
+					a = face.a * 2;
+					b = face.b * 2;
+					c = face.c * 2;
+					out_vertex_uvs.push([
+						new THREE.Vector2( in_uv[ a ], in_uv[ a + 1 ] ),
+						new THREE.Vector2( in_uv[ b ], in_uv[ b + 1 ] ),
+						new THREE.Vector2( in_uv[ c ], in_uv[ c + 1 ] )
+					]);
+				}
+			};
+			
+			var convertNormals = function (in_nor, out_faces) {
+				var i, e, face, a, b, c;
+
+				for (i = 0, e = out_faces.length; i < e; ++ i) {
+					face = out_faces[i];
+					a = face.a * 3;
+					b = face.b * 3;
+					c = face.c * 3;
+					face.vertexNormals = [
+						new THREE.Vector3( in_nor[ a ], in_nor[ a + 1 ], in_nor[ a + 2 ] ),
+						new THREE.Vector3( in_nor[ b ], in_nor[ b + 1 ], in_nor[ b + 2 ] ),
+						new THREE.Vector3( in_nor[ c ], in_nor[ c + 1 ], in_nor[ c + 2 ] )
+					];
+				}
+			};
+			
+			var convertColors = function (in_color, out_faces) {
+				var i, e, face, a, b, c;
+
+				function makeColor(start) {
+					var col = new THREE.Color( );
+					col.setRGB( arr[0], arr[1], arr[2] );
+					// TODO: what about alpha?
+					return col;
+				}
+
+				for (i = 0, e = out_faces.length; i < e; ++ i) {
+					face = out_faces[i];
+					a = face.a * 4;
+					b = face.b * 4;
+					c = face.c * 4;
+					face.vertexColors = [
+						makeColor( a ),
+						makeColor( b ),
+						makeColor( c )
+					];
+				}
+			};
+
+
 
 			geometry = new THREE.Geometry();
 
@@ -120,82 +176,20 @@ define(["three.min"], function()
 
 			// read texture coordinates - three.js attaches them to its faces
 			json.texturecoords = json.texturecoords || [];
-			for (i = 0, e = json.texturecoords.length; i < e; ++ i) {
-
-				function convertTextureCoords(in_uv, out_faces, out_vertex_uvs) {
-					var i, e, face, a, b, c;
-
-					for (i = 0, e = out_faces.length; i < e; ++ i) {
-						face = out_faces[i];
-						a = face.a * 2;
-						b = face.b * 2;
-						c = face.c * 2;
-						out_vertex_uvs.push([
-							new THREE.Vector2( in_uv[ a ], in_uv[ a + 1 ] ),
-							new THREE.Vector2( in_uv[ b ], in_uv[ b + 1 ] ),
-							new THREE.Vector2( in_uv[ c ], in_uv[ c + 1 ] )
-						]);
-					}
-				}
-
+			for (i = 0, e = json.texturecoords.length; i < e; ++ i) {			
 				convertTextureCoords(json.texturecoords[i], geometry.faces, geometry.faceVertexUvs[i]);
 			}
 
 			// read normals - three.js also attaches them to its faces
-			if (json.normals) {
-
-				function convertNormals(in_nor, out_faces) {
-					var i, e, face, a, b, c;
-
-					for (i = 0, e = out_faces.length; i < e; ++ i) {
-						face = out_faces[i];
-						a = face.a * 3;
-						b = face.b * 3;
-						c = face.c * 3;
-						face.vertexNormals = [
-							new THREE.Vector3( in_nor[ a ], in_nor[ a + 1 ], in_nor[ a + 2 ] ),
-							new THREE.Vector3( in_nor[ b ], in_nor[ b + 1 ], in_nor[ b + 2 ] ),
-							new THREE.Vector3( in_nor[ c ], in_nor[ c + 1 ], in_nor[ c + 2 ] )
-						];
-					}
-				}
-
+			if (json.normals) {				
 				convertNormals(json.normals, geometry.faces);
 			}
 
 			// read vertex colors - three.js also attaches them to its faces
-			if (json.colors && json.colors[0]) {
-
-				function convertColors(in_color, out_faces) {
-					var i, e, face, a, b, c;
-
-					function makeColor(start) {
-						var col = new THREE.Color( );
-						col.setRGB( arr[0], arr[1], arr[2] );
-						// TODO: what about alpha?
-						return col;
-					}
-
-					for (i = 0, e = out_faces.length; i < e; ++ i) {
-						face = out_faces[i];
-						a = face.a * 4;
-						b = face.b * 4;
-						c = face.c * 4;
-						face.vertexColors = [
-							makeColor( a ),
-							makeColor( b ),
-							makeColor( c )
-						];
-					}
-				}
-
+			if (json.colors && json.colors[0]) {				
 				convertColors(json.colors[0], geometry.faces);
 			}
 
-
-			//geometry.computeFaceNormals();
-			//geometry.computeVertexNormals();
-			//geometry.computeTangents();
 			geometry.computeBoundingSphere();
 
 			// TODO: tangents
@@ -225,9 +219,44 @@ define(["three.min"], function()
 				im.height = 1;
 				return new THREE.Texture(im);
 			}
+			
+			function loadTexture(semantic, value) {
+				var loader = new THREE.TextureLoader(scope.manager),
+				keyname;
 
-			for (var i in json.properties) {
-				prop = json.properties[i];
+				if (semantic === 1) {
+					keyname = 'map';
+				}
+				else if (semantic === 5) {
+					keyname = 'bumpMap';
+				}
+				else if (semantic === 6) {
+					keyname = 'normalMap';
+				}
+				else if (semantic === 2) {
+					keyname = 'specularMap';
+				}
+
+				has_textures.push(keyname);
+
+				loader.setCrossOrigin(this.crossOrigin);
+				var material_url = scope.texturePath + '/' + value;
+				material_url = material_url.replace(/\\/g, '/');
+				loader.load(material_url, function(tex) {
+					if (tex) {
+						// TODO: read texture settings from assimp.
+						// Wrapping is the default, though.
+						tex.wrapS = tex.wrapT =THREE.RepeatWrapping;
+						//tex.wrapS = tex.wrapT =THREE.ClampToEdgeWrapping; 
+
+						mat[keyname] = tex;
+						mat.needsUpdate = true;
+					}
+				});
+			}
+
+			for (var p in json.properties) {
+				prop = json.properties[p];
 
 				if (prop.key === '$tex.file') {
 					// prop.semantic gives the type of the texture
@@ -237,40 +266,7 @@ define(["three.min"], function()
 					// 6: normal map
 					// more values (i.e. emissive, environment) are known by assimp and may be relevant
 					if (prop.semantic === 1 || prop.semantic === 5 || prop.semantic === 6 || prop.semantic === 2) {
-						(function(semantic) {
-							var loader = new THREE.TextureLoader(scope.manager),
-							keyname;
-
-							if (semantic === 1) {
-								keyname = 'map';
-							}
-							else if (semantic === 5) {
-								keyname = 'bumpMap';
-							}
-							else if (semantic === 6) {
-								keyname = 'normalMap';
-							}
-							else if (semantic === 2) {
-								keyname = 'specularMap';
-							}
-
-							has_textures.push(keyname);
-
-							loader.setCrossOrigin(this.crossOrigin);
-							var material_url = scope.texturePath + '/' + prop.value
-							material_url = material_url.replace(/\\/g, '/');
-							loader.load(material_url, function(tex) {
-								if (tex) {
-									// TODO: read texture settings from assimp.
-									// Wrapping is the default, though.
-									tex.wrapS = tex.wrapT =THREE.RepeatWrapping;
-									//tex.wrapS = tex.wrapT =THREE.ClampToEdgeWrapping; 
-
-									mat[keyname] = tex;
-									mat.needsUpdate = true;
-								}
-							});
-						})(prop.semantic);
+						loadTexture(prop.semantic, prop.value);
 					}
 				}
 				else if (prop.key === '?mat.name') {
@@ -320,10 +316,8 @@ define(["three.min"], function()
 		},
 
 		parseObject : function(json, node, meshes, materials) {
-			var obj = new THREE.Object3D()
-			,	i
-			,	idx
-			;
+			var obj = new THREE.Object3D();
+			var	i,	idx;
 
 			obj.name = node.name || "";
 			obj.matrix = new THREE.Matrix4().fromArray(node.transformation).transpose();
