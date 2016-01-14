@@ -27,3 +27,9 @@ _ReSharper*/
 [Tt]est[Rr]esult*
 *.vssscc
 $tf*/
+
+# ignore the node-modules
+node_modules/
+
+#ignore the results of jslint
+lint/

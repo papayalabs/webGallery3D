@@ -31,7 +31,7 @@ module.exports = function(grunt) {
 		  module: true
 		},		
 		reporter:'jslint',
-		reporterOutput: 'build/hints.xml'
+		reporterOutput: 'lint/hints.xml'
 	  }
 	}
   });
