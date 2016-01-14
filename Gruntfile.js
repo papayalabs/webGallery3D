@@ -4,6 +4,10 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     
+	qunit: {
+		all: ['test/**/*.html']
+	},
+	
 	requirejs: {
 	  compile: {
 		options: {
@@ -32,13 +36,16 @@ module.exports = function(grunt) {
 	}
   });
 
-  grunt.loadNpmTasks('grunt-contrib-requirejs');
+  // Load the plugin that provides the "qunit" task.
+  grunt.loadNpmTasks('grunt-contrib-qunit');
   
-   
+  // Load the plugin that provides the "requirejs" task.
+  grunt.loadNpmTasks('grunt-contrib-requirejs');
+     
   // Load the plugin that provides the "jshint" task.
   grunt.loadNpmTasks('grunt-contrib-jshint');
 
   // Default task(s).
-  grunt.registerTask('default', ['jshint', 'requirejs']);
+  grunt.registerTask('default', ['qunit', 'jshint', 'requirejs']);
 
 };
