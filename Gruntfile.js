@@ -11,17 +11,17 @@ module.exports = function(grunt) {
 	requirejs: {
 	  compile: {
 		options: {
-		  baseUrl: "WebSite1/js",
-		  mainConfigFile: "WebSite1/js/main.js",
-		  name: "main", // assumes a production build using almond 
-		  out: "WebSite1/build/optimized.min.js"
+		  baseUrl: "app/js",
+		  mainConfigFile: "app/js/main.js",
+		  name: "main", 
+		  out: "app/build/optimized.min.js"
 		}
 	  }
 	},
 	
 	jshint: {
 	  // define the files to lint
-	  files: ['gruntfile.js', 'WebSite1/**/*.js', '!WebSite1/**/*.min.js'],
+	  files: ['gruntfile.js', 'app/**/*.js', '!app/**/*.min.js'],
 	  // configure JSHint (documented at http://www.jshint.com/docs/)
 	  options: {
 		  // more options here if you want to override JSHint defaults
