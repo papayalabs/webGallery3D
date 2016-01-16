@@ -253,6 +253,14 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
 
     return {
 
+
+        run: function () {
+            if (scene === undefined) {
+                throw new Error('The engine was not initialized. Call "init" first');
+            }
+            animate();
+        },
+
         // Gets the loader which can be used to load models for the rooms
         loader: loader1,
 
@@ -386,8 +394,7 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
             document.body.appendChild(renderer.domElement);
 
             window.addEventListener('resize', onWindowResize, false);
-
-            animate();
+           
         },
 
         // Sets the shadow flags for the given model
