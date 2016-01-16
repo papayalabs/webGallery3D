@@ -207,7 +207,7 @@ define(["engine", "three.min"], function (engine) {
             leaveCallback = callback;
         },
         
-        show: function (door) {
+        enter: function (door) {
 
             // set a higher walking-spped for this room
             engine.configureMovement(700.0);

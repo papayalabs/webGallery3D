@@ -1,26 +1,23 @@
 define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], function (blocker) {
-    var camera, scene, renderer;
-    var skyBox;
-    var controls;
-    var collisionObjects = [];
-    var untouchableObjects = [];
-    var raycaster;
-    var renderCallbacks = [];
-    var controlsEnabled = false;
-    var moveForward = false;
-    var moveBackward = false;
-    var moveLeft = false;
-    var moveRight = false;
-    var isLocked = false;
-    var isLockInitialized = false;
-    var isLoadingComplete = false;
 
-    var speed = 400.0;
-    
-    var prevTime = performance.now();
-    var velocity = new THREE.Vector3();
-    var manager = new THREE.LoadingManager();
-    var loader1 = new THREE.AssimpJSONLoader(manager);
+    var camera, scene, renderer, skyBox, controls, raycaster,
+        collisionObjects = [],
+        untouchableObjects = [],
+        renderCallbacks = [],      
+        controlsEnabled = false,
+        moveForward = false,
+        moveBackward = false,
+        moveLeft = false,
+        moveRight = false,
+        isLocked = false,
+        isLockInitialized = false,
+        isLoadingComplete = false,
+        speed = 400.0;
+
+        var prevTime = performance.now();
+        var velocity = new THREE.Vector3();
+        var manager = new THREE.LoadingManager();
+        var loader1 = new THREE.AssimpJSONLoader(manager);
 
 
     function onWindowResize() {
