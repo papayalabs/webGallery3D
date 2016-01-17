@@ -83,118 +83,43 @@ define(["engine", "three.min"], function (engine) {
 
     var loadLight = function () {
 
-
         var boxTarget = new THREE.Mesh(
-            new THREE.BoxGeometry(0, 0, 0),
-            new THREE.MeshBasicMaterial({
-                color: 0x000000
-            }));
+                new THREE.BoxGeometry(0, 0, 0),
+                new THREE.MeshBasicMaterial({
+                    color: 0x000000
+                }));
 
         var sphere = new THREE.Mesh(
-            new THREE.SphereGeometry(50, 32, 16),
-            new THREE.MeshBasicMaterial({
-                color: 0xFFFFFF
-            }));
+               new THREE.SphereGeometry(30, 32, 16),
+               new THREE.MeshBasicMaterial({
+                   color: 0xFFFFFF
+               }));
 
-        boxTarget.position.set(0, 0, 0);
         engine.addObject(boxTarget);
         engine.addObject(sphere);
 
+        boxTarget.position.set(0,0,100);
 
-        var speed = 350;       
-        var angle = 0.8;
+        var d = 600;
+        var light = new THREE.DirectionalLight(0xffffff);
+        light.position.set(0, 420, -250);
+        light.target = boxTarget;
+        light.castShadow = true;
+        light.shadowDarkness = 0.5;
+        //light.shadowCameraVisible = true; // only for debugging       
+        light.shadowCameraNear = 3;
+        light.shadowCameraFar = 2000;     
+        light.shadowMapWidth = 4096;
+        light.shadowMapHeight = 4096;
+        light.shadowCameraLeft = -d;
+        light.shadowCameraRight = d;
+        light.shadowCameraTop = 800;
+        light.shadowCameraBottom = -d;
 
-        var xPosMin = -500;
-        var xPosMax = 500;
-        var xPos = xPosMax;
-        var zPosMin = -200;
-        var zPosMax = 600;
-        var zPos = zPosMin;
-        var frameCounter = 0;
+        engine.addObject(light);
 
-        var triggerPosX = false;
-        var triggerNegX = false;
-        var triggerPosZ = false;
-        var triggerNegZ = false;
-        var d = 1200;
-
-        var directionalLight1 = new THREE.DirectionalLight(0xffffff, 1.1);
-        directionalLight1.position.set(xPos, 500, zPos);
-        directionalLight1.target = boxTarget;
-        directionalLight1.castShadow = true;
-        //directionalLight1.shadowCameraVisible = true;
-        directionalLight1.shadowDarkness = 0.7;
-        directionalLight1.shadowMapWidth = 4096;
-        directionalLight1.shadowMapHeight = 4096;
-        directionalLight1.shadowCameraLeft = -d;
-        directionalLight1.shadowCameraRight = d;
-        directionalLight1.shadowCameraTop = d;
-        directionalLight1.shadowCameraBottom = -d;
-        directionalLight1.shadowCameraFar = 1500;
-
-        sphere.position.set(directionalLight1.position.x, directionalLight1.position.y, directionalLight1.position.z);
-
-        engine.addObject(directionalLight1,
-            // callback which gets executed every rendered frame. Checks if the light must be moved
-            function (scene, camObject, delta) {
-
-                frameCounter++;
-                if (camObject && (triggerPosX || triggerNegX || triggerPosZ || triggerNegZ || frameCounter % 20 === 0)) {
-
-
-                    var vector = new THREE.Vector3(0, 0, -1);
-                    vector.applyEuler(camObject.rotation, camObject.rotation.order);
-
-                    if (vector.x < -angle && xPos < xPosMax && !triggerNegX) {
-                        triggerPosX = true;
-                    } else if (xPos >= xPosMax) {
-                        triggerPosX = false;
-                    }
-
-                    if (vector.x > angle && xPos > xPosMin && !triggerPosX) {
-                        triggerNegX = true;
-                    } else if (xPos <= xPosMin) {
-                        triggerNegX = false;
-                    }
-
-                    if (vector.z < -angle && zPos < zPosMax && !triggerNegZ) {
-                        triggerPosZ = true;
-                    } else if (zPos >= zPosMax) {
-                        triggerPosZ = false;
-                    }
-
-                    if (vector.z > angle && zPos > zPosMin && !triggerPosZ) {
-                        triggerNegZ = true;
-                    } else if (zPos <= zPosMin) {
-                        triggerNegZ = false;
-                    }
-
-                    if (triggerPosX) {
-                        // move light to positive x
-                        xPos += speed * delta;
-                        directionalLight1.position.x = xPos;
-
-                    } else if (triggerNegX) {
-                        // move light to negative x
-                        xPos -= speed * delta;
-                        directionalLight1.position.x = xPos;
-                    }
-
-                    if (triggerPosZ) {
-                        // move light to positive z
-                        zPos += speed * delta;
-                        directionalLight1.position.z = zPos;
-
-                    } else if (triggerNegZ) {
-                        // move light to negative z
-                        zPos -= speed * delta;
-                        directionalLight1.position.z = zPos;
-                    }
-
-                    sphere.position.set(directionalLight1.position.x, directionalLight1.position.y, directionalLight1.position.z);                   
-                }
-            });
-
+        sphere.position.set(light.position.x, light.position.y, light.position.z);
+          
     };
 
    

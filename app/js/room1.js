@@ -142,7 +142,7 @@ define(["engine", "three.min"], function (engine) {
             directionalLight1.shadowCameraRight = d;
             directionalLight1.shadowCameraTop = d;
             directionalLight1.shadowCameraBottom = -d;
-            directionalLight1.shadowCameraFar = 7000;
+            directionalLight1.shadowCameraFar = 2000;
 
             sphere.position.set(directionalLight1.position.x, directionalLight1.position.y, directionalLight1.position.z);
 
