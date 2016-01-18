@@ -5,7 +5,22 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     
 	qunit: {
-		all: ['test/**/*.html']
+		all: {
+		  options: {
+			urls: [
+				'http://localhost:8000/test/basic/test.html',
+				'http://localhost:8000/test/models/test.html',			  
+			]
+		  }
+		}
+	},
+	connect: {
+		server: {
+			  options: {
+				port: 8000,
+				base: '.'
+			  }
+		}
 	},
 	
 	requirejs: {
@@ -24,17 +39,25 @@ module.exports = function(grunt) {
 	  files: ['gruntfile.js', 'app/**/*.js', '!app/**/*.min.js'],
 	  // configure JSHint (documented at http://www.jshint.com/docs/)
 	  options: {
-		  // more options here if you want to override JSHint defaults
+			// more options here if you want to override JSHint defaults
+			bitwise: true,
+			curly: false,
+			undef: false,
+			unused: false,
+		  
 		globals: {
-		  jQuery: true,
-		  console: true,
-		  module: true
+			
+			jQuery: true,
+			console: true,
+			module: true,			
 		},		
 		reporter:'jslint',
 		reporterOutput: 'lint/hints.xml'
 	  }
 	}
   });
+  
+  grunt.loadNpmTasks('grunt-contrib-connect');
 
   // Load the plugin that provides the "qunit" task.
   grunt.loadNpmTasks('grunt-contrib-qunit');
@@ -46,7 +69,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
 
   // Default task(s).
-  grunt.registerTask('default', ['qunit', 'jshint', 'requirejs']);
+  grunt.registerTask('default', ['connect', 'qunit', 'jshint', 'requirejs']);
 
-  grunt.registerTask('test', ['qunit']);
+  grunt.registerTask('test', ['connect', 'qunit']);
 };

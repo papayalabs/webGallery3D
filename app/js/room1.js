@@ -251,7 +251,7 @@ define(["engine", "three.min"], function (engine) {
             var isImage1Cached = loadimage1();
             var isImage2Cached = loadimage2();
 
-            if (isHouseCached & isImage1Cached & isImage2Cached) {
+            if (isHouseCached && isImage1Cached && isImage2Cached) {
                 engine.hideBlockerOverride();
             }
         },
