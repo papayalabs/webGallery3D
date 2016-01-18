@@ -13,7 +13,7 @@ define = function(dependencies, callback)
 	var isInitCalled = false;
 	
 	
-	
+	// execute the callback from the require-'define'-function
 	var engine = callback({
 		
 		
