@@ -1,8 +1,10 @@
 
 
-	var models = ['galleryboxV1.json', 'image1l.json', 'image2.json'];	
-	var cnt = 0;
-	var rootPath = "../../app/models/room1/";
+	var models1 = ['galleryboxV1.json', 'image1l.json', 'image2.json'];		
+	var rootPath1 = "../../app/models/room1/";
+	
+	var models2 = ['galleryglassV1.json', 'imageboxV1.json'];		
+	var rootPath2 = "../../app/models/room2/";
 	
 	function isString(o) {
 		return typeof o == "string" || (typeof o == "object" && o.constructor === String);
@@ -10,10 +12,16 @@
 	
 	var imageTest = function (url) 
 	{		
-		var http = new XMLHttpRequest();
-		http.open('HEAD', url, false);
-		http.send();
-		return http.status!=404;
+		try {
+			var http = new XMLHttpRequest();
+			http.open('HEAD', url, false);
+			http.send();
+			return http.status!=404;
+		
+		} catch (e) {
+			console.log('Error when checking image: ' + e);
+			return false;
+		}
 	};
 
 	var findFile = function(val, callback) {
@@ -34,16 +42,16 @@
 			}
 		};		
 	};
-		
-	QUnit.start();
 	
-	QUnit.test("Check texture-files on json-models", function(assert) {
-		var done = assert.async();
-		models.forEach(function(m) {
+	
+	var checkTextureFiles = function(names, root, assert, doneCallback) {
+		var cnt = 0;
+		
+		names.forEach(function(m) {
 		
 			console.log('loading ' + m);
 		
-			$.getJSON(rootPath + m, function(json) {
+			$.getJSON(root + m, function(json) {
 			
 				cnt++;	
 				console.log(cnt + ': ' + m + ' loaded.');
@@ -51,20 +59,33 @@
 				assert.ok(json != undefined, m + " was loaded.");	
 				
 				findFile(json.materials, function(file) {
-					var result = imageTest(rootPath + file)					
-					assert.ok(result, rootPath + file + ' --> exists.');
+					var result = imageTest(root + file)					
+					assert.ok(result, root + file + ' --> exists.');
 				});
 											
-				if(cnt == models.length)
+				if(cnt == names.length)
 				{
 					console.log('execute done');
-					done();
+					doneCallback();
 				}
 			})		
 			.fail(function() {
-				assert.ok(false, 'jQuery error');
-				//console.log( "error" );
+				assert.ok(false, 'jQuery error');				
 			});
 			
 		});
+	};
+		
+	QUnit.start();
+	
+	QUnit.test("Check texture-files on json-models for room1", function(assert) {
+		var done = assert.async();
+		checkTextureFiles(models1, rootPath1, assert, function() { done(); });
 	});
+	
+	QUnit.test("Check texture-files on json-models for room2", function(assert) {
+		var done = assert.async();
+		checkTextureFiles(models2, rootPath2, assert, function() { done(); });
+	});
+	
+	
