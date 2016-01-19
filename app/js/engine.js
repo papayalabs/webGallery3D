@@ -231,24 +231,22 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
   
 
     var loadSkyBox = function () {
-        try {
-            var imagePrefix = "images/skybox/purplenebula_";
-            var directions = ["ft", "bk", "up", "dn", "rt", "lf"];
-            var imageSuffix = ".png";
-            var skyGeometry = new THREE.CubeGeometry(5000, 5000, 5000);
+        
+		var imagePrefix = "images/skybox/purplenebula_";
+		var directions = ["ft", "bk", "up", "dn", "rt", "lf"];
+		var imageSuffix = ".png";
+		var skyGeometry = new THREE.CubeGeometry(5000, 5000, 5000);
 
-            var materialArray = [];
-            for (var i = 0; i < 6; i++)
-                materialArray.push(new THREE.MeshBasicMaterial({
-                    map: THREE.ImageUtils.loadTexture(imagePrefix + directions[i] + imageSuffix),
-                    side: THREE.BackSide
-                }));
-            var skyMaterial = new THREE.MeshFaceMaterial(materialArray);
-            skyBox = new THREE.Mesh(skyGeometry, skyMaterial);
+		var materialArray = [];
+		for (var i = 0; i < 6; i++)
+			materialArray.push(new THREE.MeshBasicMaterial({
+				map: THREE.ImageUtils.loadTexture(imagePrefix + directions[i] + imageSuffix),
+				side: THREE.BackSide
+			}));
+		var skyMaterial = new THREE.MeshFaceMaterial(materialArray);
+		skyBox = new THREE.Mesh(skyGeometry, skyMaterial);
 
-            scene.add(skyBox);
-
-        } catch (ex) {}
+		scene.add(skyBox);        
     };
 
     return {

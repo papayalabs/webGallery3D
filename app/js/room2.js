@@ -15,68 +15,63 @@ define(["engine", "three.min"], function (engine) {
 
     var loadHouse = function () {
        
-        try {
+       
+		var addToEngine = function (object) {                
+			engine.setShadowFlags(object, true, true);
+			engine.addObject(object, undefined, true);               
+		};
 
-            var addToEngine = function (object) {                
-                engine.setShadowFlags(object, true, true);
-                engine.addObject(object, undefined, true);               
-            };
-
-            if (house === undefined) {
-                engine.loader.load('models/room2/galleryglassV1.json', function (object) {
-                    house = object;                    
-                    object.rotation.z = 0;
-                    object.rotation.y = 0;
-                    object.position.y = 0;
-                    addToEngine(object);
-                }, undefined, undefined, 'models/room2');
-                return false;
-            }
-            else {
-                addToEngine(house);
-                return true;
-            }
-
-        } catch (ex) { }       
+		if (house === undefined) {
+			engine.loader.load('models/room2/galleryglassV1.json', function (object) {
+				house = object;                    
+				object.rotation.z = 0;
+				object.rotation.y = 0;
+				object.position.y = 0;
+				addToEngine(object);
+			}, undefined, undefined, 'models/room2');
+			return false;
+		}
+		else {
+			addToEngine(house);
+			return true;
+		}
+       
     };
 
 
     var loadimage1 = function () {
+       
+		var addToEngine = function (object) {
+			engine.setShadowFlags(object, true, true);
+			engine.addObject(object,
+				function (scene, camObject, delta) {
 
-        try {
+					if (camObject) {
 
-            var addToEngine = function (object) {
-                engine.setShadowFlags(object, true, true);
-                engine.addObject(object,
-                    function (scene, camObject, delta) {
+						var dist = camObject.position.distanceTo(object.position);
+					
+						// rotate the cube if the camera is far away
+						if (dist > 250) {                                
+							object.rotation.z += deg90 * 0.2 * delta;
+						}
+					}
+					
+				}, true);
+		};
 
-                        if (camObject) {
+		if (image1 === undefined) {
+			engine.loader.load('models/room2/imageboxV1.json', function (object) {
+				image1 = object;
+				object.scale.multiplyScalar(0.7);
+				object.position.set(0, 30, 400);
+				addToEngine(object);
 
-                            var dist = camObject.position.distanceTo(object.position);
-                        
-                            // rotate the cube if the camera is far away
-                            if (dist > 250) {                                
-                                object.rotation.z += deg90 * 0.2 * delta;
-                            }
-                        }
-                        
-                    }, true);
-            };
-
-            if (image1 === undefined) {
-                engine.loader.load('models/room2/imageboxV1.json', function (object) {
-                    image1 = object;
-                    object.scale.multiplyScalar(0.7);
-                    object.position.set(0, 30, 400);
-                    addToEngine(object);
-
-                }, undefined, undefined, 'models/room2');
-                return false;
-            } else {
-                addToEngine(image1);
-                return true;
-            }
-        } catch (ex) { }
+			}, undefined, undefined, 'models/room2');
+			return false;
+		} else {
+			addToEngine(image1);
+			return true;
+		}       
     };
 
    

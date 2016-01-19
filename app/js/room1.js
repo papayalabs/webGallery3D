@@ -14,77 +14,71 @@ define(["engine", "three.min"], function (engine) {
 
 
         loadHouse = function () {
-            try {
+           
+			var addToEngine = function (object) {
+				engine.setShadowFlags(object, true, true);
+				engine.addObject(object, undefined, true);
+			};
 
-                var addToEngine = function (object) {
-                    engine.setShadowFlags(object, true, true);
-                    engine.addObject(object, undefined, true);
-                };
-
-                if (house === undefined) {
-                    engine.loader.load('models/room1/galleryboxV1.json', function (object) {
-                        house = object;
-                        object.rotation.z = 0;
-                        object.rotation.y = 0;
-                        object.position.y = 0;
-                        addToEngine(object);
-                    }, undefined, undefined, 'models/room1');
-                    return false;
-                } else {
-                    addToEngine(house);
-                    return true;
-                }
-
-            } catch (ex) {}
+			if (house === undefined) {
+				engine.loader.load('models/room1/galleryboxV1.json', function (object) {
+					house = object;
+					object.rotation.z = 0;
+					object.rotation.y = 0;
+					object.position.y = 0;
+					addToEngine(object);
+				}, undefined, undefined, 'models/room1');
+				return false;
+			} else {
+				addToEngine(house);
+				return true;
+			}           
         },
 
         loadimage1 = function () {
-            try {
+           
+			var addToEngine = function (object) {
+				engine.setShadowFlags(object, true, true);
+				engine.addObject(object, undefined, true);
+			};
 
-                var addToEngine = function (object) {
-                    engine.setShadowFlags(object, true, true);
-                    engine.addObject(object, undefined, true);
-                };
+			if (image1 === undefined) {
+				engine.loader.load('models/room1/image1l.json', function (object) {
+					image1 = object;
+					object.scale.multiplyScalar(0.04);
+					object.position.set(200, 10, 0);
+					addToEngine(object);
 
-                if (image1 === undefined) {
-                    engine.loader.load('models/room1/image1l.json', function (object) {
-                        image1 = object;
-                        object.scale.multiplyScalar(0.04);
-                        object.position.set(200, 10, 0);
-                        addToEngine(object);
-
-                    }, undefined, undefined, 'models/room1');
-                    return false;
-                } else {
-                    addToEngine(image1);
-                    return true;
-                }
-            } catch (ex) {}
+				}, undefined, undefined, 'models/room1');
+				return false;
+			} else {
+				addToEngine(image1);
+				return true;
+			}
+           
         },
 
 
         loadimage2 = function () {
-            try {
+            
+			var addToEngine = function (object) {
+				engine.setShadowFlags(object, true, true);
+				engine.addObject(object, undefined, true);
+			};
 
-                var addToEngine = function (object) {
-                    engine.setShadowFlags(object, true, true);
-                    engine.addObject(object, undefined, true);
-                };
+			if (image2 === undefined) {
+				engine.loader.load('models/room1/image2.json', function (object) {
+					image2 = object;
+					object.scale.multiplyScalar(0.12);
+					object.position.set(0, 0, -200);
+					addToEngine(object);
 
-                if (image2 === undefined) {
-                    engine.loader.load('models/room1/image2.json', function (object) {
-                        image2 = object;
-                        object.scale.multiplyScalar(0.12);
-                        object.position.set(0, 0, -200);
-                        addToEngine(object);
-
-                    }, undefined, undefined, 'models/room1');
-                    return false;
-                } else {
-                    addToEngine(image2);
-                    return true;
-                }
-            } catch (ex) {}
+				}, undefined, undefined, 'models/room1');
+				return false;
+			} else {
+				addToEngine(image2);
+				return true;
+			}           
         },
 
 
