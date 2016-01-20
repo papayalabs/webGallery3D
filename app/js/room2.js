@@ -109,31 +109,43 @@ define(["engine", "room", "three.min"], function (engine, roomFactory) {
 		};
 
 	
+	// Create a new room-instance
 	var room = roomFactory.createRoom();
 	
 	
-	
+	// Configure the room
 	room.configure({
 	
+		// Define the callback which gets executed before the room is loaded
 		onPreenter : function() {
 			// Set default walking-speed for this room
             engine.configureMovement(700);
 		},
 		
-		
+		// Define the callback which gets executed after the room was loaded
 		onEnter : function() {
-			// Load content and lights:
+			
             loadLight();
+			
+			// Load the contents. The boolean return values are TRUE when the loader was not used.
+			// The loaders are not able to skip already loaded models, so they must not be called twice for the same model.
             var isHouseCached = loadHouse();
             var isImage1Cached = loadimage1();
            
+		   
             if (isHouseCached && isImage1Cached) {
+				// Everything was already loaded, no event will be fired inside the engine, hide the blocker and start right now
                 engine.hideBlockerOverride();
             }
 		},
 		
+		// Set the start-position which is used when no door-number was provided
 		start : new THREE.Vector3(0, 70, 0),
 		
+		// Set the array of doors.
+		// Each door must have a 'entryPosition' which is used on entering the room and
+		// an function 'isLeaving' which is used to check if the room should be left.
+		// The return value must be an boolean.
 		doors : [
 			{
 				entryPosition: new THREE.Vector3(0, 70, -250),
