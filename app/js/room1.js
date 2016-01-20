@@ -1,19 +1,11 @@
-define(["engine", "three.min"], function (engine) {
-
-    // TODO: make a base class for rooms
-
-    var leaveCallback, house, image1, image2,
+define(["engine", "room", "three.min"], function (engine, roomFactory) {
+	
+	
+		var house, image1, image2,
         deg90 = Math.PI / 2,
-
-        door1 = {
-            entryPosition: new THREE.Vector3(90, 70, 250),
-            isLeaving: function (position) {
-                return position.z > 260;
-            }
-        },
-
-
-        loadHouse = function () {
+		
+		
+		loadHouse = function () {
            
 			var addToEngine = function (object) {
 				engine.setShadowFlags(object, true, true);
@@ -80,10 +72,6 @@ define(["engine", "three.min"], function (engine) {
 				return true;
 			}           
         },
-
-
-
-
 
         loadLight = function () {
 
@@ -203,44 +191,19 @@ define(["engine", "three.min"], function (engine) {
 
     };
 
-
-
-    return {
-
-        door: door1,
-
-        setLeaveCallback: function (callback) {
-            leaveCallback = callback;
-        },
-
-        enter: function (door) {
-
-            // Set default walking-speed for this room
+	
+	var room = roomFactory.createRoom();
+	
+	room.configure({
+	
+		onPreenter : function() {
+			// Set default walking-speed for this room
             engine.configureMovement();
-
-            if (door === door1) {
-                engine.setCamera(door1.entryPosition);
-            } else {
-                engine.setCamera(new THREE.Vector3(0, 70, -100));
-            }
-
-            engine.addRenderCallback(function (scene, camObject, delta) {
-                // This callback will be executed every frame. Check the position to see if a new room must be loaded
-
-                if (door1.isLeaving(camObject.position)) {
-
-                    if (leaveCallback !== undefined) {
-
-                        // delete all objects and callbacks in the scene execpt the skybox
-                        engine.removeAddedObjects();
-
-                        // load the new room
-                        leaveCallback(door1);
-                    }
-                }
-            });
-
-            loadLight();
+		},
+		
+		
+		onEnter : function() {
+			loadLight();
             var isHouseCached = loadHouse();
             var isImage1Cached = loadimage1();
             var isImage2Cached = loadimage2();
@@ -248,7 +211,20 @@ define(["engine", "three.min"], function (engine) {
             if (isHouseCached && isImage1Cached && isImage2Cached) {
                 engine.hideBlockerOverride();
             }
-        },
-
-    };
+		},
+		
+		start : new THREE.Vector3(0, 70, -100),
+		
+		doors : [
+			{
+				entryPosition: new THREE.Vector3(90, 70, 250),
+				isLeaving: function (position) {
+					return position.z > 260;
+				}
+			}
+		],
+	});
+	
+	return room;
+	
 });

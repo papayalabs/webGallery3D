@@ -1,19 +1,11 @@
-define(["engine", "three.min"], function (engine) {
+define(["engine", "room", "three.min"], function (engine, roomFactory) {
 
-    var leaveCallback;
-    var house;
-    var image1;
-    var deg90 = Math.PI / 2;
+   
+    var house, image1, 
+		deg90 = Math.PI / 2,
 
 
-    var door1 = {
-        entryPosition: new THREE.Vector3(0, 70, -250),
-        isLeaving: function (position) {
-            return position.z < -340;
-        }
-    };
-
-    var loadHouse = function () {
+		loadHouse = function () {
        
        
 		var addToEngine = function (object) {                
@@ -36,129 +28,101 @@ define(["engine", "three.min"], function (engine) {
 			return true;
 		}
        
-    };
+    },
 
 
-    var loadimage1 = function () {
-       
-		var addToEngine = function (object) {
-			engine.setShadowFlags(object, true, true);
-			engine.addObject(object,
-				function (scene, camObject, delta) {
+		loadimage1 = function () {
+		   
+			var addToEngine = function (object) {
+				engine.setShadowFlags(object, true, true);
+				engine.addObject(object,
+					function (scene, camObject, delta) {
 
-					if (camObject) {
+						if (camObject) {
 
-						var dist = camObject.position.distanceTo(object.position);
-					
-						// rotate the cube if the camera is far away
-						if (dist > 250) {                                
-							object.rotation.z += deg90 * 0.2 * delta;
+							var dist = camObject.position.distanceTo(object.position);
+						
+							// rotate the cube if the camera is far away
+							if (dist > 250) {                                
+								object.rotation.z += deg90 * 0.2 * delta;
+							}
 						}
-					}
-					
-				}, true);
+						
+					}, true);
+			};
+
+			if (image1 === undefined) {
+				engine.loader.load('models/room2/imageboxV1.json', function (object) {
+					image1 = object;
+					object.scale.multiplyScalar(0.7);
+					object.position.set(0, 30, 400);
+					addToEngine(object);
+
+				}, undefined, undefined, 'models/room2');
+				return false;
+			} else {
+				addToEngine(image1);
+				return true;
+			}       
+		},
+
+  
+		loadLight = function () {
+
+			var d = 600,
+			
+				boxTarget = new THREE.Mesh(
+					new THREE.BoxGeometry(0, 0, 0),
+					new THREE.MeshBasicMaterial({
+						color: 0x000000
+					})),
+
+				sphere = new THREE.Mesh(
+				   new THREE.SphereGeometry(30, 32, 16),
+				   new THREE.MeshBasicMaterial({
+					   color: 0xFFFFFF
+				   })),
+				   
+				light = new THREE.DirectionalLight(0xffffff);
+
+			engine.addObject(boxTarget);
+			engine.addObject(sphere);
+			boxTarget.position.set(0,0,100);					
+			light.position.set(0, 420, -250);
+			light.target = boxTarget;
+			light.castShadow = true;
+			light.shadowDarkness = 0.5;
+			//light.shadowCameraVisible = true; // only for debugging       
+			light.shadowCameraNear = 3;
+			light.shadowCameraFar = 2000;     
+			light.shadowMapWidth = 4096;
+			light.shadowMapHeight = 4096;
+			light.shadowCameraLeft = -d;
+			light.shadowCameraRight = d;
+			light.shadowCameraTop = 800;
+			light.shadowCameraBottom = -d;
+
+			engine.addObject(light);
+
+			sphere.position.set(light.position.x, light.position.y, light.position.z);
+			  
 		};
 
-		if (image1 === undefined) {
-			engine.loader.load('models/room2/imageboxV1.json', function (object) {
-				image1 = object;
-				object.scale.multiplyScalar(0.7);
-				object.position.set(0, 30, 400);
-				addToEngine(object);
-
-			}, undefined, undefined, 'models/room2');
-			return false;
-		} else {
-			addToEngine(image1);
-			return true;
-		}       
-    };
-
-   
-
-    var loadLight = function () {
-
-        var boxTarget = new THREE.Mesh(
-                new THREE.BoxGeometry(0, 0, 0),
-                new THREE.MeshBasicMaterial({
-                    color: 0x000000
-                }));
-
-        var sphere = new THREE.Mesh(
-               new THREE.SphereGeometry(30, 32, 16),
-               new THREE.MeshBasicMaterial({
-                   color: 0xFFFFFF
-               }));
-
-        engine.addObject(boxTarget);
-        engine.addObject(sphere);
-
-        boxTarget.position.set(0,0,100);
-
-        var d = 600;
-        var light = new THREE.DirectionalLight(0xffffff);
-        light.position.set(0, 420, -250);
-        light.target = boxTarget;
-        light.castShadow = true;
-        light.shadowDarkness = 0.5;
-        //light.shadowCameraVisible = true; // only for debugging       
-        light.shadowCameraNear = 3;
-        light.shadowCameraFar = 2000;     
-        light.shadowMapWidth = 4096;
-        light.shadowMapHeight = 4096;
-        light.shadowCameraLeft = -d;
-        light.shadowCameraRight = d;
-        light.shadowCameraTop = 800;
-        light.shadowCameraBottom = -d;
-
-        engine.addObject(light);
-
-        sphere.position.set(light.position.x, light.position.y, light.position.z);
-          
-    };
-
-   
-
-    return {
-
-        door: door1,
-
-        setLeaveCallback: function(callback) {
-            leaveCallback = callback;
-        },
-        
-        enter: function (door) {
-
-            // set a higher walking-spped for this room
-            engine.configureMovement(700.0);
-
-            // Set the camera-position
-            if (door === door1) {
-                engine.setCamera(door1.entryPosition);
-            } else {
-                engine.setCamera(new THREE.Vector3(0, 70, 0));
-            }
-
-          
-           
-            engine.addRenderCallback(function (scene, camObject, delta) {
-                // This callback will be executed every frame. Check the position to see if a new room must be loaded
-
-                if (door1.isLeaving(camObject.position)) {
-
-                    if (leaveCallback !== undefined) {
-
-                        // delete all objects and callbacks in the scene execpt the skybox
-                        engine.removeAddedObjects();
-
-                        // load the new room
-                        leaveCallback(door1);
-                    }
-                }
-            });
-
-
-            // Load content and lights:
+	
+	var room = roomFactory.createRoom();
+	
+	
+	
+	room.configure({
+	
+		onPreenter : function() {
+			// Set default walking-speed for this room
+            engine.configureMovement(700);
+		},
+		
+		
+		onEnter : function() {
+			// Load content and lights:
             loadLight();
             var isHouseCached = loadHouse();
             var isImage1Cached = loadimage1();
@@ -166,7 +130,19 @@ define(["engine", "three.min"], function (engine) {
             if (isHouseCached && isImage1Cached) {
                 engine.hideBlockerOverride();
             }
-        },
-
-    };
+		},
+		
+		start : new THREE.Vector3(0, 70, 0),
+		
+		doors : [
+			{
+				entryPosition: new THREE.Vector3(0, 70, -250),
+				isLeaving: function (position) {
+					return position.z < -340;
+				}
+			}
+		],
+	});
+	
+	return room;   
 });
