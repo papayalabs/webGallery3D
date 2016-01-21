@@ -37,14 +37,14 @@ module.exports = function(grunt) {
 	
 	jshint: {
 	  // define the files to lint
-	  files: ['gruntfile.js', 'app/**/*.js', '!app/**/*.min.js'],
+	  files: ['gruntfile.js', 'app/**/*.js', '!app/**/*.min.js', '!app/**/require.js'],
 	  // configure JSHint (documented at http://www.jshint.com/docs/)
 	  options: {
 			// more options here if you want to override JSHint defaults
 			bitwise: true,
 			curly: false,
 			undef: false,
-			unused: false,
+			unused: true,
 		  
 		globals: {
 			

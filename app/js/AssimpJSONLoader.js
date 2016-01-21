@@ -15,13 +15,13 @@ define(["three.min"], function()
 	 * See webgl_loader_assimp2json example.
 	 */
 
-    /**
-    *
-    * Modifications by Holger Pfaff:
-    * - Added opacity of materials
-    *       
-    *
-    */
+	/**
+	*
+	* Modifications by Holger Pfaff:
+	* - Added opacity of materials
+	*       
+	*
+	*/
 
 
 
@@ -95,7 +95,7 @@ define(["three.min"], function()
 		},
 
 		parseMesh : function(json) {
-			var vertex, geometry, i, e, in_data, src;
+			var geometry, i, e, in_data, src;
 
 			var convertTextureCoords = function (in_uv, out_faces, out_vertex_uvs) {
 				var i, e, face, a, b, c;
@@ -129,30 +129,7 @@ define(["three.min"], function()
 				}
 			};
 			
-			var convertColors = function (in_color, out_faces) {
-				var i, e, face, a, b, c;
-
-				function makeColor(start) {
-					var col = new THREE.Color( );
-					col.setRGB( arr[0], arr[1], arr[2] );
-					// TODO: what about alpha?
-					return col;
-				}
-
-				for (i = 0, e = out_faces.length; i < e; ++ i) {
-					face = out_faces[i];
-					a = face.a * 4;
-					b = face.b * 4;
-					c = face.c * 4;
-					face.vertexColors = [
-						makeColor( a ),
-						makeColor( b ),
-						makeColor( c )
-					];
-				}
-			};
-
-
+			
 
 			geometry = new THREE.Geometry();
 
@@ -161,8 +138,7 @@ define(["three.min"], function()
 				geometry.vertices.push( new THREE.Vector3( in_data[ i ++ ], in_data[ i ++ ], in_data[ i ++ ] ) );
 			}
 
-			// read faces
-			var cnt = 0;
+			// read faces			
 			for (in_data = json.faces, i = 0, e = in_data.length; i < e; ++ i) {
 				face = new THREE.Face3();
 				src = in_data[i];
@@ -185,11 +161,7 @@ define(["three.min"], function()
 				convertNormals(json.normals, geometry.faces);
 			}
 
-			// read vertex colors - three.js also attaches them to its faces
-			if (json.colors && json.colors[0]) {				
-				convertColors(json.colors[0], geometry.faces);
-			}
-
+			
 			geometry.computeBoundingSphere();
 
 			// TODO: tangents
@@ -198,9 +170,9 @@ define(["three.min"], function()
 
 		parseMaterial: function (json) {
 
-            // hp :
-		    var opacity = 1;
-		    var mat = null,            
+			// hp :
+			var opacity = 1;
+			var mat = null,            
 			scope = this, i, prop, has_textures = [],
 
 			init_props = {
@@ -291,8 +263,8 @@ define(["three.min"], function()
 					init_props.shininess = prop.value;
 				}				    
 				else if (prop.key === '$mat.opacity') {
-				    // hp : Read the opacity property and save it
-				    opacity = prop.value;
+					// hp : Read the opacity property and save it
+					opacity = prop.value;
 				}
 			}
 
@@ -307,10 +279,10 @@ define(["three.min"], function()
 			
 			mat = new THREE.MeshPhongMaterial(init_props);
 
-		    // hp : Activate transparency for this material if the opacity is smaller than 1
+			// hp : Activate transparency for this material if the opacity is smaller than 1
 			if (opacity < 1 && opacity >= 0) {
-			    mat.transparent = true;
-			    mat.opacity = opacity;
+				mat.transparent = true;
+				mat.opacity = opacity;
 			}
 			return mat;
 		},

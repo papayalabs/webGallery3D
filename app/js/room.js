@@ -66,7 +66,7 @@ define(["engine", "three.min"], function (engine) {
             }
 
 			// Register the engine-callback for checking the doors
-            engine.addRenderCallback(function (scene, camObject, delta) {
+            engine.addRenderCallback(function (scene, camObject) {
                 // This callback will be executed every frame. Check the position to see if a new room must be loaded
 
 				if(doors === undefined) {

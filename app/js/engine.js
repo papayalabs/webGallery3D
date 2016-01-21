@@ -151,7 +151,7 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
 
         if (havePointerLock) {           
             var element = document.body;        
-            var pointerlockchange = function (event) {
+            var pointerlockchange = function () {
 
                 isLocked = document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element;
 
@@ -166,11 +166,11 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
 
             };
 
-            var pointerlockerror = function (event) {
+            var pointerlockerror = function () {
                 blocker.setErrorMessageLocking();
             };
 
-            var enterLock = function (event) {
+            var enterLock = function () {
 
                
                 blocker.hideInstructions();
@@ -180,7 +180,7 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
 
                 if (/Firefox/i.test(navigator.userAgent)) {
                     //console.log('it is firefox');
-                    var fullscreenchange = function (event) {
+                    var fullscreenchange = function () {
 
                         if (document.fullscreenElement === element || document.mozFullscreenElement === element || document.mozFullScreenElement === element) {
 
@@ -213,7 +213,7 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
             document.addEventListener('mozpointerlockerror', pointerlockerror, false);
             document.addEventListener('webkitpointerlockerror', pointerlockerror, false);
             
-            blocker.setStartCallback(function (event) {
+            blocker.setStartCallback(function () {
                 if (isLoadingComplete) {
                     enterLock();
                 }

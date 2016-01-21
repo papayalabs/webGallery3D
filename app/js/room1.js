@@ -2,9 +2,7 @@ define(["engine", "room", "three.min"], function (engine, roomFactory) {
 	
 	
 		var house, image1, image2,
-        deg90 = Math.PI / 2,
-		
-		
+       
 		loadHouse = function () {
            
 			var addToEngine = function (object) {
