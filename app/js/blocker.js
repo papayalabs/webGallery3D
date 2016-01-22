@@ -86,7 +86,7 @@
 
 		// Fade-out the blocker
         hide: function () {                  
-            blocker.stop(true, true).fadeOut();
+            blocker.stop(true, true).fadeOut(800);
         },
       
         hideInstructions: function () {
