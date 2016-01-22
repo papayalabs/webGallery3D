@@ -436,29 +436,31 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
         },
 
         // Removes all objects from the scene exept the skybox.
-        removeAddedObjects: function () {
+        removeAddedObjects: function (doneCallback) {
 
             isLoadingComplete = false;
             blocker.setMessageProgress(0);
             
             stopMovement();
-            blocker.show();
-           
-           
-            collisionObjects.forEach(
-                function (mesh) {
-                    scene.remove(mesh);
-                });
+			
+            blocker.show(function() {
+				collisionObjects.forEach( function (mesh) {
+					scene.remove(mesh);
+				});
 
-            untouchableObjects.forEach(
-                function (mesh) {
-                    scene.remove(mesh);
-                });
+				untouchableObjects.forEach( function (mesh) {
+					scene.remove(mesh);
+				});
 
 
-            untouchableObjects.length = 0;
-            collisionObjects.length = 0;
-            renderCallbacks.length = 0;
+				untouchableObjects.length = 0;
+				collisionObjects.length = 0;
+				renderCallbacks.length = 0;
+				
+				if(doneCallback !== undefined) {
+					doneCallback();
+				}
+			});                                
         },
 
         // Sets the speed of movement and the length of the collision detection

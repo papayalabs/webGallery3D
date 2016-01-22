@@ -76,13 +76,17 @@
             logo.click(callback);
         },
 
-        show: function () {                              
-			blocker.show();
-            instructions.show();
+		// Fade-in in the blocker and fire a callback when done
+        show: function (callback) {                              
+			instructions.show();
+			blocker.stop(true, true).fadeIn(400, callback);            
+			
+			// TODO: Test: Check if the callback gets fired when show is called twice
         },
 
+		// Fade-out the blocker
         hide: function () {                  
-            blocker.hide();
+            blocker.stop(true, true).fadeOut();
         },
       
         hideInstructions: function () {

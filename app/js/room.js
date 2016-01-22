@@ -73,17 +73,20 @@ define(["engine", "three.min"], function (engine) {
 					return;
 				}
 				
-				for(var i=0; i< doors.length; i++) {
+				var i,
+				leave = function() {					
+					// fire the leave-requirest-callback with the index of the door
+					leaveCallback(i);						
+				};
+				
+				for(i=0; i< doors.length; i++) {
 					if (doors[i].isLeaving !== undefined && doors[i].isLeaving(camObject.position)) {
 
 						if (leaveCallback !== undefined) {
 
 							// delete all objects and callbacks in the scene execpt the skybox
-							engine.removeAddedObjects();
-
-							// fire the leave-requirest-callback with the index of the door
-							leaveCallback(i);
-							
+							engine.removeAddedObjects(leave);
+														
 							break;
 						}
 					}

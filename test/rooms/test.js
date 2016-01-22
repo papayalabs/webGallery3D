@@ -29,12 +29,20 @@ define = function(dependencies, callback)
 			},
 
 			// Removes all objects from the scene exept the skybox.
-			removeAddedObjects: function () {							
+			removeAddedObjects: function (doneCallback) {							
 				renderCallbacks.length = 0;
 				console.log("mockup-engine: all render-callbacks deleted");
+				
+				if(doneCallback !== undefined) {
+					doneCallback();
+				};
 			},
 
-			
+			forceFrame: function(pos) {
+				renderCallbacks.forEach(function (c) {
+					c(undefined, { position: pos }, 0);
+				}); 
+			},
 		};
 	
 	// execute the callback from the require-'define'-function
@@ -58,7 +66,7 @@ define = function(dependencies, callback)
 	
 	
 	
-	QUnit.test("Create an empty room", function(assert) {
+	QUnit.test("Create a room and check settings", function(assert) {
 		
 		var enterCnt = 0, preenterCnt = 0;		
 		var room = roomFactory.createRoom();
@@ -115,6 +123,78 @@ define = function(dependencies, callback)
 		assert.strictEqual(camera.x, 90, "The X-Position of the camerta was set correct");
 		assert.strictEqual(camera.y, 70, "The Y-Position of the camerta was set correct");
 		assert.strictEqual(camera.z, 250, "The Z-Position of the camerta was set correct");
+	});
+	
+	
+	
+	
+	QUnit.test("Create a room and check the leaving-callback", function(assert) {
+		
+		var done = assert.async();
+		var enterCnt = 0, preenterCnt = 0, expectedDoorNumber = -1;
+		var room = roomFactory.createRoom();
+		
+		room.configure({
+			// Define the callback which gets executed before the room is loaded
+			onPreenter : function() {
+				preenterCnt++;
+				console.log("room: 'onPreenter' was called");
+			},
+			
+			// Define the callback which gets executed after the room was loaded
+			onEnter : function() {
+				enterCnt++;
+				console.log("room: 'onEnter' was called");
+			},
+			
+			leaving : function(door){
+				console.log("Leaving through door number " + door);
+				assert.strictEqual(door, expectedDoorNumber, "The door was left through the right door");
+				done();
+			},
+			
+			// Set the start-position which is used when no door-number was provided
+			start : new THREE.Vector3(0, 70, -100),
+			
+			// Set the array of doors.
+			// Each door must have a 'entryPosition' which is used on entering the room and
+			// an function 'isLeaving' which is used to check if the room should be left.
+			// The return value must be an boolean.
+			doors : [
+				{
+					entryPosition: new THREE.Vector3(90, 70, 250),
+					isLeaving: function (position) {
+						return position.x === 91;
+					}
+				},
+				{
+					entryPosition: new THREE.Vector3(100, 70, 250),
+					isLeaving: function (position) {
+						return position.x === 101;
+					}
+				},
+				{
+					entryPosition: new THREE.Vector3(120, 70, 250),
+					isLeaving: function (position) {
+						return position.x == 121;
+					}
+				}
+			],
+		});
+		
+		// Delete all stored render callbacks
+		renderCallbacks.length = 0;
+		
+		camera = new THREE.Vector3(-1, -1, -1);			
+		room.enter(0);
+		assert.strictEqual(camera.x, 90, "The X-Position of the camerta was set correct");
+		assert.strictEqual(camera.y, 70, "The Y-Position of the camerta was set correct");
+		assert.strictEqual(camera.z, 250, "The Z-Position of the camerta was set correct");
+		
+		expectedDoorNumber = 1;
+		engineMockup.forceFrame(new THREE.Vector3(101, 70, 250));
+		
+		
 	});
 	
 };
