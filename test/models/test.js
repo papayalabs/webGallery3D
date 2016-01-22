@@ -9,6 +9,10 @@
 			files : ['galleryglassV1.json', 'imageboxV1.json'],		
 			path : "../../app/models/room2/"
 		},
+		{
+			files : ['galleryhighV1.json'],		
+			path : "../../app/models/room3/"
+		},
 	],
 
 	

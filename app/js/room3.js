@@ -2,8 +2,7 @@
 
 
     var house, 
-		deg90 = Math.PI / 2,
-
+		
 
 		loadHouse = function () {
 
