@@ -1,19 +1,13 @@
-﻿define([], function () {
+﻿define(['jquery-2.2.0.min'], function () {
 
-    var messageSpan = document.getElementById('messageSpan');
-    var blocker = document.getElementById('blocker');
-    var logo = document.getElementById('logo');
-    var instructions = document.getElementById('instructions');
-    var instructionSpan = document.getElementById('instructionSpan');
+    var messageSpan = $('#messageSpan');
+    var blocker = $('#blocker');
+    var logo = $('#logo');
+    var instructions = $('#instructions');
+    var instructionSpan = $('#instructionSpan');
 
     var culture = 'de';
-
-    var setMessage = function (msg) {
-        messageSpan.innerHTML = msg;
-    };
-
-    
-
+  
     var messages = {
 
 
@@ -48,8 +42,6 @@
             'en': 'An error occured during the mouse-locking.'
         },
 
-
-
     };
 
 
@@ -57,51 +49,44 @@
     return {
 
         setMessageInit: function () {
-            setMessage(messages.init[culture]);
-            instructionSpan.innerHTML = messages.instructions[culture];
+            messageSpan.text(messages.init[culture]);
+            instructionSpan.html(messages.instructions[culture]);
         },
 
         setMessageProgress : function(percent) {
-            setMessage(percent + messages.download[culture]);
+            messageSpan.text(percent + messages.download[culture]);
         },
 
         setMessageReady : function() {
-            setMessage(messages.ready[culture]);
+            messageSpan.text(messages.ready[culture]);
         },
 
         setErrorMessageNoAPI: function () {
-            instructions.style.display = '';
-            instructions.innerHTML = messages.errorNoLockAPI[culture];           
+            instructions.show();
+            instructions.html(messages.errorNoLockAPI[culture]);           
         },
 
         setErrorMessageLocking: function () {
-            instructions.style.display = '';
-            instructions.innerHTML = messages.errorOnLocking[culture];
+            instructions.show();
+            instructions.html(messages.errorOnLocking[culture]);
         },
 
 
         setStartCallback: function(callback){
-            logo.addEventListener('click', callback, false);
+            logo.click(callback);
         },
 
-        show: function () {                  
-            blocker.style.display = '-webkit-box';
-            blocker.style.display = '-moz-box';
-            blocker.style.display = 'box';
-
-            instructions.style.display = '';
+        show: function () {                              
+			blocker.show();
+            instructions.show();
         },
-
 
         hide: function () {                  
-            blocker.style.display = 'none';
+            blocker.hide();
         },
-
-
-       
-
+      
         hideInstructions: function () {
-            instructions.style.display = 'none';
+            instructions.hide();
         },
 
     };
