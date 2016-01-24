@@ -14,7 +14,7 @@ define(["engine", "room", "three.min"], function (engine, roomFactory) {
 		};
 
 		if (house === undefined) {
-			engine.loader.load('models/room2/galleryglassV1.json', function (object) {
+			engine.loader.load('models/room2/room2.json', function (object) {
 				house = object;                    
 				object.rotation.z = 0;
 				object.rotation.y = 0;
@@ -52,7 +52,7 @@ define(["engine", "room", "three.min"], function (engine, roomFactory) {
 			};
 
 			if (image1 === undefined) {
-				engine.loader.load('models/room2/imageboxV1.json', function (object) {
+				engine.loader.load('models/room2/room2box.json', function (object) {
 					image1 = object;
 					object.scale.multiplyScalar(0.7);
 					object.position.set(0, 30, 400);

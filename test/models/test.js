@@ -2,11 +2,11 @@
 
 	var models = [
 		{
-			files : ['galleryboxV1.json', 'image1l.json', 'image2.json'],		
+			files : ['room1.json', 'room1img1.json', 'room1img2.json'],		
 			path : "../../app/models/room1/"
 		},
 		{
-			files : ['galleryglassV1.json', 'imageboxV1.json'],		
+			files : ['room2.json', 'room2box.json'],		
 			path : "../../app/models/room2/"
 		},
 		{

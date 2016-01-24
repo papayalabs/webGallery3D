@@ -1,0 +1,1 @@
+for /r %%v in (..\exported\*.3ds) do assimp2json "%%v" "..\exported\%%~nv.json"
