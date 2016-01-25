@@ -1,13 +1,13 @@
 define(["engine", "room", "three.min"], function (engine, roomFactory) {
 
    
-    var house, image1, 
+	var house, image1, 
 		deg90 = Math.PI / 2,
 
 
 		loadHouse = function () {
-       
-       
+	   
+	   
 		var addToEngine = function (object) {                
 			engine.setShadowFlags(object, true, true);
 			engine.addObject(object, undefined, true);               
@@ -27,8 +27,8 @@ define(["engine", "room", "three.min"], function (engine, roomFactory) {
 			addToEngine(house);
 			return true;
 		}
-       
-    },
+	   
+	},
 
 
 		loadimage1 = function () {
@@ -119,24 +119,24 @@ define(["engine", "room", "three.min"], function (engine, roomFactory) {
 		// Define the callback which gets executed before the room is loaded
 		onPreenter : function() {
 			// Set default walking-speed for this room
-            engine.configureMovement(700);
+			engine.configureMovement(700);
 		},
 		
 		// Define the callback which gets executed after the room was loaded
 		onEnter : function() {
 			
-            loadLight();
+			loadLight();
 			
 			// Load the contents. The boolean return values are TRUE when the loader was not used.
 			// The loaders are not able to skip already loaded models, so they must not be called twice for the same model.
-            var isHouseCached = loadHouse();
-            var isImage1Cached = loadimage1();
-           
+			var isHouseCached = loadHouse();
+			var isImage1Cached = loadimage1();
 		   
-            if (isHouseCached && isImage1Cached) {
+		   
+			if (isHouseCached && isImage1Cached) {
 				// Everything was already loaded, no event will be fired inside the engine, hide the blocker and start right now
-                engine.hideBlockerOverride();
-            }
+				engine.hideBlockerOverride();
+			}
 		},
 		
 		// Set the start-position which is used when no door-number was provided

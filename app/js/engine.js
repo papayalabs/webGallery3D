@@ -405,12 +405,18 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
         setCamera: function (pos) {
 
             stopMovement();
-
-            var camObject = controls.getObject();
-            camObject.position.x = pos.x;
-            camObject.position.y = pos.y;
-            camObject.position.z = pos.z;
-
+			var camObject = controls.getObject();
+			
+			if(pos instanceof THREE.Vector3) {					
+				
+				camObject.position.x = pos.x;
+				camObject.position.y = pos.y;
+				camObject.position.z = pos.z;
+			} else {
+				camObject.position.x = 0;
+				camObject.position.y = 0;
+				camObject.position.z = 0;
+			}
         },
 
         // Add a new object into the scene and to the collision detection

@@ -34,7 +34,7 @@ define(["engine", "three.min"], function (engine) {
 			}
 			
 			// 'config.start' contains a THREE-Vector-instance with the start position which is used when no door-number was given
-			if(config.start !== undefined) {
+			if(config.start instanceof THREE.Vector3) {
 				startPosition = config.start;
 			}
 			
@@ -47,8 +47,8 @@ define(["engine", "three.min"], function (engine) {
 		// Method 'setLeaveCallback': set the callback which gets executed when a room is left.
 		// The first parameter on the callback is the number of the door through which the room was left.
 		this.setLeaveCallback = function (callback) {
-            leaveCallback = callback;
-        };
+			leaveCallback = callback;
+		};
 		
 		// Method 'enter': loads the room with the given number
 		this.enter = function (doorindex) {
@@ -59,15 +59,15 @@ define(["engine", "three.min"], function (engine) {
 			}
 			
 			// Set the camera to the right position, depending on the door-number
-            if (doorindex !== undefined && doors.length > doorindex) {
-                engine.setCamera(doors[doorindex].entryPosition);
-            } else {
-                engine.setCamera(startPosition);
-            }
+			if (doorindex !== undefined && doors.length > doorindex) {
+				engine.setCamera(doors[doorindex].entryPosition || startPosition);
+			} else {
+				engine.setCamera(startPosition);
+			}
 
 			// Register the engine-callback for checking the doors
-            engine.addRenderCallback(function (scene, camObject) {
-                // This callback will be executed every frame. Check the position to see if a new room must be loaded
+			engine.addRenderCallback(function (scene, camObject) {
+				// This callback will be executed every frame. Check the position to see if a new room must be loaded
 
 				if(doors === undefined) {
 					return;
@@ -91,7 +91,7 @@ define(["engine", "three.min"], function (engine) {
 						}
 					}
 				}							
-            });
+			});
 			
 			// Execute the preenter-callback.
 			// Content and more engine-callbacks will be added here.
