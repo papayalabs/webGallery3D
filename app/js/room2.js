@@ -5,30 +5,28 @@ define(["engine", "room", "three.min"], function (engine, roomFactory) {
 		deg90 = Math.PI / 2,
 
 
-		loadHouse = function () {
-	   
-	   
-		var addToEngine = function (object) {                
-			engine.setShadowFlags(object, true, true);
-			engine.addObject(object, undefined, true);               
-		};
+		loadHouse = function () {	   	  
+			var addToEngine = function (object) {                
+				engine.setShadowFlags(object, true, true);
+				engine.addObject(object, undefined, true);               
+			};
 
-		if (house === undefined) {
-			engine.loader.load('models/room2/room2.json', function (object) {
-				house = object;                    
-				object.rotation.z = 0;
-				object.rotation.y = 0;
-				object.position.y = 0;
-				addToEngine(object);
-			}, undefined, undefined, 'models/room2');
-			return false;
-		}
-		else {
-			addToEngine(house);
-			return true;
-		}
-	   
-	},
+			if (house === undefined) {
+				engine.loader.load('models/room2/room2.json', function (object) {
+					house = object;                    
+					object.rotation.z = 0;
+					object.rotation.y = 0;
+					object.position.y = 0;
+					addToEngine(object);
+				}, undefined, undefined, 'models/room2');
+				return false;
+			}
+			else {
+				addToEngine(house);
+				return true;
+			}
+		   
+		},
 
 
 		loadimage1 = function () {
@@ -110,11 +108,7 @@ define(["engine", "room", "three.min"], function (engine, roomFactory) {
 
 	
 	// Create a new room-instance
-	var room = roomFactory.createRoom();
-	
-	
-	// Configure the room
-	room.configure({
+	return roomFactory.createRoom({
 	
 		// Define the callback which gets executed before the room is loaded
 		onPreenter : function() {
@@ -156,5 +150,6 @@ define(["engine", "room", "three.min"], function (engine, roomFactory) {
 		],
 	});
 	
-	return room;   
+	
+	
 });

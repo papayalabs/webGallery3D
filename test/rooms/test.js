@@ -68,22 +68,21 @@ define = function(dependencies, callback)
 	QUnit.test("Create two rooms", function(assert) {
 						
 		cameraPositions.length = 0;
-		var r1 = roomFactory.createRoom();
-		var r2 = roomFactory.createRoom();
-	
-		r1.configure({
+		
+		var r1 = roomFactory.createRoom({
 			
 			// Set the start-position which is used when no door-number was provided
 			start : new THREE.Vector3(1, 2, 3),		
 		});
 		
-		
-		r2.configure({
+		var r2 = roomFactory.createRoom({
 			
 			// Set the start-position which is used when no door-number was provided
 			start : new THREE.Vector3(4, 5, 6),
 						
 		});
+	
+		
 		
 		r1.enter();
 		r2.enter();
@@ -103,9 +102,8 @@ define = function(dependencies, callback)
 	QUnit.test("Create a room and check settings", function(assert) {
 		
 		var enterCnt = 0, preenterCnt = 0;		
-		var room = roomFactory.createRoom();
 		
-		room.configure({
+		var room = roomFactory.createRoom({
 			// Define the callback which gets executed before the room is loaded
 			onPreenter : function() {
 				preenterCnt++;
@@ -135,6 +133,8 @@ define = function(dependencies, callback)
 			],
 		});
 		
+		
+		
 		// Delete all stored render callbacks
 		renderCallbacks.length = 0;
 		
@@ -162,9 +162,7 @@ define = function(dependencies, callback)
 	
 	QUnit.test("Create a room with invalid door", function(assert) {
 				
-		var room = roomFactory.createRoom();
-		
-		room.configure({
+		var room = roomFactory.createRoom({
 			
 			// Set the start-position which is used when no door-number was provided
 			start : new THREE.Vector3(0, 70, -100),
@@ -206,9 +204,7 @@ define = function(dependencies, callback)
 	
 	QUnit.test("Create a room with invalid start-position", function(assert) {
 				
-		var room = roomFactory.createRoom();
-		
-		room.configure({
+		var room = roomFactory.createRoom({
 			
 			// Set the start-position which is used when no door-number was provided
 			start : {
@@ -250,9 +246,7 @@ define = function(dependencies, callback)
 		
 		var done = assert.async();
 		var enterCnt = 0, preenterCnt = 0, expectedDoorNumber = -1;
-		var room = roomFactory.createRoom();
-		
-		room.configure({
+		var room = roomFactory.createRoom({
 			// Define the callback which gets executed before the room is loaded
 			onPreenter : function() {
 				preenterCnt++;
@@ -299,6 +293,7 @@ define = function(dependencies, callback)
 				}
 			],
 		});
+		
 		
 		// Delete all stored render callbacks
 		renderCallbacks.length = 0;

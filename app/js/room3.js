@@ -75,11 +75,7 @@
 
 
 	// Create a new room-instance
-	var room = roomFactory.createRoom();
-
-
-	// Configure the room
-	room.configure({
+	return roomFactory.createRoom({
 
 		// Define the callback which gets executed before the room is loaded
 		onPreenter: function () {
@@ -125,6 +121,4 @@
 			}
 		],
 	});
-
-	return room;
 });

@@ -1,7 +1,7 @@
 define(["engine", "three.min"], function (engine) {
 
 	// Constructor-function which creates a room-instance
-	var Room = function() {
+	var Room = function(configuration) {
 	
 		var doors = [], 
 			leaveCallback,
@@ -11,7 +11,7 @@ define(["engine", "three.min"], function (engine) {
 		var startPosition = new THREE.Vector3(0, 0, 0);
 	
 		// Method 'configure': configures the new instance by a given configuration-object
-		this.configure = function(config) {
+		(function(config) {
 			if(config === undefined) {
 				return; 
 			}
@@ -42,7 +42,7 @@ define(["engine", "three.min"], function (engine) {
 			if(config.doors !== undefined) {
 				doors = config.doors;
 			}
-		};
+		})(configuration);
 		
 		// Method 'setLeaveCallback': set the callback which gets executed when a room is left.
 		// The first parameter on the callback is the number of the door through which the room was left.
@@ -104,8 +104,8 @@ define(["engine", "three.min"], function (engine) {
 	return {
 	
 		// Return a singleton factory-method to create new instances
-		createRoom : function() {
-			return new Room();
+		createRoom : function(configuration) {
+			return new Room(configuration);
 		},
 	};
 
