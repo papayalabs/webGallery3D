@@ -4,8 +4,8 @@ define(["engine", "three.min"], function (engine) {
 	var Room = function(configuration) {
 	
 		var doors = [], 
-			leaveCallback,
-			preEnterCallback,
+			leaveCallback,			
+			speed,
 			enterCallback;
 		
 		var startPosition = new THREE.Vector3(0, 0, 0);
@@ -15,12 +15,7 @@ define(["engine", "three.min"], function (engine) {
 			if(config === undefined) {
 				return; 
 			}
-			
-			// The 'config.onPreenter'-callback gets executed before a new room is entered
-			if(typeof config.onPreenter === "function") {
-				preEnterCallback = config.onPreenter; 
-			}
-			
+								
 			// The 'config.onEnter'-callback gets executed after a new room was entered.
 			// Load the room-content in this callback
 			if(typeof config.onEnter === "function") {
@@ -38,10 +33,13 @@ define(["engine", "three.min"], function (engine) {
 				startPosition = config.start;
 			}
 			
+			speed = config.speed;
+			
 			// sets the array of door objects.
 			if(config.doors !== undefined) {
 				doors = config.doors;
 			}
+			
 		})(configuration);
 		
 		// Method 'setLeaveCallback': set the callback which gets executed when a room is left.
@@ -53,10 +51,7 @@ define(["engine", "three.min"], function (engine) {
 		// Method 'enter': loads the room with the given number
 		this.enter = function (doorindex) {
 
-			// Execute the preenter-callback
-			if (preEnterCallback !== undefined) {
-				preEnterCallback();
-			}
+			
 			
 			// Set the camera to the right position, depending on the door-number
 			if (doorindex !== undefined && doors.length > doorindex) {
@@ -65,6 +60,9 @@ define(["engine", "three.min"], function (engine) {
 				engine.setCamera(startPosition);
 			}
 
+			// Set walking-speed for this room
+			engine.configureMovement(speed);
+			
 			// Register the engine-callback for checking the doors
 			engine.addRenderCallback(function (scene, camObject) {
 				// This callback will be executed every frame. Check the position to see if a new room must be loaded
@@ -96,7 +94,12 @@ define(["engine", "three.min"], function (engine) {
 			// Execute the preenter-callback.
 			// Content and more engine-callbacks will be added here.
 			if (enterCallback !== undefined) {
-				enterCallback();
+				if(enterCallback()) {
+				
+					// Everything was already loaded, no event will be fired inside the engine, hide the blocker and start right now
+					engine.hideBlockerOverride();
+				}
+				
 			}
 		};
 	};

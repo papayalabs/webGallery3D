@@ -472,7 +472,7 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
         // Sets the speed of movement and the length of the collision detection
         configureMovement: function (speedInc) {
 
-            if (speedInc) {
+            if (typeof speedInc === 'number') {
                 speed = speedInc;
             } else {
                 speed = 400.0;

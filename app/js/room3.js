@@ -77,12 +77,7 @@
 	// Create a new room-instance
 	return roomFactory.createRoom({
 
-		// Define the callback which gets executed before the room is loaded
-		onPreenter: function () {
-			// Set default walking-speed for this room
-			engine.configureMovement(700);
-		},
-
+		
 		// Define the callback which gets executed after the room was loaded
 		onEnter: function () {
 
@@ -93,10 +88,8 @@
 			var isHouseCached = loadHouse();
 		   
 
-			if (isHouseCached) {
-				// Everything was already loaded, no event will be fired inside the engine, hide the blocker and start right now
-				engine.hideBlockerOverride();
-			}
+			return isHouseCached;
+				
 		},
 
 		// Set the start-position which is used when no door-number was provided

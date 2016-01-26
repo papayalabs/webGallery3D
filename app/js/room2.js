@@ -110,11 +110,7 @@ define(["engine", "room", "three.min"], function (engine, roomFactory) {
 	// Create a new room-instance
 	return roomFactory.createRoom({
 	
-		// Define the callback which gets executed before the room is loaded
-		onPreenter : function() {
-			// Set default walking-speed for this room
-			engine.configureMovement(700);
-		},
+		speed : 700,
 		
 		// Define the callback which gets executed after the room was loaded
 		onEnter : function() {
@@ -125,12 +121,8 @@ define(["engine", "room", "three.min"], function (engine, roomFactory) {
 			// The loaders are not able to skip already loaded models, so they must not be called twice for the same model.
 			var isHouseCached = loadHouse();
 			var isImage1Cached = loadimage1();
-		   
-		   
-			if (isHouseCached && isImage1Cached) {
-				// Everything was already loaded, no event will be fired inside the engine, hide the blocker and start right now
-				engine.hideBlockerOverride();
-			}
+		   		   
+			return isHouseCached && isImage1Cached;			
 		},
 		
 		// Set the start-position which is used when no door-number was provided

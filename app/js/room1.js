@@ -192,11 +192,6 @@ define(["engine", "room", "three.min"], function (engine, roomFactory) {
 	// Create a new room-instance
 	return roomFactory.createRoom({
 	
-		// Define the callback which gets executed before the room is loaded
-		onPreenter : function() {
-			// Set default walking-speed for this room
-			engine.configureMovement();
-		},
 		
 		// Define the callback which gets executed after the room was loaded
 		onEnter : function() {
@@ -208,11 +203,7 @@ define(["engine", "room", "three.min"], function (engine, roomFactory) {
 			var isImage1Cached = loadimage1();
 			var isImage2Cached = loadimage2();
 
-			if (isHouseCached && isImage1Cached && isImage2Cached) {
-			
-				// Everything was already loaded, no event will be fired inside the engine, hide the blocker and start right now
-				engine.hideBlockerOverride();
-			}
+			return isHouseCached && isImage1Cached && isImage2Cached;									
 		},
 		
 		// Set the start-position which is used when no door-number was provided

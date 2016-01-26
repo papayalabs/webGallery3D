@@ -7,9 +7,16 @@ define = function(dependencies, callback)
 	console.log(dependencies);
 
 	
-	var cameraPositions = [];
-	
-	var renderCallbacks = [],      
+	var cameraPositions = [],
+		renderCallbacks = [],      
+		speedValues = [],
+		
+		
+		initTest = function(){
+			renderCallbacks.length = 0;
+			speedValues.length = 0;
+			cameraPositions.length = 0;
+		},
 				
 		// Create the mockup which simulates the engine
 		engineMockup = {
@@ -43,6 +50,11 @@ define = function(dependencies, callback)
 					c(undefined, { position: pos }, 0);
 				}); 
 			},
+			
+			configureMovement: function (speedInc) {
+				console.log("mockup-engine: speed was set to " + speedInc);
+				speedValues.push(speedInc);
+			},
 		};
 	
 	// execute the callback from the require-'define'-function
@@ -52,7 +64,8 @@ define = function(dependencies, callback)
 
 	QUnit.test("Create an empty room", function(assert) {
 				
-		cameraPositions.length = 0;				
+		initTest();
+		
 		var emptyRoom = roomFactory.createRoom();
 		
 		assert.ok(emptyRoom.enter !== undefined, "An empty room was created");
@@ -67,12 +80,13 @@ define = function(dependencies, callback)
 	
 	QUnit.test("Create two rooms", function(assert) {
 						
-		cameraPositions.length = 0;
+		initTest();
 		
 		var r1 = roomFactory.createRoom({
 			
 			// Set the start-position which is used when no door-number was provided
 			start : new THREE.Vector3(1, 2, 3),		
+			speed : 501,
 		});
 		
 		var r2 = roomFactory.createRoom({
@@ -86,6 +100,10 @@ define = function(dependencies, callback)
 		
 		r1.enter();
 		r2.enter();
+		
+		assert.strictEqual(speedValues.length, 2, "The speed was set twice");		
+		assert.strictEqual(speedValues[0], 501, "The speed was set correct");
+		assert.strictEqual(speedValues[1], undefined, "The speed was set correct");		
 		
 		
 		assert.strictEqual(cameraPositions[0].x, 1, "The X-Position of the camerta was set correct");
@@ -101,20 +119,18 @@ define = function(dependencies, callback)
 	
 	QUnit.test("Create a room and check settings", function(assert) {
 		
-		var enterCnt = 0, preenterCnt = 0;		
+		initTest();
+		var enterCnt = 0;		
 		
 		var room = roomFactory.createRoom({
-			// Define the callback which gets executed before the room is loaded
-			onPreenter : function() {
-				preenterCnt++;
-				console.log("room: 'onPreenter' was called");
-			},
 			
 			// Define the callback which gets executed after the room was loaded
 			onEnter : function() {
 				enterCnt++;
 				console.log("room: 'onEnter' was called");
 			},
+			
+			speed : 1234,
 			
 			// Set the start-position which is used when no door-number was provided
 			start : new THREE.Vector3(0, 70, -100),
@@ -133,34 +149,33 @@ define = function(dependencies, callback)
 			],
 		});
 		
-		
-		
-		// Delete all stored render callbacks
-		renderCallbacks.length = 0;
-		
-		cameraPositions.length = 0;		
+				
 				
 		console.log("Enter without door");
 		room.enter();
 		console.log("Enter on door 0");
 		room.enter(0);
 		
-		assert.strictEqual(cameraPositions.length, 2, "The camera-position was set two times");
+		assert.strictEqual(speedValues.length, 2, "The speed was set twice");		
+		assert.strictEqual(speedValues[0], 1234, "The speed was set correct");
+		assert.strictEqual(speedValues[1], 1234, "The speed was set correct");		
 		
+		assert.strictEqual(cameraPositions.length, 2, "The camera-position was set two times");		
 		assert.strictEqual(cameraPositions[0].x, 0, "The X-Position of the camerta was set correct");
 		assert.strictEqual(cameraPositions[0].y, 70, "The Y-Position of the camerta was set correct");
-		assert.strictEqual(cameraPositions[0].z, -100, "The Z-Position of the camerta was set correct");
-					
+		assert.strictEqual(cameraPositions[0].z, -100, "The Z-Position of the camerta was set correct");					
 		assert.strictEqual(renderCallbacks.length, 2, "Two render-callbacks were added.");
-		assert.strictEqual(enterCnt, 2, "The enter-event was fired twice");
-		assert.strictEqual(preenterCnt, 2, "The pre-enter-event was fired twice");
-		
+		assert.strictEqual(enterCnt, 2, "The enter-event was fired twice");				
 		assert.strictEqual(cameraPositions[1].x, 90, "The X-Position of the camerta was set correct");
 		assert.strictEqual(cameraPositions[1].y, 70, "The Y-Position of the camerta was set correct");
 		assert.strictEqual(cameraPositions[1].z, 250, "The Z-Position of the camerta was set correct");
 	});
 	
+	
+	
 	QUnit.test("Create a room with invalid door", function(assert) {
+				
+		initTest();
 				
 		var room = roomFactory.createRoom({
 			
@@ -177,10 +192,7 @@ define = function(dependencies, callback)
 				}
 			],
 		});
-		
-		
-		cameraPositions.length = 0;
-		
+						
 		console.log("Enter without door");
 		room.enter();
 		console.log("Enter on door 0, which has no properties");
@@ -204,6 +216,10 @@ define = function(dependencies, callback)
 	
 	QUnit.test("Create a room with invalid start-position", function(assert) {
 				
+				
+		initTest();
+		
+		
 		var room = roomFactory.createRoom({
 			
 			// Set the start-position which is used when no door-number was provided
@@ -226,8 +242,6 @@ define = function(dependencies, callback)
 		});
 		
 		
-		cameraPositions.length = 0;
-		
 		console.log("Enter without door");
 		room.enter();
 		assert.strictEqual(cameraPositions.length, 1, "The camera-position was set once");
@@ -244,14 +258,11 @@ define = function(dependencies, callback)
 	
 	QUnit.test("Create a room and check the leaving-callback", function(assert) {
 		
+		initTest();
+		
 		var done = assert.async();
-		var enterCnt = 0, preenterCnt = 0, expectedDoorNumber = -1;
+		var enterCnt = 0, expectedDoorNumber = -1;
 		var room = roomFactory.createRoom({
-			// Define the callback which gets executed before the room is loaded
-			onPreenter : function() {
-				preenterCnt++;
-				console.log("room: 'onPreenter' was called");
-			},
 			
 			// Define the callback which gets executed after the room was loaded
 			onEnter : function() {
@@ -295,10 +306,7 @@ define = function(dependencies, callback)
 		});
 		
 		
-		// Delete all stored render callbacks
-		renderCallbacks.length = 0;
 		
-		cameraPositions.length = 0;
 		room.enter(0);
 		assert.strictEqual(cameraPositions.length, 1, "The camera-position was set once");
 		assert.strictEqual(cameraPositions[0].x, 90, "The X-Position of the camerta was set correct");
