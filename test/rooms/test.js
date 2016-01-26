@@ -6,8 +6,8 @@ define = function(dependencies, callback)
 
 	console.log(dependencies);
 
-	var camera = new THREE.Vector3(-1, -1, -1);
 	
+	var cameraPositions = [];
 	
 	var renderCallbacks = [],      
 				
@@ -17,7 +17,7 @@ define = function(dependencies, callback)
 			// Sets the camera to a new position
 			setCamera: function (pos) {	
 				console.log("mockup-engine: Setting camera to " + pos.x + ", "+ pos.y + ", "+ pos.z  );
-				camera = pos;
+				cameraPositions.push(pos);				
 			},
 	
 			// Add a callback which gets executed every frame
@@ -51,17 +51,51 @@ define = function(dependencies, callback)
 	QUnit.start();
 
 	QUnit.test("Create an empty room", function(assert) {
-						
+				
+		cameraPositions.length = 0;				
 		var emptyRoom = roomFactory.createRoom();
 		
 		assert.ok(emptyRoom.enter !== undefined, "An empty room was created");
-		
-		camera = new THREE.Vector3(-1, -1, -1);
+				
 		emptyRoom.enter();
-		assert.strictEqual(camera.x, 0, "The X-Position of the camerta was set correct");
-		assert.strictEqual(camera.y, 0, "The Y-Position of the camerta was set correct");
-		assert.strictEqual(camera.z, 0, "The Z-Position of the camerta was set correct");
+		assert.strictEqual(cameraPositions[0].x, 0, "The X-Position of the camerta was set correct");
+		assert.strictEqual(cameraPositions[0].y, 0, "The Y-Position of the camerta was set correct");
+		assert.strictEqual(cameraPositions[0].z, 0, "The Z-Position of the camerta was set correct");
 		
+	});
+	
+	
+	QUnit.test("Create two rooms", function(assert) {
+						
+		cameraPositions.length = 0;
+		var r1 = roomFactory.createRoom();
+		var r2 = roomFactory.createRoom();
+	
+		r1.configure({
+			
+			// Set the start-position which is used when no door-number was provided
+			start : new THREE.Vector3(1, 2, 3),		
+		});
+		
+		
+		r2.configure({
+			
+			// Set the start-position which is used when no door-number was provided
+			start : new THREE.Vector3(4, 5, 6),
+						
+		});
+		
+		r1.enter();
+		r2.enter();
+		
+		
+		assert.strictEqual(cameraPositions[0].x, 1, "The X-Position of the camerta was set correct");
+		assert.strictEqual(cameraPositions[0].y, 2, "The Y-Position of the camerta was set correct");
+		assert.strictEqual(cameraPositions[0].z, 3, "The Z-Position of the camerta was set correct");
+		
+		assert.strictEqual(cameraPositions[1].x, 4, "The X-Position of the camerta was set correct");
+		assert.strictEqual(cameraPositions[1].y, 5, "The Y-Position of the camerta was set correct");
+		assert.strictEqual(cameraPositions[1].z, 6, "The Z-Position of the camerta was set correct");
 	});
 	
 	
@@ -104,25 +138,26 @@ define = function(dependencies, callback)
 		// Delete all stored render callbacks
 		renderCallbacks.length = 0;
 		
-		camera = new THREE.Vector3(-1, -1, -1);
-		
+		cameraPositions.length = 0;		
+				
 		console.log("Enter without door");
 		room.enter();
-		assert.strictEqual(camera.x, 0, "The X-Position of the camerta was set correct");
-		assert.strictEqual(camera.y, 70, "The Y-Position of the camerta was set correct");
-		assert.strictEqual(camera.z, -100, "The Z-Position of the camerta was set correct");
-		
-		camera = new THREE.Vector3(-1, -1, -1);
-		
 		console.log("Enter on door 0");
 		room.enter(0);
+		
+		assert.strictEqual(cameraPositions.length, 2, "The camera-position was set two times");
+		
+		assert.strictEqual(cameraPositions[0].x, 0, "The X-Position of the camerta was set correct");
+		assert.strictEqual(cameraPositions[0].y, 70, "The Y-Position of the camerta was set correct");
+		assert.strictEqual(cameraPositions[0].z, -100, "The Z-Position of the camerta was set correct");
+					
 		assert.strictEqual(renderCallbacks.length, 2, "Two render-callbacks were added.");
 		assert.strictEqual(enterCnt, 2, "The enter-event was fired twice");
 		assert.strictEqual(preenterCnt, 2, "The pre-enter-event was fired twice");
 		
-		assert.strictEqual(camera.x, 90, "The X-Position of the camerta was set correct");
-		assert.strictEqual(camera.y, 70, "The Y-Position of the camerta was set correct");
-		assert.strictEqual(camera.z, 250, "The Z-Position of the camerta was set correct");
+		assert.strictEqual(cameraPositions[1].x, 90, "The X-Position of the camerta was set correct");
+		assert.strictEqual(cameraPositions[1].y, 70, "The Y-Position of the camerta was set correct");
+		assert.strictEqual(cameraPositions[1].z, 250, "The Z-Position of the camerta was set correct");
 	});
 	
 	QUnit.test("Create a room with invalid door", function(assert) {
@@ -146,21 +181,20 @@ define = function(dependencies, callback)
 		});
 		
 		
-		camera = new THREE.Vector3(-1, -1, -1);
+		cameraPositions.length = 0;
 		
 		console.log("Enter without door");
 		room.enter();
-		assert.strictEqual(camera.x, 0, "The X-Position of the camerta was set correct");
-		assert.strictEqual(camera.y, 70, "The Y-Position of the camerta was set correct");
-		assert.strictEqual(camera.z, -100, "The Z-Position of the camerta was set correct");
-		
-		camera = new THREE.Vector3(-1, -1, -1);
-		
 		console.log("Enter on door 0, which has no properties");
 		room.enter(0);
-		assert.strictEqual(camera.x, 0, "The X-Position of the camerta was set correct");
-		assert.strictEqual(camera.y, 70, "The Y-Position of the camerta was set correct");
-		assert.strictEqual(camera.z, -100, "The Z-Position of the camerta was set correct");
+		
+		assert.strictEqual(cameraPositions.length, 2, "The camera-position was set two times");
+		assert.strictEqual(cameraPositions[0].x, 0, "The X-Position of the camerta was set correct");
+		assert.strictEqual(cameraPositions[0].y, 70, "The Y-Position of the camerta was set correct");
+		assert.strictEqual(cameraPositions[0].z, -100, "The Z-Position of the camerta was set correct");		
+		assert.strictEqual(cameraPositions[1].x, 0, "The X-Position of the camerta was set correct");
+		assert.strictEqual(cameraPositions[1].y, 70, "The Y-Position of the camerta was set correct");
+		assert.strictEqual(cameraPositions[1].z, -100, "The Z-Position of the camerta was set correct");
 	});
 	
 	
@@ -196,13 +230,14 @@ define = function(dependencies, callback)
 		});
 		
 		
-		camera = new THREE.Vector3(-1, -1, -1);
+		cameraPositions.length = 0;
 		
 		console.log("Enter without door");
 		room.enter();
-		assert.strictEqual(camera.x, 0, "The X-Position of the camerta was set correct");
-		assert.strictEqual(camera.y, 0, "The Y-Position of the camerta was set correct");
-		assert.strictEqual(camera.z, 0, "The Z-Position of the camerta was set correct");
+		assert.strictEqual(cameraPositions.length, 1, "The camera-position was set once");
+		assert.strictEqual(cameraPositions[0].x, 0, "The X-Position of the camerta was set correct");
+		assert.strictEqual(cameraPositions[0].y, 0, "The Y-Position of the camerta was set correct");
+		assert.strictEqual(cameraPositions[0].z, 0, "The Z-Position of the camerta was set correct");
 				
 	});
 	
@@ -268,11 +303,12 @@ define = function(dependencies, callback)
 		// Delete all stored render callbacks
 		renderCallbacks.length = 0;
 		
-		camera = new THREE.Vector3(-1, -1, -1);			
+		cameraPositions.length = 0;
 		room.enter(0);
-		assert.strictEqual(camera.x, 90, "The X-Position of the camerta was set correct");
-		assert.strictEqual(camera.y, 70, "The Y-Position of the camerta was set correct");
-		assert.strictEqual(camera.z, 250, "The Z-Position of the camerta was set correct");
+		assert.strictEqual(cameraPositions.length, 1, "The camera-position was set once");
+		assert.strictEqual(cameraPositions[0].x, 90, "The X-Position of the camerta was set correct");
+		assert.strictEqual(cameraPositions[0].y, 70, "The Y-Position of the camerta was set correct");
+		assert.strictEqual(cameraPositions[0].z, 250, "The Z-Position of the camerta was set correct");
 		
 		expectedDoorNumber = 1;
 		engineMockup.forceFrame(new THREE.Vector3(101, 70, 250));
