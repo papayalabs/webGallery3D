@@ -173,7 +173,7 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
             var enterLock = function () {
 
                
-                blocker.hideInstructions();
+                blocker.hideContent();
 
                 // Ask the browser to lock the pointer
                 element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;

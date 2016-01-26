@@ -214,15 +214,21 @@ define(["three.min"], function()
 				loader.setCrossOrigin(this.crossOrigin);
 				var material_url = scope.texturePath + '/' + value;
 				material_url = material_url.replace(/\\/g, '/');
+
 				loader.load(material_url, function(tex) {
 					if (tex) {
 						// TODO: read texture settings from assimp.
 						// Wrapping is the default, though.
-						tex.wrapS = tex.wrapT =THREE.RepeatWrapping;
-						//tex.wrapS = tex.wrapT =THREE.ClampToEdgeWrapping; 
+					    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
 
-						mat[keyname] = tex;
-						mat.needsUpdate = true;
+					    // HP: Race condition: This fails if the loader is too fast, because 'mat' is still NULL!
+
+						if (mat !== null) {						   
+						    mat[keyname] = tex;
+						    mat.needsUpdate = true;
+						} else {
+						    init_props[keyname] = tex;
+						}
 					}
 				});
 			}
