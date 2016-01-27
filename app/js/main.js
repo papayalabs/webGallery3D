@@ -10,13 +10,13 @@ requirejs(["engine", "room1", "room2", "room3", "jquery-2.2.0.min"], function (e
 		// Set the callback which gets executed when room1 is left
 		room1.setLeaveCallback(function (door) {
 			console.log("Leaving room 1 through door " + door);
-			room3.enter(0);
+			room2.enter(0);
 		});
 
 		// Set the callback which gets executed when room2 is left
 		room2.setLeaveCallback(function (door) {
 			console.log("Leaving room 2 through door " + door);
-			room3.enter(1);
+			room1.enter(0);
 		});
 
 	    // Set the callback which gets executed when room2 is left
