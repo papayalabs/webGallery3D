@@ -7,7 +7,8 @@
     content = $('#instructions'),
     instructionSpan = $('#instructionSpan'),
 	buttonToggleLang = $('#btLanguage'),
-	
+	linkImprint = $('#lnkImprint'),
+	linkSources = $('#lnkSources'),
 	
     culture = 'de',  
 	headerKey = '',
@@ -21,6 +22,21 @@
             'de': 'Lade...',
             'en': 'Loading...'
         },
+		
+		'language': {
+            'de': 'English',
+            'en': 'Deutsch'
+        },
+		
+		'imprint' : {
+			'de': 'Impressum',
+            'en': 'Imprint (german)'
+		},
+		
+		'sources' : {
+			'de': 'Quelltext auf Github',
+			'en': 'Sources on Github'            
+		},
 
         'download': {
 			'placeholders' : ['#1'],
@@ -99,20 +115,27 @@
 		var params =[].splice.call(arguments,2);
 		
 		header.text(buildText(headerKey, culture, params));
-		instructionSpan.html(buildText(messageKey, culture, params));		
+		instructionSpan.html(buildText(messageKey, culture, params));	
+		initText();
+		
+	},
+	
+	
+	initText = function() {
+		buttonToggleLang.text(buildText('language', culture));
+		linkImprint.text(buildText('imprint', culture));
+		linkSources.text(buildText('sources', culture));
 	};
 	
 	
 	// Initialize the language-button
-	buttonToggleLang.text('English');	
+	initText();
 	buttonToggleLang.click(function() {
 	
 		if(culture === 'de') {
-			culture = 'en';
-			buttonToggleLang.text('Deutsch');
+			culture = 'en';			
 		} else {
-			culture = 'de';
-			buttonToggleLang.text('English');
+			culture = 'de';			
 		}
 		
 		
