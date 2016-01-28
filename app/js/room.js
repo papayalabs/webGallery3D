@@ -6,9 +6,68 @@ define(["engine", "three.min"], function (engine) {
 		var doors = [], 
 			leaveCallback,			
 			speed,
-			enterCallback;
-		
-		var startPosition = new THREE.Vector3(0, 0, 0);
+			enterCallback,
+			startPosition = new THREE.Vector3(0, 0, 0),
+				
+			loadRoom = function (doorindex) {
+			
+				// if the room is not empty, remove everything and execute 'loadRoom' again when all is empty
+				if(!engine.isEmptyWorld()) {
+					engine.removeAddedObjects(function() { loadRoom(doorindex); });
+					return;
+				}
+				
+				// Set the camera to the right position, depending on the door-number
+				if (doorindex !== undefined && doors.length > doorindex) {
+					engine.setCamera(doors[doorindex].entryPosition || startPosition);
+				} else {
+					engine.setCamera(startPosition);
+				}
+
+				// Set walking-speed for this room
+				engine.configureMovement(speed);
+				
+				// Register the engine-callback for checking the doors
+				engine.addRenderCallback(function (scene, camObject) {
+					// This callback will be executed every frame. Check the position to see if a new room must be loaded
+
+					if(doors === undefined) {
+						return;
+					}
+					
+					var i,
+					leave = function() {					
+						// fire the leave-requirest-callback with the index of the door
+						leaveCallback(i);						
+					};
+					
+					for(i=0; i< doors.length; i++) {
+						if (doors[i].isLeaving !== undefined && doors[i].isLeaving(camObject.position)) {
+
+							if (leaveCallback !== undefined) {
+
+								// delete all objects and callbacks in the scene execpt the skybox
+								// and execute the callback when ready
+								engine.removeAddedObjects(leave);
+															
+								break;
+							}
+						}
+					}							
+				});
+				
+				// Execute the enter-callback.
+				// Content and more engine-callbacks will be added here.
+				// The return value of the callback defines wether the content was completely loaded from the cache or not
+				if (enterCallback !== undefined) {
+					if(enterCallback()) {
+					
+						// Everything was already loaded, no event will be fired inside the engine, hide the blocker and start right now
+						engine.hideBlockerOverride();
+					}
+					
+				}
+			};
 	
 		// Method 'configure': configures the new instance by a given configuration-object
 		(function(config) {
@@ -49,59 +108,7 @@ define(["engine", "three.min"], function (engine) {
 		};
 		
 		// Method 'enter': loads the room with the given number
-		this.enter = function (doorindex) {
-
-			
-			
-			// Set the camera to the right position, depending on the door-number
-			if (doorindex !== undefined && doors.length > doorindex) {
-				engine.setCamera(doors[doorindex].entryPosition || startPosition);
-			} else {
-				engine.setCamera(startPosition);
-			}
-
-			// Set walking-speed for this room
-			engine.configureMovement(speed);
-			
-			// Register the engine-callback for checking the doors
-			engine.addRenderCallback(function (scene, camObject) {
-				// This callback will be executed every frame. Check the position to see if a new room must be loaded
-
-				if(doors === undefined) {
-					return;
-				}
-				
-				var i,
-				leave = function() {					
-					// fire the leave-requirest-callback with the index of the door
-					leaveCallback(i);						
-				};
-				
-				for(i=0; i< doors.length; i++) {
-					if (doors[i].isLeaving !== undefined && doors[i].isLeaving(camObject.position)) {
-
-						if (leaveCallback !== undefined) {
-
-							// delete all objects and callbacks in the scene execpt the skybox
-							engine.removeAddedObjects(leave);
-														
-							break;
-						}
-					}
-				}							
-			});
-			
-			// Execute the preenter-callback.
-			// Content and more engine-callbacks will be added here.
-			if (enterCallback !== undefined) {
-				if(enterCallback()) {
-				
-					// Everything was already loaded, no event will be fired inside the engine, hide the blocker and start right now
-					engine.hideBlockerOverride();
-				}
-				
-			}
-		};
+		this.enter = loadRoom;
 	};
 	
 	return {

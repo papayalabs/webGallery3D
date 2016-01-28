@@ -10,12 +10,16 @@ define = function(dependencies, callback)
 	var cameraPositions = [],
 		renderCallbacks = [],      
 		speedValues = [],
+		objectCounter = 0,
+		totalObjectsAdded = 0,
 		
 		
 		initTest = function(){
 			renderCallbacks.length = 0;
 			speedValues.length = 0;
 			cameraPositions.length = 0;
+			objectCounter = 0;
+			totalObjectsAdded = 0;
 		},
 				
 		// Create the mockup which simulates the engine
@@ -34,10 +38,17 @@ define = function(dependencies, callback)
 					console.log("mockup-engine: adding render-callback");
 				}
 			},
+			
+			addObject : function() {
+				objectCounter++;
+				totalObjectsAdded++;
+			},
 
 			// Removes all objects from the scene exept the skybox.
 			removeAddedObjects: function (doneCallback) {							
+			
 				renderCallbacks.length = 0;
+				objectCounter = 0;
 				console.log("mockup-engine: all render-callbacks deleted");
 				
 				if(doneCallback !== undefined) {
@@ -54,6 +65,11 @@ define = function(dependencies, callback)
 			configureMovement: function (speedInc) {
 				console.log("mockup-engine: speed was set to " + speedInc);
 				speedValues.push(speedInc);
+			},
+			
+			// Gets wether the world is empty and a new room can be loaded
+			isEmptyWorld: function() {
+				return objectCounter + renderCallbacks.length === 0;
 			},
 		};
 	
@@ -128,6 +144,10 @@ define = function(dependencies, callback)
 			onEnter : function() {
 				enterCnt++;
 				console.log("room: 'onEnter' was called");
+				
+				// Adding two fictional objects
+				engineMockup.addObject();
+				engineMockup.addObject();
 			},
 			
 			speed : 1234,
@@ -156,6 +176,11 @@ define = function(dependencies, callback)
 		console.log("Enter on door 0");
 		room.enter(0);
 		
+		
+		assert.strictEqual(enterCnt, 2, "The enter-event was fired twice");	
+		assert.strictEqual(objectCounter, 2, "Two objects are loaded now");	
+		assert.strictEqual(totalObjectsAdded, 4, "There were four added objects in total");	
+		
 		assert.strictEqual(speedValues.length, 2, "The speed was set twice");		
 		assert.strictEqual(speedValues[0], 1234, "The speed was set correct");
 		assert.strictEqual(speedValues[1], 1234, "The speed was set correct");		
@@ -164,8 +189,8 @@ define = function(dependencies, callback)
 		assert.strictEqual(cameraPositions[0].x, 0, "The X-Position of the camerta was set correct");
 		assert.strictEqual(cameraPositions[0].y, 70, "The Y-Position of the camerta was set correct");
 		assert.strictEqual(cameraPositions[0].z, -100, "The Z-Position of the camerta was set correct");					
-		assert.strictEqual(renderCallbacks.length, 2, "Two render-callbacks were added.");
-		assert.strictEqual(enterCnt, 2, "The enter-event was fired twice");				
+		assert.strictEqual(renderCallbacks.length, 1, "One render-callback is in the list, because the old one was deleted.");
+					
 		assert.strictEqual(cameraPositions[1].x, 90, "The X-Position of the camerta was set correct");
 		assert.strictEqual(cameraPositions[1].y, 70, "The Y-Position of the camerta was set correct");
 		assert.strictEqual(cameraPositions[1].z, 250, "The Z-Position of the camerta was set correct");

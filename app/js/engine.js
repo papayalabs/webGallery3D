@@ -468,6 +468,11 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
 				}
 			});                                
         },
+		
+		// Gets wether the world is empty and a new room can be loaded
+		isEmptyWorld: function() {
+			return untouchableObjects.length + collisionObjects.length === 0;
+		},
 
         // Sets the speed of movement and the length of the collision detection
         configureMovement: function (speedInc) {
