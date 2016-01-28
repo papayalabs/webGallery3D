@@ -145,6 +145,20 @@
 	});
 
     return {
+	
+		setCallbacks: function(cfg) {
+			if(cfg === undefined) {
+				return;
+			}
+			
+			if(typeof cfg.start === 'function') {
+				logo.click(cfg.start);
+			}
+			
+			if(typeof cfg.loadRequest === 'function') {
+				// TODO
+			}
+		},
 
 		// Show the initialisation-message
         setMessageInit: function () {			
@@ -171,10 +185,7 @@
 			refreshText('errorHeader', 'errorOnLocking');            
         },
 
-		// Set the callback which gets executed on start
-        setStartCallback: function(callback){
-            logo.click(callback);
-        },
+		
 
 		// Fade-in in the blocker and fire a callback when done
         show: function (callback) {                              
