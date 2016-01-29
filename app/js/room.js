@@ -5,7 +5,7 @@ define(["engine", "three.min"], function (engine) {
 	
 		var doors = [], 
 			leaveCallback,			
-			speed,
+			speed, name,
 			enterCallback,
 			startPosition = new THREE.Vector3(0, 0, 0),
 				
@@ -93,6 +93,7 @@ define(["engine", "three.min"], function (engine) {
 			}
 			
 			speed = config.speed;
+			name = config.name;
 			
 			// sets the array of door objects.
 			if(config.doors !== undefined) {
@@ -109,6 +110,10 @@ define(["engine", "three.min"], function (engine) {
 		
 		// Method 'enter': loads the room with the given number
 		this.enter = loadRoom;
+		
+		this.getName = function() {
+			return name;
+		};
 	};
 	
 	return {

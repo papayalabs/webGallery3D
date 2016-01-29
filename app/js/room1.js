@@ -192,6 +192,7 @@ define(["engine", "room", "three.min"], function (engine, roomFactory) {
 	// Create a new room-instance
 	return roomFactory.createRoom({
 	
+		name : 'room1',
 		
 		// Define the callback which gets executed after the room was loaded
 		onEnter : function() {

@@ -1,41 +1,51 @@
-requirejs(["engine", "room1", "room2", "room3", "jquery-2.2.0.min"], function (engine, room1, room2, room3) {
+requirejs(["engine", "roomManager", "jquery-2.2.0.min"], function (engine, roomManager) {
 
 	$(document).ready(function() {
 	
 		// initialize the renderer
 		engine.init();
 
+		// Configure the rooms
+		roomManager.configure(
+		[
+			// Set the door-configuration of room #1
+			{
+				name : 'Room1', // Must be the name of the JS-file --> This loads 'Room1.js'
+				
+				// Array with all door-configrations of this room
+				connections : [
+					{
+						exitDoor : 0,	// When exiting through door #0...
+						enterDoor : 0,  // Enter through door #0...
+						enterRoom : 'Room2' // of room #2
+					}
+					// enter more doors of room #1 here...
+				]
+			},
+			
+			// Set the door-configuration of room #2
+			{
+				name : 'Room2', // --> This loads 'Room2.js'
+				connections : [
+					{
+						exitDoor : 0,
+						enterDoor : 0,
+						enterRoom : 'Room1'
+					}
+				]
+			},
+			
+			// enter more rooms here...
+		], 
 		
+		// Callback which gets executed when the rooms were configured and loaded
+		function() {
+			// Start the animation
+			engine.run();
 
-		// Set the callback which gets executed when room1 is left
-		room1.setLeaveCallback(function (door) {
-			console.log("Leaving room 1 through door " + door);
-			room2.enter(0);
+			// Load room1
+			roomManager.enter('Room1');
 		});
-
-		// Set the callback which gets executed when room2 is left
-		room2.setLeaveCallback(function (door) {
-			console.log("Leaving room 2 through door " + door);
-			room1.enter(0);
-		});
-
-	    // Set the callback which gets executed when room2 is left
-		room3.setLeaveCallback(function (door) {
-		    console.log("Leaving room 3 through door " + door);
-
-		    if (door === 0) {
-		        room1.enter(0);
-		    } else {
-		        room2.enter(0);
-		    }
-
-		    
-		});
-
-		// Start the animation
-		engine.run();
-
-		// Load room1
-		room1.enter();
+		
 	});
 });
