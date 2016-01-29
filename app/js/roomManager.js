@@ -71,16 +71,17 @@ define([], function () {
 					// loop through all doors and connect them
 					cfg.connections.forEach(function(con){
 						var exitDoor = con.exitDoor;
-						var enterDoor = con.enterDoor;
-						var enterRoom = con.enterRoom;
-						
+						var enterDoor = con.enterDoor;									
 						var exitR = findRoomByName(name);
-						var enterR = findRoomByName(enterRoom);
-						exitR.setLeaveCallback(function (d) {			
-							if(d === exitDoor) {
-								enterR.enter(enterDoor);
-							}
-						});
+						var enterR = findRoomByName(con.enterRoom);
+						
+						if(exitR && enterR) {
+							exitR.setLeaveCallback(function (d) {			
+								if(d === exitDoor) {
+									enterR.enter(enterDoor);
+								}
+							});
+						}
 				
 					});
 				});
