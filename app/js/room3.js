@@ -77,6 +77,8 @@
 	// Create a new room-instance
 	return roomFactory.createRoom({
 		
+		name : "Room3",	
+		
 		// Define the callback which gets executed after the room was loaded
 		onEnter: function () {
 

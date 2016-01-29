@@ -4,22 +4,22 @@ testVars = {
 	enterCallback : function() {},	
 };
 
-require = function(names, callback) {
-
-	var roomName = names[0];
-
+getRoomMockup = function(roomName) {
+	
 	// Return an mockup-room
-	callback({
+	return {
 		name : roomName,
 		enter : function(door) {
 			console.log('Enter was called on room ' + roomName + ' with door ' + door);			
 			testVars.enterCallback(roomName, door);
 		},
 		setLeaveCallback : function(callback) {
-			console.log('Leave-callback was set for room ' + roomName);
-			leaveCallbackCounter++;
+			console.log('Leave-callback was set for room ' + roomName);			
 		},
-	});
+		getRoomName : function(){
+			return roomName;
+		},
+	};
 };
 
 
@@ -43,7 +43,11 @@ define = function(dependencies, callback)
 		var done = assert.async();
 		
 		// execute the callback from the require-'define'-function
-		var roomManager = callback();
+		var roomManager = callback(
+			getRoomMockup('Room1'),
+			getRoomMockup('Room2'),
+			getRoomMockup('Room3')			
+		);
 		
 		assert.ok(roomManager.enter !== undefined, "An room-manager was created");		
 

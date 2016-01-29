@@ -112,6 +112,8 @@ define(["engine", "room", "three.min"], function (engine, roomFactory) {
 			
 		speed : 700,
 		
+		name : "Room2",	
+		
 		// Define the callback which gets executed after the room was loaded
 		onEnter : function() {
 			

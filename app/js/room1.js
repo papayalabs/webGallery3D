@@ -192,6 +192,8 @@ define(["engine", "room", "three.min"], function (engine, roomFactory) {
 	// Create a new room-instance
 	return roomFactory.createRoom({
 			
+		name : "Room1",	
+			
 		// Define the callback which gets executed after the room was loaded
 		onEnter : function() {
 			loadLight();
