@@ -15,8 +15,8 @@ require.config({
 
 
 // require the unit tests.
-require(['QUnit', 'reqTest'], function(QUnit, dummyTest) {
+require(['QUnit', 'runner'], function(QUnit, runner) {
       // run the tests.
 	  QUnit.start();
-      dummyTest.run();     
+      runner.run();     
 });
