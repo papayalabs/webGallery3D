@@ -13,9 +13,9 @@
 			};
 
 			if (house === undefined) {
-				engine.loader.load('models/room3/galleryhighV1.json', function (object) {
+				engine.loader.load('models/room3/room3.json', function (object) {
 					house = object;
-					object.scale.multiplyScalar(1.6);
+					object.scale.multiplyScalar(0.3);
 					object.rotation.z = 0;
 					object.rotation.y = 0;
 					object.position.y = 0;
@@ -102,15 +102,9 @@
 		// The return value must be an boolean.
 		doors: [
 			{
-				entryPosition: new THREE.Vector3(0, 70, -200),
+				entryPosition: new THREE.Vector3(0, 70, 150),
 				isLeaving: function (position) {
-					return position.z < -220;
-				}
-			},
-			{
-				entryPosition: new THREE.Vector3(0, 70, 200),
-				isLeaving: function (position) {
-					return position.z > 220;
+					return position.z > 160;
 				}
 			}
 		],

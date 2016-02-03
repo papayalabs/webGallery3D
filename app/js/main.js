@@ -34,6 +34,19 @@ requirejs(["engine", "roomManager", "jquery-2.2.0.min"], function (engine, roomM
 						}
 					]
 				},
+
+
+                // Set the door-configuration of room #2
+				{
+				    name: 'Room3', // --> This loads 'Room2.js'
+				    connections: [
+						{
+						    exitDoor: 0,
+						    enterDoor: 0,
+						    enterRoom: 'Room1'
+						}
+				    ]
+				},
 				
 				// enter more rooms here...
 			]);

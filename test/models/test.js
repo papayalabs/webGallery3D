@@ -10,7 +10,7 @@
 			path : "../../app/models/room2/"
 		},
 		{
-			files : ['galleryhighV1.json'],		
+			files : ['room3.json'],		
 			path : "../../app/models/room3/"
 		},
 	],
