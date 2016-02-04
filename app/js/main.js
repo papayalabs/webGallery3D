@@ -1,4 +1,4 @@
-requirejs(["engine", "roomManager", "jquery-2.2.0.min"], function (engine, roomManager) {
+requirejs(["engine", "roomManager", "tools", "jquery-2.2.0.min"], function (engine, roomManager, tools) {
 
 	$(document).ready(function() {
 	
@@ -17,7 +17,8 @@ requirejs(["engine", "roomManager", "jquery-2.2.0.min"], function (engine, roomM
 						{
 							exitDoor : 0,	// When exiting through door #0...
 							enterDoor : 0,  // Enter through door #0...
-							enterRoom : 'Room2' // of room #2
+							enterRoom: 'Room3', // of room #2
+							angle: tools.deg2rad(180), // The angle between the two doors
 						}
 						// enter more doors of room #1 here...
 					]
@@ -36,16 +37,18 @@ requirejs(["engine", "roomManager", "jquery-2.2.0.min"], function (engine, roomM
 				},
 
 
-                // Set the door-configuration of room #2
+				// Set the door-configuration of room #3
 				{
-				    name: 'Room3', // --> This loads 'Room2.js'
-				    connections: [
+					name: 'Room3', // --> This loads 'Room3.js'
+					connections: [
 						{
-						    exitDoor: 0,
-						    enterDoor: 0,
-						    enterRoom: 'Room1'
+							exitDoor: 0,
+							enterDoor: 0,
+							//enterRoom: 'Room1',
+							//angle: tools.deg2rad(-180), 
+							enterRoom: 'Room2',
 						}
-				    ]
+					]
 				},
 				
 				// enter more rooms here...

@@ -10,19 +10,19 @@ define(["engine", "three.min"], function (engine) {
 			enterCallback,
 			startPosition = new THREE.Vector3(0, 0, 0),
 				
-			loadRoom = function (doorindex) {
+			loadRoom = function (doorindex, angle) {
 			
 				// if the room is not empty, remove everything and execute 'loadRoom' again when all is empty
 				if(!engine.isEmptyWorld()) {
-					engine.removeAddedObjects(function() { loadRoom(doorindex); });
+				    engine.removeAddedObjects(function () { loadRoom(doorindex, angle); });
 					return;
 				}
 				
 				// Set the camera to the right position, depending on the door-number
 				if (doorindex !== undefined && doors.length > doorindex) {
-					engine.setCamera(doors[doorindex].entryPosition || startPosition);
+				    engine.setCamera(doors[doorindex].entryPosition || startPosition, angle);
 				} else {
-					engine.setCamera(startPosition);
+				    engine.setCamera(startPosition, angle);
 				}
 
 				// Set walking-speed for this room
@@ -110,7 +110,7 @@ define(["engine", "three.min"], function (engine) {
 			leaveCallback = callback;
 		};
 		
-		// Method 'enter': loads the room with the given number
+		// Method 'enter': Enters this room through the given door
 		this.enter = loadRoom;	
 
 		this.getRoomName = function() {

@@ -409,8 +409,8 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
             setShadow(obj, cast, receive);
         },
 
-        // Sets the camera to a new position
-        setCamera: function (pos) {
+        // Sets the camera to a new position, if required rotates the camera into a new direction
+        setCamera: function (pos, angle) {
 
             stopMovement();
 			var camObject = controls.getObject();
@@ -424,6 +424,10 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
 				camObject.position.x = 0;
 				camObject.position.y = 0;
 				camObject.position.z = 0;
+			}
+
+			if (angle !== undefined) {
+			    camObject.rotation.y += angle;
 			}
         },
 
