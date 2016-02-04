@@ -3,26 +3,37 @@ define(["engine", "three.min"], function (engine) {
 	// Constructor-function which creates a room-instance
 	var Room = function(configuration) {
 	
-		var doors = [], 
+		var i, doors = [], 
 			leaveCallback,			
 			speed,
 			roomName,
 			enterCallback,
 			startPosition = new THREE.Vector3(0, 0, 0),
+
+			// callback which gets executed when this room has to be left.
+			// uses 'i' which should contain the right door-number
+			// This function is defined here and not within the render-callback, for performance-reasons
+			leave = function () {
+				if (typeof leaveCallback === 'function') {
+
+					// fire the leave-callback with the index of the door
+					leaveCallback(i);
+				}
+			},
 				
 			loadRoom = function (doorindex, angle) {
 			
 				// if the room is not empty, remove everything and execute 'loadRoom' again when all is empty
 				if(!engine.isEmptyWorld()) {
-				    engine.removeAddedObjects(function () { loadRoom(doorindex, angle); });
+					engine.removeAddedObjects(function () { loadRoom(doorindex, angle); });
 					return;
 				}
 				
 				// Set the camera to the right position, depending on the door-number
 				if (doorindex !== undefined && doors.length > doorindex) {
-				    engine.setCamera(doors[doorindex].entryPosition || startPosition, angle);
+					engine.setCamera(doors[doorindex].entryPosition || startPosition, angle);
 				} else {
-				    engine.setCamera(startPosition, angle);
+					engine.setCamera(startPosition, angle);
 				}
 
 				// Set walking-speed for this room
@@ -30,29 +41,23 @@ define(["engine", "three.min"], function (engine) {
 				
 				// Register the engine-callback for checking the doors
 				engine.addRenderCallback(function (scene, camObject) {
+
 					// This callback will be executed every frame. Check the position to see if a new room must be loaded
+					// Don't do expensive calls here
 
 					if(doors === undefined) {
 						return;
 					}
 					
-					var i,
-					leave = function() {					
-						// fire the leave-requirest-callback with the index of the door
-						leaveCallback(i);						
-					};
-					
+										
 					for(i=0; i< doors.length; i++) {
 						if (doors[i].isLeaving !== undefined && doors[i].isLeaving(camObject.position)) {
 
-							if (leaveCallback !== undefined) {
-
-								// delete all objects and callbacks in the scene execpt the skybox
-								// and execute the callback when ready
-								engine.removeAddedObjects(leave);
+							// delete all objects and callbacks in the scene execpt the skybox
+							// and execute the callback when ready
+							engine.removeAddedObjects(leave);
 															
-								break;
-							}
+							break;							
 						}
 					}							
 				});
