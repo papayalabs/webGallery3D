@@ -348,6 +348,14 @@ define(["blocker", "three.min", "PointerLockControls", "AssimpJSONLoader"], func
                             moveRight = true;
                             break;
 
+                        case 80: // p
+                            (function(){
+                                var camObject = controls.getObject();
+                                blocker.setHUDMessage('X:' + camObject.position.x + ' Y:' + camObject.position.y + ' Z:' + camObject.position.z);
+                            })();
+                            
+                            break;
+
                     }
                 }
             };

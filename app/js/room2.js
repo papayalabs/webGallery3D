@@ -136,11 +136,17 @@ define(["engine", "room", "three.min"], function (engine, roomFactory) {
 		// The return value must be an boolean.
 		doors : [
 			{
-				entryPosition: new THREE.Vector3(0, 70, -250),
-				isLeaving: function (position) {
-					return position.z < -340;
-				}
-			}
+			    entryPosition: new THREE.Vector3(0, 70, -250),
+			    isLeaving: function (position) {
+			        return position.z < -340;
+			    }
+			},
+            {
+                entryPosition: new THREE.Vector3(170, 70, -110),
+                isLeaving: function (position) {
+                    return position.x > 184 && position.z > -143 && position.z < -84;
+                }
+            }
 		],
 	});
 	

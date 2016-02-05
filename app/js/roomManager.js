@@ -43,27 +43,26 @@ define(["tools", "room1", "room2", "room3"], function (tools) {
 				// loop through the config and connect the loaded rooms
 				configuration.forEach(function(cfg) {
 									
-					var name = cfg.name; // name of the current room
+					// name of the current room
+				    var exitR = findRoomByName(cfg.name);
+
+				    exitR.setLeaveCallback(function (d) {
+				       
+				        if (tools.isArray(cfg.connections)) {
+
+				            // loop through all doors and connect them
+				            cfg.connections.forEach(function (con) {
+				                if (con.exitDoor === d) {				                   				                   
+				                    var enterR = findRoomByName(con.enterRoom);
+				                    if (enterR !== undefined) {
+				                        enterR.enter(con.enterDoor, con.angle);
+				                    }
+				                }
+				            });
+				        }
+				    });
+
 					
-					if(tools.isArray(cfg.connections)) {
-						// loop through all doors and connect them
-						cfg.connections.forEach(function(con){
-							var exitDoor = con.exitDoor;
-							var enterDoor = con.enterDoor;
-							var angle = con.angle;
-							var exitR = findRoomByName(name);
-							var enterR = findRoomByName(con.enterRoom);
-							
-							if(exitR && enterR) {
-								exitR.setLeaveCallback(function (d) {			
-									if(d === exitDoor) {
-										enterR.enter(enterDoor, angle);
-									}
-								});
-							}
-					
-						});
-					}
 				});
 			}					
 		}

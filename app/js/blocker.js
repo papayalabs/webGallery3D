@@ -9,6 +9,7 @@
 	buttonToggleLang = $('#btLanguage'),
 	linkImprint = $('#lnkImprint'),
 	linkSources = $('#lnkSources'),
+    hud = $('#hud'),
 	
     culture = 'de',  
 	headerKey = '',
@@ -205,6 +206,12 @@
         hideContent: function () {
             content.hide();
         },
+
+        setHUDMessage: function (message) {
+            if (hud !== undefined) {
+                hud.text(message);
+            }
+        }
 
     };
 });

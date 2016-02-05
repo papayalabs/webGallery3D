@@ -17,8 +17,8 @@ requirejs(["engine", "roomManager", "tools", "jquery-2.2.0.min"], function (engi
 						{
 							exitDoor : 0,	// When exiting through door #0...
 							enterDoor : 0,  // Enter through door #0...
-							enterRoom: 'Room3', // of room #2
-							angle: tools.deg2rad(180), // The angle between the two doors
+							enterRoom: 'Room2', // of room #2
+							//angle: tools.deg2rad(180), // The angle between the two doors
 						}
 						// enter more doors of room #1 here...
 					]
@@ -32,7 +32,13 @@ requirejs(["engine", "roomManager", "tools", "jquery-2.2.0.min"], function (engi
 							exitDoor : 0,
 							enterDoor : 0,
 							enterRoom : 'Room1'
-						}
+						},
+                        {
+                            exitDoor: 1,
+                            enterDoor: 0,
+                            enterRoom: 'Room3',
+                            angle: tools.deg2rad(90),
+                        }
 					]
 				},
 
@@ -43,9 +49,9 @@ requirejs(["engine", "roomManager", "tools", "jquery-2.2.0.min"], function (engi
 					connections: [
 						{
 							exitDoor: 0,
-							enterDoor: 0,
+							enterDoor: 1,
 							//enterRoom: 'Room1',
-							//angle: tools.deg2rad(-180), 
+							angle: tools.deg2rad(-90), 
 							enterRoom: 'Room2',
 						}
 					]
