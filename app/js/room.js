@@ -1,4 +1,4 @@
-define(["engine", "three.min"], function (engine) {
+define(["engine", "three"], function (engine) {
 
 	// Constructor-function which creates a room-instance
 	var Room = function(configuration) {

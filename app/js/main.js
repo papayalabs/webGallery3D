@@ -1,4 +1,26 @@
-requirejs(["engine", "roomManager", "tools", "jquery-2.2.0.min"], function (engine, roomManager, tools) {
+require.config({
+  paths: {
+	  'three': 'lib/three.min',
+	  'jQuery': 'lib/jquery.min',
+	  'stats' : 'lib/stats.min',
+  },
+  shim: {
+	 'jQuery': {
+		 exports: 'jquery.min',         
+	 },
+	 'three': {
+		 exports: 'three.min',         
+	 },
+	 'stats': {
+		 exports: 'stats.min'
+	 }
+  }
+});
+
+
+
+
+requirejs(["engine", "roomManager", "tools", "jQuery"], function (engine, roomManager, tools) {
 
 	$(document).ready(function() {
 	
@@ -33,12 +55,12 @@ requirejs(["engine", "roomManager", "tools", "jquery-2.2.0.min"], function (engi
 							enterDoor : 0,
 							enterRoom : 'Room1'
 						},
-                        {
-                            exitDoor: 1,
-                            enterDoor: 0,
-                            enterRoom: 'Room3',
-                            angle: tools.deg2rad(90),
-                        }
+						{
+							exitDoor: 1,
+							enterDoor: 0,
+							enterRoom: 'Room3',
+							angle: tools.deg2rad(90),
+						}
 					]
 				},
 

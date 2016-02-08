@@ -1,4 +1,4 @@
-define(["engine", "room", "three.min"], function (engine, roomFactory) {
+define(["engine", "room", "three"], function (engine, roomFactory) {
 	
 	
 		var house, image1, image2,

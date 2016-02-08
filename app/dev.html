@@ -8,30 +8,33 @@
 		</style>
 	</head>
 	<body>	
-        <div id="hud"></div>	
+		<div id="hud">
+			<span id="hudSpan"></span>
+            <div id="hudStats"></div>
+		</div>	
 		<div id="blocker">
 			<div id="instructions">               
-                <img id="logo" alt="" src="images/logo.png"/>
-                <br />
-                <br />
+				<img id="logo" alt="" src="images/logo.png"/>
+				<br />
+				<br />
 				<span id="messageSpan"></span>
 				<br />
-                <br />
-                <span id="instructionSpan">
-                    Für diese Webseite wird Javascript benötigt<br />
-                    Javascript is required for this website
-                </span>
-                <br />
-                <br />
+				<br />
+				<span id="instructionSpan">
+					Für diese Webseite wird Javascript benötigt<br />
+					Javascript is required for this website
+				</span>
+				<br />
+				<br />
 				<button id="btLanguage" type="button">---</button> 
 				<br />
-                <br />
-                <a id="lnkImprint" href="impressum.html">Impressum / Imprint</a>
+				<br />
+				<a id="lnkImprint" href="impressum.html">Impressum / Imprint</a>
 				<br />
 				<a id="lnkSources" href="https://github.com/EdDillinger/webGallery3D">Quellcode / Sources</a>
 			</div>         
 		</div>
 	
-		<script data-main="js/main" src="js/require.js"></script>		
+		<script data-main="js/main" src="js/lib/require.js"></script>		
 	</body>
 </html>

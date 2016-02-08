@@ -18,14 +18,15 @@
 				background-color: rgba(0,0,0,1);
 			}
 
-            #hud {
-                position:absolute;
-                top:0px;
-                left:0px;                
-                z-index:100000;
-                font-weight:bolder;
-                color:green;
-            }
+			#hud {
+				position:absolute;
+				top:0px;
+				left:0px;                
+				z-index:100000;
+				font-weight:bolder;
+				color:lightgreen;
+				margin:5px;
+			}
 
 			#instructions {
 
@@ -52,17 +53,17 @@
 				text-align: center;				
 			}
 
-            #messageSpan {               
-                font-size:30px;
-            }
+			#messageSpan {               
+				font-size:30px;
+			}
 
 
-            #credits {
-                margin: 20px;
-            }
+			#credits {
+				margin: 20px;
+			}
 
-            #logo {
-                cursor: pointer;
-            }
+			#logo {
+				cursor: pointer;
+			}
 
 	

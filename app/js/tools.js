@@ -13,5 +13,10 @@ define([], function () {
 		deg2rad : function(degrees) {
 			return degrees * deg2RadFactor;
 		},
+
+	    // Converts degrees to radiant
+		rad2deg: function (rad) {
+		    return rad / deg2RadFactor;
+		},
 	};
 });

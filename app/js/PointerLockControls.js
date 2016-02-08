@@ -1,4 +1,4 @@
-define(["three.min"], function () {
+define(["three"], function () {
 
     /**
      * @author mrdoob / http://mrdoob.com/
