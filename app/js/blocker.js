@@ -1,4 +1,4 @@
-﻿define(['jQuery', 'stats'], function () {
+﻿define(['jquery', 'stats'], function ($) {
 
 	// Get the required DOM-elements
 	var header = $('#messageSpan'),
@@ -10,8 +10,7 @@
 	linkImprint = $('#lnkImprint'),
 	linkSources = $('#lnkSources'),
 	hud = $('#hud'),
-	hudSpan = $('#hudSpan'),
-	hudStats = $('#hudStats'),
+	hudSpan,
 	
 	culture = 'de',  
 	headerKey = '',
@@ -76,6 +75,11 @@
 
 		
 	},
+
+	hudExists = function () {
+		return hud !== undefined && hud.length > 0;
+	},
+   
 	
 	// Returns the text with the given key and culture.
 	// 'params' should be an array of values. Each placeholder in a text is replaced by the value with the same index
@@ -134,17 +138,20 @@
 
 
 	(function () {
-
-	    if (hudStats !== undefined) {
+	    var div;
+		
+		if (hudExists()) {
+			hud.hide();
 
 			stats = new Stats();
 			stats.setMode(0);
-			hudStats.append(stats.domElement);
-	    }
+			div = $('<div></div>');
+			div.appendTo(hud);
+			div.append(stats.domElement);
 
-	    if (hud !== undefined) {
-	        hud.hide();
-	    }
+			hudSpan = $('<span></span>');
+			hudSpan.appendTo(hud);
+		}
 
 		// Initialize the language-button
 		initText();
@@ -232,31 +239,31 @@
 		},
 
 		setHUDMessage: function (message) {
-			if (hudSpan !== undefined) {
+		    if (hudSpan !== undefined) {
 				hudSpan.text(message);
 			}
 		},
 
 		showHUD: function () {
-			if (hud !== undefined) {
+			if (hudExists()) {
 				hud.show();
 			}
 		},
 
 		hideHUD: function () {
-			if (hud !== undefined) {
+			if (hudExists()) {
 				hud.hide();
 			}
 		},
 
 		beginMeasure: function () {
-			if (stats !== undefined) {
+			if (hudExists()) {
 				stats.begin();
 			}
 		},
 
 		endMeasure: function () {
-			if (stats !== undefined) {
+			if (hudExists()) {
 				stats.end();
 			}
 		},

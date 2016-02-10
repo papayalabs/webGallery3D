@@ -1,26 +1,26 @@
 require.config({
   paths: {
 	  'three': 'lib/three.min',
-	  'jQuery': 'lib/jquery.min',
+	  'jquery': 'lib/jquery.min',	  
 	  'stats' : 'lib/stats.min',
   },
-  shim: {
-	 'jQuery': {
-		 exports: 'jquery.min',         
-	 },
-	 'three': {
-		 exports: 'three.min',         
-	 },
-	 'stats': {
-		 exports: 'stats.min'
-	 }
+  
+  map: {
+	  // '*' means all modules will get 'jquery-private'
+	  // for their 'jquery' dependency.
+	  '*': { 'jquery': 'jquery-private' },
+
+	  // 'jquery-private' wants the real jQuery module
+	  // though. If this line was not here, there would
+	  // be an unresolvable cyclic dependency.
+	  'jquery-private': { 'jquery': 'jquery' }
   }
 });
 
 
 
 
-requirejs(["engine", "roomManager", "tools", "jQuery"], function (engine, roomManager, tools) {
+requirejs(["engine", "roomManager", "tools", "jquery"], function (engine, roomManager, tools, $) {
 
 	$(document).ready(function() {
 	

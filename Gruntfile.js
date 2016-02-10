@@ -33,26 +33,7 @@ module.exports = function(grunt) {
 		  baseUrl: "app/js",
 		  mainConfigFile: "app/js/main.js",
 		  name: "main", 
-		  out: "app/build/optimized.min.js",
-		  
-		  /*
-		  shim: {
-			 'jQuery': {
-				 exports: 'jquery-2.2.0.min',         
-			 },
-			 'three': {
-				 exports: 'three.min',         
-			 },
-			 'stats': {
-				 exports: 'stats.min'
-			 }
-		  },
-		  paths: {
-			  'three': 'lib/three.min',
-			  'jQuery': 'lib/jquery-2.2.0.min',
-			  'stats' : 'lib/stats.min',
-		  },
-		  */
+		  out: "app/build/optimized.min.js",		  		 
 		}
 	  }
 	},
