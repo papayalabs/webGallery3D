@@ -2,33 +2,31 @@
 <html>
 	<head>
 		<title>3D-Gallery of Holger Pfaff</title>
-		<link rel="stylesheet" href="css/style.css">
-		<style>			
-			canvas { width: 100%; height: 100% }
-		</style>
+		<link rel="stylesheet" href="css/style.css">		
 	</head>
 	<body>		
 		<div id="blocker">
-			<div id="instructions">               
-				<img id="logo" alt="" src="images/logo.png"/>
-				<br />
-				<br />
-				<span id="messageSpan"></span>
-				<br />
-				<br />
-				<span id="instructionSpan">
-					Für diese Webseite wird Javascript benötigt<br />
-					Javascript is required for this website
-				</span>
-				<br />
-				<br />
-				<button id="btLanguage" type="button">---</button> 
-				<br />
-				<br />
-				<a id="lnkImprint" href="impressum.html">Impressum / Imprint</a>
-				<br />
-				<a id="lnkSources" href="https://github.com/EdDillinger/webGallery3D">Quellcode / Sources</a>
-			</div>         
+			<div id="instructions">
+				<div class="centered">
+					<img id="logo" alt="" src="images/logo.png" />
+
+					<div id="messageSpan"></div>
+
+					<div id="instructionSpan">
+						Für diese Webseite wird Javascript benötigt<br />
+						Javascript is required for this website
+					</div>
+
+				</div>
+				<div class="centeredBottom">
+					<ul>
+						<li><a id="btLanguage" href="#">English</a></li>
+						<li><a id="lnkSources" href="https://github.com/EdDillinger/webGallery3D">Quellcode / Sources</a></li>
+						<li><a id="lnkImprint" href="impressum.html">Impressum / Imprint</a></li>
+					</ul>
+
+				</div>
+			</div>
 		</div>
 	
 		<script data-main="build/optimized.min" src="js/lib/require.min.js"></script>		
