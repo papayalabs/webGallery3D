@@ -1,4 +1,4 @@
-define(["blocker", "tools", "three", "PointerLockControls", "AssimpJSONLoader"], function (blocker, tools) {
+define(["blocker", "hud", "tools", "three", "PointerLockControls", "AssimpJSONLoader"], function (blocker, hud, tools) {
 
 	var camera, scene, renderer, skyBox, controls, raycaster,
 		collisionObjects = [],
@@ -35,7 +35,7 @@ define(["blocker", "tools", "three", "PointerLockControls", "AssimpJSONLoader"],
 
 
 	    if (showStats) {
-	        blocker.beginMeasure();
+	        hud.beginMeasure();
 	    }
 
 		var time = performance.now();
@@ -104,7 +104,7 @@ define(["blocker", "tools", "three", "PointerLockControls", "AssimpJSONLoader"],
 			camObject.translateZ(velocity.z * delta);
 
 			if (showStats) {
-				blocker.setHUDMessage(
+				hud.setMessage(
 					'X:' + Math.floor(camObject.position.x) +
 					' Y:' + Math.floor(camObject.position.y) +
 					' Z:' + Math.floor(camObject.position.z) +
@@ -123,7 +123,7 @@ define(["blocker", "tools", "three", "PointerLockControls", "AssimpJSONLoader"],
 		renderer.render(scene, camera);
 
 		if (showStats) {
-		    blocker.endMeasure();
+		    hud.endMeasure();
 		}
 	},
 
@@ -370,9 +370,9 @@ define(["blocker", "tools", "three", "PointerLockControls", "AssimpJSONLoader"],
 							showStats = !showStats;
 
 							if (showStats) {
-								blocker.showHUD();
+								hud.show();
 							} else {
-								blocker.hideHUD();
+								hud.hide();
 							}
 							
 							break;

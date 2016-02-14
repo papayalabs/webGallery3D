@@ -1,4 +1,4 @@
-﻿define(['jquery', 'stats'], function ($) {
+﻿define(['jquery'], function ($) {
 
 	// Get the required DOM-elements
 	var header = $('#messageSpan'),
@@ -9,16 +9,14 @@
 	buttonToggleLang = $('#btLanguage'),
 	linkImprint = $('#lnkImprint'),
 	linkSources = $('#lnkSources'),
-	hud = $('#hud'),
+	
     progress = $('#progress'),
     progressBar = $('#progressBar'),
-	hudSpan,
+	
    
 	culture = 'de',  
 	headerKey = '',
 	messageKey = '',
-	stats,
-	
 	
 	// JSON-object with text-data 
 	messages = {
@@ -78,10 +76,7 @@
 		
 	},
 
-	hudExists = function () {
-		return hud !== undefined && hud.length > 0;
-	},
-   
+	
 	
 	// Returns the text with the given key and culture.
 	// 'params' should be an array of values. Each placeholder in a text is replaced by the value with the same index
@@ -139,22 +134,7 @@
 	
 
 
-	(function () {
-	    var div;
-		
-		if (hudExists()) {
-			hud.hide();
-
-			stats = new Stats();
-			stats.setMode(0);
-			div = $('<div></div>');
-			div.appendTo(hud);
-			div.append(stats.domElement);
-
-			hudSpan = $('<span></span>');
-			hudSpan.appendTo(hud);
-		}
-
+	(function () {	  
 		// Initialize the language-button
 		initText();
 		buttonToggleLang.click(function () {
@@ -168,10 +148,7 @@
 
 			// Switch the displayed language
 			refreshText();
-
 		});
-
-
 	})();
 	
 	
@@ -245,34 +222,6 @@
 			content.hide();
 		},
 
-		setHUDMessage: function (message) {
-		    if (hudSpan !== undefined) {
-				hudSpan.text(message);
-			}
-		},
-
-		showHUD: function () {
-			if (hudExists()) {
-				hud.show();
-			}
-		},
-
-		hideHUD: function () {
-			if (hudExists()) {
-				hud.hide();
-			}
-		},
-
-		beginMeasure: function () {
-			if (hudExists()) {
-				stats.begin();
-			}
-		},
-
-		endMeasure: function () {
-			if (hudExists()) {
-				stats.end();
-			}
-		},
+		
 	};
 });
