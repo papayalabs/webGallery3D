@@ -62,16 +62,20 @@
 				color: black;
 			}
 
-            #logo {
-                background-image: url('../images/logo.png');
+            #logo {                
                 height: 225px;
                 width: 318px;
                 margin: auto;
-                border-radius: 5px;
+                border-radius: 5px;                                      
             }
 
-            #logo:hover {
+            .logoBack {
+                background-image: url('../images/logo.png');
+            }
+
+            .logohover:hover {
                 background-image: url('../images/logoHover.jpg');               
+                cursor: pointer;   
             }
 
 			#blocker {
@@ -93,6 +97,25 @@
 				margin:5px;
 			}
 
+            #progress {               
+                position:relative;
+                top:50%;
+                left:50%;
+                -ms-transform: translate(-50%, -50%);
+				-webkit-transform: translate(-50%, -50%);
+				transform: translate(-50%, -50%);
+                height:30px;
+                width:80%;                
+                border: 2px solid #4d6e80;
+                padding:2px;
+                display:none;
+            }
+
+            #progressBar {
+                height: 100%;
+                width:0%;
+                background-color:#4d6e80;
+            }
 			
 			#messageSpan {               
 				font-size:30px;
@@ -102,10 +125,6 @@
 
 			#credits {
 				margin: 20px;
-			}
-
-			#logo {
-				cursor: pointer;
 			}
 
 	

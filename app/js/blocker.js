@@ -10,8 +10,10 @@
 	linkImprint = $('#lnkImprint'),
 	linkSources = $('#lnkSources'),
 	hud = $('#hud'),
+    progress = $('#progress'),
+    progressBar = $('#progressBar'),
 	hudSpan,
-	
+   
 	culture = 'de',  
 	headerKey = '',
 	messageKey = '',
@@ -183,8 +185,8 @@
 				return;
 			}
 			
-			if(typeof cfg.start === 'function') {
-				logo.click(cfg.start);
+			if (typeof cfg.start === 'function') {
+			    logo.click(cfg.start);				
 			}
 			
 			if(typeof cfg.loadRequest === 'function') {
@@ -193,17 +195,22 @@
 		},
 
 		// Show the initialisation-message
-		setMessageInit: function () {			
+		setMessageInit: function () {
+		    logo.removeClass('logohover');
 			refreshText('init', 'instructions');			
 		},
 
 		// Set the loading-progress
-		setMessageProgress : function(percent) {
+		setMessageProgress: function (percent) {		   
+		    progress.show();
+		    progressBar.width(percent + '%');
 			refreshText('download', '', percent);           
 		},
 
 		// Show the ready-message
-		setMessageReady : function() {
+		setMessageReady: function () {
+		    logo.addClass('logohover');
+		    progress.hide();		   		   
 			refreshText('ready');	
 		},
 
