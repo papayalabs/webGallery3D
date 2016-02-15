@@ -1,130 +1,131 @@
 
-			html, body {
-				width: 100%;
-				height: 100%;
-			}
+html, body {
+    width: 100%;
+    height: 100%;
+}
 
-			body {
-				background-color: #ffffff;
-				margin: 0;
-				overflow: hidden;
-				font-family: arial;
-			}
+body {
+    background-color: #ffffff;
+    margin: 0;
+    overflow: hidden;
+    font-family: arial;
+}
 
-			canvas { 
-				width: 100%; 
-				height: 100% 
-
-			}
-
-			.centered {
-				position: fixed;
-				top: 50%;
-				left: 50%;
-				-ms-transform: translate(-50%, -50%);
-				-webkit-transform: translate(-50%, -50%);
-				transform: translate(-50%, -50%);
-			}
-
-			.centeredBottom {
-				position: fixed;
-				bottom: 10px;
-				left: 50%;
-				-ms-transform: translate(-50%, 0%);
-				-webkit-transform: translate(-50%, 0%);
-				transform: translate(-50%, 0%);
-			}
-
-			.centeredBottom ul {
-				 height: auto;
-				 padding: 8px 0px;
-				 margin: 0px;
-			}
-
-			.centeredBottom li {
-				 display: inline;
-				 padding: 10px; 
-			}
-
-			
-			.centeredBottom a:link, .centeredBottom a:visited {
-				background-color:  #4d6e80;
-				color: white;
-				padding: 14px 25px;
-				text-align: center;
-				text-decoration: none;
-				display: inline-block;
-				border-radius: 5px;
-			}
-
-			.centeredBottom a:hover, .centeredBottom a:active {
-				background-color: #bfd0d9;
-				color: black;
-			}
-
-            #logo {                
-                height: 225px;
-                width: 318px;
-                margin: auto;
-                border-radius: 5px;                                      
-            }
-
-            .logoBack {
-                background-image: url('../images/logo.png');
-            }
-
-            .logohover:hover {
-                background-image: url('../images/logoHover.jpg');               
-                cursor: pointer;   
-            }
-
-			#blocker {
-				position: absolute;
-				width: 100%;
-				height: 100%;
-				background-color: rgba(0,0,0,1);
-				color: #ffffff;
-				text-align: center;			
-			}
-
-			#hud {
-				position:absolute;
-				top:0px;
-				left:0px;                
-				z-index:100000;
-				font-weight:bolder;
-				color:lightgreen;
-				margin:5px;
-			}
-
-            #progress {               
-                position:relative;
-                top:50%;
-                left:50%;
-                -ms-transform: translate(-50%, -50%);
-				-webkit-transform: translate(-50%, -50%);
-				transform: translate(-50%, -50%);
-                height:30px;
-                width:80%;                
-                border: 2px solid #4d6e80;
-                padding:2px;
-                display:none;
-            }
-
-            #progressBar {
-                height: 100%;
-                width:0%;
-                background-color:#4d6e80;
-            }
-			
-			#messageSpan {               
-				font-size:30px;
-                margin:30px;
-			}
+canvas {
+    width: 100%;
+    height: 100%;
+}
 
 
-			#credits {
-				margin: 20px;
-			}
 
-	
+.centered {
+    position: fixed;
+    top: 50%;
+    left: 50%;  
+    -ms-transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);   
+}
+
+.centeredBottom {
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    -ms-transform: translate(-50%, 0%);
+    -webkit-transform: translate(-50%, 0%);
+    transform: translate(-50%, 0%);
+}
+
+    .centeredBottom ul {
+        height: auto;
+        padding: 8px 0px;
+        margin: 0px;
+    }
+
+    .centeredBottom li {
+        display: inline;
+        padding: 10px;
+    }
+
+
+    .centeredBottom a:link, .centeredBottom a:visited {
+        background-color: #4d6e80;
+        color: white;
+        padding: 14px 25px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        border-radius: 5px;
+    }
+
+    .centeredBottom a:hover, .centeredBottom a:active {
+        background-color: #bfd0d9;
+        color: black;
+    }
+
+#logo {
+    height: 225px;
+    width: 318px;
+    margin: auto;
+    border-radius: 5px;
+}
+
+.logoBack {
+    background-image: url('../images/logo.png');
+}
+
+.logohover:hover {
+    background-image: url('../images/logoHover.jpg');
+    cursor: pointer;
+}
+
+
+#blocker {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,1);
+    color: #ffffff;
+    text-align: center;
+    min-height:400px;
+}
+
+#hud {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 100000;
+    font-weight: bolder;
+    color: lightgreen;
+    margin: 5px;
+}
+
+#progress {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    height: 30px;
+    width: 80%;
+    border: 2px solid #4d6e80;
+    padding: 2px;
+    display: none;
+}
+
+#progressBar {
+    height: 100%;
+    width: 0%;
+    background-color: #4d6e80;
+}
+
+#message {
+    font-size: 30px;
+    margin: 30px;
+}
+
+
+#credits {
+    margin: 20px;
+}

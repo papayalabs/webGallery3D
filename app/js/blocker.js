@@ -1,19 +1,18 @@
 ﻿define(['jquery'], function ($) {
 
 	// Get the required DOM-elements
-	var header = $('#messageSpan'),
+	var header = $('#message'),
 	blocker = $('#blocker'),
 	logo = $('#logo'),
-	content = $('#instructions'),
-	instructionSpan = $('#instructionSpan'),
+	content = $('#content'),
+	instructions = $('#instructions'),
 	buttonToggleLang = $('#btLanguage'),
 	linkImprint = $('#lnkImprint'),
-	linkSources = $('#lnkSources'),
+	linkSources = $('#lnkSources'),	
+	progress = $('#progress'),
+	progressBar = $('#progressBar'),
 	
-    progress = $('#progress'),
-    progressBar = $('#progressBar'),
-	
-   
+	hoverURL = 'images/logoHover.jpg',
 	culture = 'de',  
 	headerKey = '',
 	messageKey = '',
@@ -120,7 +119,7 @@
 		var params =[].splice.call(arguments,2);
 		
 		header.text(buildText(headerKey, culture, params));
-		instructionSpan.html(buildText(messageKey, culture, params));	
+		instructions.html(buildText(messageKey, culture, params));	
 		initText();
 		
 	},
@@ -134,7 +133,11 @@
 	
 
 
-	(function () {	  
+	(function () {
+
+		// Preload the hover-image. When the mourse-pointer enters the image, the hover-image is already loaded
+		$('<img/>')[0].src = hoverURL;
+
 		// Initialize the language-button
 		initText();
 		buttonToggleLang.click(function () {
@@ -163,7 +166,7 @@
 			}
 			
 			if (typeof cfg.start === 'function') {
-			    logo.click(cfg.start);				
+				logo.click(cfg.start);				
 			}
 			
 			if(typeof cfg.loadRequest === 'function') {
@@ -173,21 +176,21 @@
 
 		// Show the initialisation-message
 		setMessageInit: function () {
-		    logo.removeClass('logohover');
+			logo.removeClass('logohover');
 			refreshText('init', 'instructions');			
 		},
 
 		// Set the loading-progress
 		setMessageProgress: function (percent) {		   
-		    progress.show();
-		    progressBar.width(percent + '%');
+			progress.show();
+			progressBar.width(percent + '%');
 			refreshText('download', '', percent);           
 		},
 
 		// Show the ready-message
 		setMessageReady: function () {
-		    logo.addClass('logohover');
-		    progress.hide();		   		   
+			logo.addClass('logohover');
+			progress.hide();		   		   
 			refreshText('ready');	
 		},
 
