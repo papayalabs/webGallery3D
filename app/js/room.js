@@ -8,6 +8,7 @@ define(["engine", "three"], function (engine) {
 			speed,
 			roomName,
 			enterCallback,
+            labelConfiguration,
 			startPosition = new THREE.Vector3(0, 0, 0),
 
 			// callback which gets executed when this room has to be left.
@@ -38,6 +39,9 @@ define(["engine", "three"], function (engine) {
 
 				// Set walking-speed for this room
 				engine.configureMovement(speed);
+
+                // Configure the label-sprites
+				engine.configureLabels(labelConfiguration);
 				
 				// Register the engine-callback for checking the doors
 				engine.addRenderCallback(function (scene, camObject) {
@@ -101,6 +105,8 @@ define(["engine", "three"], function (engine) {
 			speed = config.speed;
 			
 			roomName = config.name;
+
+			labelConfiguration = config.labels;
 			
 			// sets the array of door objects.
 			if(config.doors !== undefined) {

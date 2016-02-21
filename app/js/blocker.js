@@ -252,6 +252,10 @@
 		    }
 		},
 
+
+		getCulture: function () {
+		    return culture;
+		},
 		
 	};
 });
