@@ -16,6 +16,16 @@
 	culture = 'de',  
 	headerKey = '',
 	messageKey = '',
+
+    // Detect wether WebGL is supported
+    hasWebGL = (function () {        
+        try
+        {
+            return !!window.WebGLRenderingContext && !!document.createElement('canvas').getContext('experimental-webgl');
+        } catch (e) {
+            return false;
+        }              
+    })(),
 	
 	// JSON-object with text-data 
 	messages = {
@@ -72,11 +82,13 @@
 			'en': 'An error occured during the mouse-locking.'
 		},
 
-		
+		'errorNoWEBGL': {
+		    'de': 'Es wurde keine Web-GL Unterstützung gefunden.<br/>Ohne Web-GL kann diese Seite nicht angezeigt werden.',
+		    'en': 'Web-GL is not supported by your browser.<br/>The page can\'t be displayed without Web-GL '
+		},
 	},
 
-	
-	
+   
 	// Returns the text with the given key and culture.
 	// 'params' should be an array of values. Each placeholder in a text is replaced by the value with the same index
 	buildText = function(key, culture, params) {
@@ -152,6 +164,10 @@
 			// Switch the displayed language
 			refreshText();
 		});
+
+		if (hasWebGL === false) {
+		    refreshText('errorHeader', 'errorNoWEBGL');
+		}
 	})();
 	
 	
@@ -165,7 +181,7 @@
 				return;
 			}
 			
-			if (typeof cfg.start === 'function') {
+			if (hasWebGL && (typeof cfg.start === 'function')) {
 				logo.click(cfg.start);				
 			}
 			
@@ -176,22 +192,29 @@
 
 		// Show the initialisation-message
 		setMessageInit: function () {
-			logo.removeClass('logohover');
-			refreshText('init', 'instructions');			
+		    logo.removeClass('logohover');
+
+		    if (hasWebGL) {
+		        refreshText('init', 'instructions');
+		    }
 		},
 
 		// Set the loading-progress
-		setMessageProgress: function (percent) {		   
-			progress.show();
-			progressBar.width(percent + '%');
-			refreshText('download', '', percent);           
+		setMessageProgress: function (percent) {
+		    if (hasWebGL) {
+		        progress.show();
+		        progressBar.width(percent + '%');
+		        refreshText('download', '', percent);
+		    }
 		},
 
 		// Show the ready-message
 		setMessageReady: function () {
-			logo.addClass('logohover');
-			progress.hide();		   		   
-			refreshText('ready');	
+		    if (hasWebGL) {
+		        logo.addClass('logohover');
+		        progress.hide();
+		        refreshText('ready');
+		    }
 		},
 
 		// Show the 'NoAPI'-error
@@ -215,14 +238,18 @@
 		},
 
 		// Fade-out the blocker
-		hide: function () {                  
-			blocker.stop(true, true).fadeOut(800);
+		hide: function () {
+		    if (hasWebGL) {
+		        blocker.stop(true, true).fadeOut(800);
+		    }
 		},
 	  
 	  
 		// Just hide the content, but not the blocker
 		hideContent: function () {
-			content.hide();
+		    if (hasWebGL) {
+		        content.hide();
+		    }
 		},
 
 		
