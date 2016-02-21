@@ -67,6 +67,11 @@ define = function(dependencies, callback)
 				speedValues.push(speedInc);
 			},
 			
+			 // Set the label-configuration for the current room
+			configureLabels: function (config) {
+				console.log("mockup-engine: labels were configured");
+			},
+			
 			// Gets wether the world is empty and a new room can be loaded
 			isEmptyWorld: function() {
 				return objectCounter + renderCallbacks.length === 0;

@@ -4,12 +4,12 @@
     var spriteList = [],
 
         spriteConfig = {
-            fontsize: 14,
+            fontsize: 12,
             borderColor: { r: 118, g: 118, b: 162, a: 1.0 },
-            backgroundColor: { r: 209, g: 209, b: 224, a: 0.8 }
+            backgroundColor: { r: 0, g: 0, b: 0, a: 0.8 }
         },
 
-        
+
 
         makeTextSprite = function (message, parameters) {
 
@@ -19,38 +19,38 @@
                 Date: July 2013 (three.js v59dev)
             */
 
+            var margin, fontface, fontsize, borderThickness, backgroundColor,
+                material, texture, geometry, plane,
+                height = 0,
+                width = 0,
+                messages = message.split('|'),
+                canvas = document.createElement('canvas'),
+                context = canvas.getContext('2d');
+
 
             if (parameters === undefined) parameters = {};
 
 
-            var margin = parameters.hasOwnProperty("margin") ?
-                parameters["margin"] : 2;
+            margin = parameters.hasOwnProperty("margin") ?
+                parameters.margin : 10;
 
-            var fontface = parameters.hasOwnProperty("fontface") ?
-                parameters["fontface"] : "Arial";
+            fontface = parameters.hasOwnProperty("fontface") ?
+                parameters.fontface : "Arial";
 
-            var fontsize = parameters.hasOwnProperty("fontsize") ?
-                parameters["fontsize"] : 18;
+            fontsize = parameters.hasOwnProperty("fontsize") ?
+                parameters.fontsize : 18;
 
-            var borderThickness = parameters.hasOwnProperty("borderThickness") ?
-                parameters["borderThickness"] : 1;
+            borderThickness = parameters.hasOwnProperty("borderThickness") ?
+                parameters.borderThickness : 1;
 
-            var borderColor = parameters.hasOwnProperty("borderColor") ?
-                parameters["borderColor"] : { r: 0, g: 0, b: 0, a: 1.0 };
+          
+            backgroundColor = parameters.hasOwnProperty("backgroundColor") ?
+                parameters.backgroundColor : { r: 255, g: 255, b: 255, a: 1.0 };
 
-            var backgroundColor = parameters.hasOwnProperty("backgroundColor") ?
-                parameters["backgroundColor"] : { r: 255, g: 255, b: 255, a: 1.0 };
-
-            
-            var canvas = document.createElement('canvas');
-            var context = canvas.getContext('2d');
+                                
             context.font = fontsize + "px " + fontface;
-
-
-            var messages = message.split('|');
-
-            var width = 0;
-            var height = borderThickness + margin * 2 + (fontsize + borderThickness) * messages.length;
+                     
+            height = borderThickness + margin * 2 + (fontsize + borderThickness) * messages.length;
             messages.forEach(function (m) {
                 // get size data (height depends only on font size)
                 var metrics = context.measureText(m);
@@ -63,19 +63,15 @@
 
             canvas.width = width;
             canvas.height = height;
-           
-            // background color
-            context.fillStyle = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
-                                          + backgroundColor.b + "," + backgroundColor.a + ")";
-            // border color
-            context.strokeStyle = "rgba(" + borderColor.r + "," + borderColor.g + ","
-                                          + borderColor.b + "," + borderColor.a + ")";
 
-            context.lineWidth = borderThickness;
-            roundRect(context, borderThickness / 2, borderThickness / 2, width - borderThickness, height - borderThickness, 0);
-           
+            // background color
+            context.fillStyle = "rgba(" + backgroundColor.r + "," + backgroundColor.g + "," + backgroundColor.b + "," + backgroundColor.a + ")";
+            
+            context.fillRect(0, 0, width, height);
+
             // text color
-            context.fillStyle = "rgba(0, 0, 0, 1.0)";
+            context.fillStyle = "rgba(255, 255, 255, 1.0)";
+            context.font = fontsize + "px " + fontface;
 
             messages.forEach(function (m, i) {
 
@@ -86,21 +82,23 @@
                 context.fillText(m, x, y);
             });
 
-           
-            // canvas contents will be used for a texture
-            var texture = new THREE.Texture(canvas)
-            texture.needsUpdate = true;
-            texture.minFilter = THREE.LinearMipMapNearestFilter;
-            texture.magFilter = THREE.LinearMipMapNearestFilter;
 
-            var mmm = new THREE.MeshBasicMaterial(
+            // canvas contents will be used for a texture
+            texture = new THREE.Texture(canvas);
+            texture.needsUpdate = true;
+            //texture.minFilter = THREE.LinearMipMapNearestFilter;
+            //texture.magFilter = THREE.LinearMipMapNearestFilter;
+
+            material = new THREE.MeshBasicMaterial(
                 {
-                    map: texture
+                    map: texture,
+                    opacity: 0.7,
+                    transparent: true,
                 });
 
-            var geometry = new THREE.PlaneGeometry(width / 4, height / 4);
+            geometry = new THREE.PlaneGeometry(width / 4 , height / 4);
 
-            var plane = new THREE.Mesh(geometry, mmm);
+            plane = new THREE.Mesh(geometry, material);
 
             return plane;
             //var spriteMaterial = new THREE.SpriteMaterial(
@@ -111,32 +109,9 @@
             //var sprite = new THREE.Sprite(spriteMaterial);
             //sprite.scale.set(100, 50, 1.0);
             //return sprite;
-        },
-
-        // function for drawing rounded rectangles
-        roundRect = function (ctx, x, y, w, h, r) {
-
-            /*
-                Three.js "tutorials by example"
-                Author: Lee Stemkoski
-                Date: July 2013 (three.js v59dev)
-            */
-
-            ctx.beginPath();
-            ctx.moveTo(x + r, y);
-            ctx.lineTo(x + w - r, y);
-            ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-            ctx.lineTo(x + w, y + h - r);
-            ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-            ctx.lineTo(x + r, y + h);
-            ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-            ctx.lineTo(x, y + r);
-            ctx.quadraticCurveTo(x, y, x + r, y);
-            ctx.closePath();
-            ctx.fill();
-            ctx.stroke();
         };
 
+       
 
 
     return {
@@ -147,7 +122,7 @@
             if (tools.isArray(config)) {
                 config.forEach(function (label) {
 
-                    if (label.text !== undefined && label.position != undefined) {
+                    if (label.text !== undefined && label.position !== undefined) {
 
                         // Get text to display:
                         var txt = label.text[culture] || '';

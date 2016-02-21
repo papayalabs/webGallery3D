@@ -233,7 +233,7 @@ define(["engine", "room", "three"], function (engine, roomFactory) {
                 },
 
                 text: {
-                    'de': 'America\'s Cupper|2015, Acryl auf Leinwand',
+                    'de': 'America\'s Cupper||2015, Acryl auf Leinwand',
                     'en': 'A label inside the room'
                 }
             }
