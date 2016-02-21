@@ -16,6 +16,10 @@ canvas {
     height: 100%;
 }
 
+a {
+    text-decoration: none;
+    color: black;
+}
 
 
 .centered {
@@ -109,15 +113,18 @@ canvas {
     transform: translate(-50%, -50%);
     height: 30px;
     width: 80%;
-    border: 2px solid #4d6e80;
-    padding: 2px;
+    border: 2px solid black;    
     display: none;
+    background-color: black;
+
 }
 
-#progressBar {
+#progressBar {    
     height: 100%;
     width: 0%;
-    background-color: #4d6e80;
+    background-color: black;
+    background-repeat:repeat-x;
+    background-image: url('../images/progress.jpg');
 }
 
 #message {
