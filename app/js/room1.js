@@ -225,18 +225,18 @@ define(["engine", "room", "three"], function (engine, roomFactory) {
 
 
 		labels: [
-            {
-                position: {
-                    x: 0,
-                    y: 20,
-                    z: -200
-                },
+			{
+				position: {
+					x: 0,
+					y: 20,
+					z: -200
+				},
 
-                text: {
-                    'de': 'America\'s Cupper||2015, Acryl auf Leinwand',
-                    'en': 'A label inside the room'
-                }
-            }
+				text: {
+					'de': 'America\'s Cupper||2015, Acryl auf Leinwand',
+					'en': 'America\'s Cupper||2015, Acrylic on canvas'
+				}
+			}
 		],
 	});
 	

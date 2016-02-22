@@ -4,8 +4,7 @@
     var spriteList = [],
 
         spriteConfig = {
-            fontsize: 12,
-            borderColor: { r: 118, g: 118, b: 162, a: 1.0 },
+            fontsize: 12,            
             backgroundColor: { r: 0, g: 0, b: 0, a: 0.8 }
         },
 
@@ -19,11 +18,11 @@
                 Date: July 2013 (three.js v59dev)
             */
 
-            var margin, fontface, fontsize, borderThickness, backgroundColor,
+            var margin, fontface, fontsize, backgroundColor,
                 material, texture, geometry, plane,
                 height = 0,
                 width = 0,
-                messages = message.split('|'),
+                messages = [],
                 canvas = document.createElement('canvas'),
                 context = canvas.getContext('2d');
 
@@ -40,26 +39,25 @@
             fontsize = parameters.hasOwnProperty("fontsize") ?
                 parameters.fontsize : 18;
 
-            borderThickness = parameters.hasOwnProperty("borderThickness") ?
-                parameters.borderThickness : 1;
-
-          
+           
             backgroundColor = parameters.hasOwnProperty("backgroundColor") ?
                 parameters.backgroundColor : { r: 255, g: 255, b: 255, a: 1.0 };
 
-                                
-            context.font = fontsize + "px " + fontface;
-                     
-            height = borderThickness + margin * 2 + (fontsize + borderThickness) * messages.length;
-            messages.forEach(function (m) {
-                // get size data (height depends only on font size)
+            if (message !== undefined) {
+                messages = message.split('|');
+            }
+
+            // Calculate the max width
+            context.font = fontsize + "px " + fontface;                     
+            height = margin * 2 + fontsize * messages.length;
+            messages.forEach(function (m) {               
                 var metrics = context.measureText(m);
                 if (metrics.width > width) {
                     width = metrics.width;
                 }
             });
 
-            width += borderThickness * 2 + margin * 2;
+            width += margin * 2;
 
             canvas.width = width;
             canvas.height = height;
@@ -78,7 +76,7 @@
                 var metrics = context.measureText(m);
 
                 var x = (width / 2 - metrics.width / 2);
-                var y = borderThickness + margin + (i + 1) * fontsize;
+                var y = margin + (i + 1) * fontsize;
                 context.fillText(m, x, y);
             });
 
@@ -86,9 +84,7 @@
             // canvas contents will be used for a texture
             texture = new THREE.Texture(canvas);
             texture.needsUpdate = true;
-            //texture.minFilter = THREE.LinearMipMapNearestFilter;
-            //texture.magFilter = THREE.LinearMipMapNearestFilter;
-
+            
             material = new THREE.MeshBasicMaterial(
                 {
                     map: texture,
@@ -97,18 +93,8 @@
                 });
 
             geometry = new THREE.PlaneGeometry(width / 4 , height / 4);
-
             plane = new THREE.Mesh(geometry, material);
-
-            return plane;
-            //var spriteMaterial = new THREE.SpriteMaterial(
-            //    {
-            //        map: texture
-            //    });
-
-            //var sprite = new THREE.Sprite(spriteMaterial);
-            //sprite.scale.set(100, 50, 1.0);
-            //return sprite;
+            return plane;            
         };
 
        
