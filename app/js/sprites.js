@@ -4,8 +4,35 @@
     var spriteList = [],
 
         spriteConfig = {
-            fontsize: 12,            
+            fontsize: 10,
+            fontsizeHeader: 18,
+            fontStyle: 'normal',
+            fontStyleHeader: 'bold',
             backgroundColor: { r: 0, g: 0, b: 0, a: 0.8 }
+        },
+
+
+        buildFontString = function (parameters, isHeader) {
+
+            var fontface, fontsize, fontsizeHeader,
+                fontStyle, fontStyleHeader;
+
+            fontface = parameters.hasOwnProperty("fontface") ?
+              parameters.fontface : "Arial";
+
+            fontsize = parameters.hasOwnProperty("fontsize") ?
+                parameters.fontsize : 10;
+
+            fontsizeHeader = parameters.hasOwnProperty("fontsizeHeader") ?
+                parameters.fontsizeHeader : 18;
+
+            fontStyle = parameters.hasOwnProperty("fontStyle") ?
+                parameters.fontStyle : 'normal';
+
+            fontStyleHeader = parameters.hasOwnProperty("fontStyleHeader") ?
+                parameters.fontStyleHeader : 'bold';
+
+            return (isHeader ? fontStyleHeader : fontStyle) + ' ' + (isHeader ? fontsizeHeader : fontsize) + "px " + fontface;
         },
 
 
@@ -16,9 +43,13 @@
                 Three.js "tutorials by example"
                 Author: Lee Stemkoski
                 Date: July 2013 (three.js v59dev)
+
+
+                modified by Holger Pfaff Feb 2016
             */
 
-            var margin, fontface, fontsize, backgroundColor,
+            var margin, fontsize, fontsizeHeader,                
+                backgroundColor,
                 material, texture, geometry, plane,
                 height = 0,
                 width = 0,
@@ -33,13 +64,13 @@
             margin = parameters.hasOwnProperty("margin") ?
                 parameters.margin : 10;
 
-            fontface = parameters.hasOwnProperty("fontface") ?
-                parameters.fontface : "Arial";
-
+          
             fontsize = parameters.hasOwnProperty("fontsize") ?
-                parameters.fontsize : 18;
+                parameters.fontsize : 10;
 
-           
+            fontsizeHeader = parameters.hasOwnProperty("fontsizeHeader") ?
+                parameters.fontsizeHeader : 18;
+          
             backgroundColor = parameters.hasOwnProperty("backgroundColor") ?
                 parameters.backgroundColor : { r: 255, g: 255, b: 255, a: 1.0 };
 
@@ -47,10 +78,12 @@
                 messages = message.split('|');
             }
 
-            // Calculate the max width
-            context.font = fontsize + "px " + fontface;                     
-            height = margin * 2 + fontsize * messages.length;
-            messages.forEach(function (m) {               
+            // Calculate the max width                        
+            height = margin * 2 + fontsize * (messages.length - 1) + fontsizeHeader;
+            messages.forEach(function (m, i) {
+
+                context.font = buildFontString(parameters, i === 0);
+
                 var metrics = context.measureText(m);
                 if (metrics.width > width) {
                     width = metrics.width;
@@ -69,14 +102,14 @@
 
             // text color
             context.fillStyle = "rgba(255, 255, 255, 1.0)";
-            context.font = fontsize + "px " + fontface;
-
+           
             messages.forEach(function (m, i) {
 
+                context.font = buildFontString(parameters, i === 0);
                 var metrics = context.measureText(m);
 
                 var x = (width / 2 - metrics.width / 2);
-                var y = margin + (i + 1) * fontsize;
+                var y = fontsizeHeader + margin + i * fontsize;
                 context.fillText(m, x, y);
             });
 

@@ -233,8 +233,8 @@ define(["engine", "room", "three"], function (engine, roomFactory) {
 				},
 
 				text: {
-					'de': 'America\'s Cupper||2015, Acryl auf Leinwand',
-					'en': 'America\'s Cupper||2015, Acrylic on canvas'
+					'de': 'America\'s Cupper||2015, Acryl auf Leinwand|Holger Pfaff',
+					'en': 'America\'s Cupper||2015, Acrylic on canvas|Holger Pfaff'
 				}
 			}
 		],
