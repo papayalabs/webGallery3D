@@ -134,9 +134,21 @@
 
 
     return {
+
+        // Gets wether there are sprites in the scene
+        spritesLoaded: function() {
+            return spriteList.length > 0;
+        },
+
+        // Create the sprites from the given config, if there are no sprites in the scene
         addSprites: function (scene, culture, config) {
 
             var sprite;
+
+            // Do not add sprites when there already sprites in the scene
+            if (spriteList.length > 0) {
+                return;
+            }
 
             if (tools.isArray(config)) {
                 config.forEach(function (label) {
@@ -156,6 +168,8 @@
 
         },
 
+
+        // Remove all sprites from the scene
         removeAllSprites: function (scene) {
             spriteList.forEach(function (spriteMesh) {
                 scene.remove(spriteMesh);

@@ -2,8 +2,7 @@ define(["blocker", "hud", "tools", "sprites", "three", "PointerLockControls", "A
 	function (blocker, hud, tools, sprites) {
 
 		var camera, scene, renderer, skyBox, controls, raycaster,
-			labelConfiguration,
-			showLabels = false,
+			labelConfiguration,			
 			collisionObjects = [],
 			untouchableObjects = [],
 			renderCallbacks = [],
@@ -16,6 +15,7 @@ define(["blocker", "hud", "tools", "sprites", "three", "PointerLockControls", "A
 			isLockInitialized = false,
 			isLoadingComplete = false,
 			showStats = false,
+			showLabels = true,
 			speed = 400.0,
 			prevTime = performance.now(),
 			velocity = new THREE.Vector3(),
@@ -34,7 +34,7 @@ define(["blocker", "hud", "tools", "sprites", "three", "PointerLockControls", "A
 
 
 		animate = function () {
-			requestAnimationFrame(animate);
+			
 
 
 			if (showStats) {
@@ -128,6 +128,8 @@ define(["blocker", "hud", "tools", "sprites", "three", "PointerLockControls", "A
 			if (showStats) {
 				hud.endMeasure();
 			}
+
+			requestAnimationFrame(animate);
 		},
 
 
@@ -257,6 +259,24 @@ define(["blocker", "hud", "tools", "sprites", "three", "PointerLockControls", "A
 		},
 
 
+		showRoom = function() {
+			blocker.setMessageReady();
+
+			if (showLabels && !sprites.spritesLoaded()) {
+				sprites.addSprites(scene, blocker.getCulture(), labelConfiguration);
+			}
+
+			isLoadingComplete = true;
+			if (!isLockInitialized) {
+				initializeLock();
+			} else if (isLocked) {
+				controlsEnabled = true;
+				controls.enabled = true;
+				blocker.hide();
+			}
+		},
+
+
 
 		loadSkyBox = function () {
 
@@ -294,13 +314,7 @@ define(["blocker", "hud", "tools", "sprites", "three", "PointerLockControls", "A
 		// Hides the visual blocker. Can be used when all models are already in the cache of the room
 		// and no other models need to be loaded
 		hideBlockerOverride: function () {
-			blocker.setMessageReady();
-			isLoadingComplete = true;
-			if (isLocked) {
-				controlsEnabled = true;
-				controls.enabled = true;
-				blocker.hide();
-			}
+			showRoom();
 		},
 
 		// Setup the scene
@@ -316,15 +330,7 @@ define(["blocker", "hud", "tools", "sprites", "three", "PointerLockControls", "A
 
 			manager.onLoad = function () {
 				console.log('Loader complete event');
-				blocker.setMessageReady();
-				isLoadingComplete = true;
-				if (!isLockInitialized) {              
-					initializeLock();
-				} else if (isLocked) {
-					controlsEnabled = true;
-					controls.enabled = true;
-					blocker.hide();
-				}
+				showRoom();
 			};
 
 			manager.onError = function () {
@@ -515,8 +521,7 @@ define(["blocker", "hud", "tools", "sprites", "three", "PointerLockControls", "A
 
 				// Remove all labels for this room
 				sprites.removeAllSprites(scene);
-				showLabels = false;
-
+				
 				untouchableObjects.length = 0;
 				collisionObjects.length = 0;
 				renderCallbacks.length = 0;
