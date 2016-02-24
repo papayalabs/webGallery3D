@@ -23,116 +23,8 @@ define(["blocker", "hud", "tools", "sprites", "three", "PointerLockControls", "A
 			loader1 = new THREE.AssimpJSONLoader(manager),
 		
 
-		onWindowResize = function () {
-
-			camera.aspect = window.innerWidth / window.innerHeight;
-			camera.updateProjectionMatrix();
-
-			renderer.setSize(window.innerWidth, window.innerHeight);
-
-		},
-
-
-		animate = function () {
-			
-
-
-			if (showStats) {
-				hud.beginMeasure();
-			}
-
-			var time = performance.now();
-			if (controlsEnabled) {
-
-
-
-				var moveDirection = new THREE.Vector3();
-
-				var delta = (time - prevTime) / 1000;
-
-				// Set speed and move-direction
-
-				velocity.x -= velocity.x * 10.0 * delta;
-				velocity.z -= velocity.z * 10.0 * delta;
-
-				if (moveForward) {
-					velocity.z -= speed * delta;
-					moveDirection.z = -1;
-				} else if (moveBackward) {
-					velocity.z += speed * delta;
-					moveDirection.z = 1;
-				}
-
-				if (moveLeft) {
-					velocity.x -= speed * delta;
-					moveDirection.x = -1;
-				} else if (moveRight) {
-					velocity.x += speed * delta;
-					moveDirection.x = 1;
-				}
-
-
-				var camObject = controls.getObject();
-
-				var isCollision = false;
-				if (moveDirection.length() > 0) {
-
-					// rotate the move-direction by the camera-angle
-					var axis = new THREE.Vector3(0, 1, 0);
-					moveDirection.applyAxisAngle(axis, camObject.rotation.y);
-
-					// set origin and direction of the raycaster
-					raycaster.set(camObject.position, moveDirection);
-
-					// detect collisions. Note: Only one ray is used to detect the collision, but this ray always points in the direction of the movement
-					var intersections = raycaster.intersectObjects(collisionObjects, true);
-					isCollision = intersections.length > 0;
-				}
-
-
-				// Do not move on collision. Changing the moving direction or stopping moving resets the collision
-				if (isCollision) {
-					velocity.x = 0;
-					velocity.z = 0;
-				}
-
-				var len = velocity.length() * delta;
-				if (len > raycaster.far) {
-					console.log('Raycasting error: The moving-distance is bigger than the raycasting-length: ' + len);
-					velocity.x = 0;
-					velocity.z = 0;
-				}
-
-				camObject.translateX(velocity.x * delta);
-				camObject.translateZ(velocity.z * delta);
-
-				if (showStats) {
-					hud.setMessage(
-						'X:' + Math.floor(camObject.position.x) +
-						' Y:' + Math.floor(camObject.position.y) +
-						' Z:' + Math.floor(camObject.position.z) +
-						' Dir:' + Math.abs(Math.floor(tools.rad2deg(camObject.rotation.y) % 360)));
-				}
-
-				if (skyBox) {
-					skyBox.position.set(camObject.position.x, camObject.position.y, camObject.position.z);
-				}
-
-				renderCallbacks.forEach(function (c) {
-					c(scene, camObject, delta);
-				});
-			}
-			prevTime = time;
-			renderer.render(scene, camera);
-
-			if (showStats) {
-				hud.endMeasure();
-			}
-
-			requestAnimationFrame(animate);
-		},
-
-
+		
+		
 		setShadow = function (obj, cast, receive) {
 
 			if (obj === undefined)
@@ -276,6 +168,195 @@ define(["blocker", "hud", "tools", "sprites", "three", "PointerLockControls", "A
 			}
 		},
 
+		onKeyDown = function (event) {
+			if (controlsEnabled) {
+
+				   
+				switch (event.keyCode) {
+
+					case 38: // up
+					case 87: // w
+						moveForward = true;
+						break;
+
+					case 37: // left
+					case 65: // a
+						moveLeft = true;
+						break;
+
+					case 40: // down
+					case 83: // s
+						moveBackward = true;
+						break;
+
+					case 39: // right
+					case 68: // d
+						moveRight = true;
+						break;
+
+					case 80: // p
+
+						showStats = !showStats;
+
+						if (showStats) {
+							hud.show();
+						} else {
+							hud.hide();
+						}
+							
+						break;
+
+					case 81:
+						showLabels = !showLabels;
+						if (showLabels) {
+							sprites.addSprites(scene, blocker.getCulture(), labelConfiguration);
+						} else {
+							sprites.removeAllSprites(scene);
+						}
+						break;
+
+				}
+			}
+		},
+
+		onKeyUp = function (event) {
+
+			  
+			switch (event.keyCode) {
+
+				case 38: // up
+				case 87: // w
+					moveForward = false;
+					break;
+
+				case 37: // left
+				case 65: // a
+					moveLeft = false;
+					break;
+
+				case 40: // down
+				case 83: // s
+					moveBackward = false;
+					break;
+
+				case 39: // right
+				case 68: // d
+					moveRight = false;
+					break;
+
+			}
+
+		},
+
+		animate = function () {
+
+
+
+			if (showStats) {
+				hud.beginMeasure();
+			}
+
+			var time = performance.now();
+			if (controlsEnabled) {
+
+
+
+				var moveDirection = new THREE.Vector3();
+
+				var delta = (time - prevTime) / 1000;
+
+				// Set speed and move-direction
+
+				velocity.x -= velocity.x * 10.0 * delta;
+				velocity.z -= velocity.z * 10.0 * delta;
+
+				if (moveForward) {
+					velocity.z -= speed * delta;
+					moveDirection.z = -1;
+				} else if (moveBackward) {
+					velocity.z += speed * delta;
+					moveDirection.z = 1;
+				}
+
+				if (moveLeft) {
+					velocity.x -= speed * delta;
+					moveDirection.x = -1;
+				} else if (moveRight) {
+					velocity.x += speed * delta;
+					moveDirection.x = 1;
+				}
+
+
+				var camObject = controls.getObject();
+
+				var isCollision = false;
+				if (moveDirection.length() > 0) {
+
+					// rotate the move-direction by the camera-angle
+					var axis = new THREE.Vector3(0, 1, 0);
+					moveDirection.applyAxisAngle(axis, camObject.rotation.y);
+
+					// set origin and direction of the raycaster
+					raycaster.set(camObject.position, moveDirection);
+
+					// detect collisions. Note: Only one ray is used to detect the collision, but this ray always points in the direction of the movement
+					var intersections = raycaster.intersectObjects(collisionObjects, true);
+					isCollision = intersections.length > 0;
+				}
+
+
+				// Do not move on collision. Changing the moving direction or stopping moving resets the collision
+				if (isCollision) {
+					velocity.x = 0;
+					velocity.z = 0;
+				}
+
+				var len = velocity.length() * delta;
+				if (len > raycaster.far) {
+					console.log('Raycasting error: The moving-distance is bigger than the raycasting-length: ' + len);
+					velocity.x = 0;
+					velocity.z = 0;
+				}
+
+				camObject.translateX(velocity.x * delta);
+				camObject.translateZ(velocity.z * delta);
+
+				if (showStats) {
+					hud.setMessage(
+						'X:' + Math.floor(camObject.position.x) +
+						' Y:' + Math.floor(camObject.position.y) +
+						' Z:' + Math.floor(camObject.position.z) +
+						' Dir:' + Math.abs(Math.floor(tools.rad2deg(camObject.rotation.y) % 360)));
+				}
+
+				if (skyBox) {
+					skyBox.position.set(camObject.position.x, camObject.position.y, camObject.position.z);
+				}
+
+				renderCallbacks.forEach(function (c) {
+					c(scene, camObject, delta);
+				});
+			}
+			prevTime = time;
+			renderer.render(scene, camera);
+
+			if (showStats) {
+				hud.endMeasure();
+			}
+
+			requestAnimationFrame(animate);
+		},
+
+		onWindowResize = function () {
+
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
+
+			renderer.setSize(window.innerWidth, window.innerHeight);
+
+		},
+
+
 
 
 		loadSkyBox = function () {
@@ -349,86 +430,7 @@ define(["blocker", "hud", "tools", "sprites", "three", "PointerLockControls", "A
 			controls = new THREE.PointerLockControls(camera);
 			scene.add(controls.getObject());
 
-			var onKeyDown = function (event) {
-				if (controlsEnabled) {
-
-				   
-					switch (event.keyCode) {
-
-						case 38: // up
-						case 87: // w
-							moveForward = true;
-							break;
-
-						case 37: // left
-						case 65: // a
-							moveLeft = true;
-							break;
-
-						case 40: // down
-						case 83: // s
-							moveBackward = true;
-							break;
-
-						case 39: // right
-						case 68: // d
-							moveRight = true;
-							break;
-
-						case 80: // p
-
-							showStats = !showStats;
-
-							if (showStats) {
-								hud.show();
-							} else {
-								hud.hide();
-							}
-							
-							break;
-
-						case 81:
-							showLabels = !showLabels;
-							if (showLabels) {
-								sprites.addSprites(scene, blocker.getCulture(), labelConfiguration);
-							} else {
-								sprites.removeAllSprites(scene);
-							}
-							break;
-
-					}
-				}
-			};
-
-			var onKeyUp = function (event) {
-
-			  
-				switch (event.keyCode) {
-
-				case 38: // up
-				case 87: // w
-					moveForward = false;
-					break;
-
-				case 37: // left
-				case 65: // a
-					moveLeft = false;
-					break;
-
-				case 40: // down
-				case 83: // s
-					moveBackward = false;
-					break;
-
-				case 39: // right
-				case 68: // d
-					moveRight = false;
-					break;
-
-				}
-
-			};
-
+			
 			document.addEventListener('keydown', onKeyDown, false);
 			document.addEventListener('keyup', onKeyUp, false);
 
