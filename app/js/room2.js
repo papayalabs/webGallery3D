@@ -1,4 +1,4 @@
-define(["engine", "room", "three"], function (engine, roomFactory) {
+define(["engine", "room", "three"], function (engine, roomFactory, THREE) {
 
    
 	var house, image1, 
@@ -123,7 +123,7 @@ define(["engine", "room", "three"], function (engine, roomFactory) {
 			// The loaders are not able to skip already loaded models, so they must not be called twice for the same model.
 			var isHouseCached = loadHouse();
 			var isImage1Cached = loadimage1();
-		   		   
+				   
 			return isHouseCached && isImage1Cached;			
 		},
 		
@@ -136,17 +136,17 @@ define(["engine", "room", "three"], function (engine, roomFactory) {
 		// The return value must be an boolean.
 		doors : [
 			{
-			    entryPosition: new THREE.Vector3(0, 70, -250),
-			    isLeaving: function (position) {
-			        return position.z < -340;
-			    }
+				entryPosition: new THREE.Vector3(0, 70, -250),
+				isLeaving: function (position) {
+					return position.z < -340;
+				}
 			},
-            {
-                entryPosition: new THREE.Vector3(170, 70, -110),
-                isLeaving: function (position) {
-                    return position.x > 184 && position.z > -143 && position.z < -84;
-                }
-            }
+			{
+				entryPosition: new THREE.Vector3(170, 70, -110),
+				isLeaving: function (position) {
+					return position.x > 184 && position.z > -143 && position.z < -84;
+				}
+			}
 		],
 	});
 	

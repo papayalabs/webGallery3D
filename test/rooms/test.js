@@ -79,7 +79,7 @@ define = function(dependencies, callback)
 		};
 	
 	// execute the callback from the require-'define'-function
-	var roomFactory = callback(engineMockup);
+	var roomFactory = callback(engineMockup, THREE);
 	
 	QUnit.start();
 

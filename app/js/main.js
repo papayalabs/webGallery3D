@@ -4,6 +4,12 @@ require.config({
 	  'jquery': 'lib/jquery.min',	  
 	  'stats' : 'lib/stats.min',
   },
+
+
+  shim: {
+	  'three': { exports: 'THREE' },
+
+  },
   
   map: {
 	  // '*' means all modules will get 'jquery-private'

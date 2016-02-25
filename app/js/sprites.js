@@ -1,4 +1,4 @@
-﻿define(["tools", "three"], function (tools) {
+﻿define(["tools", "three"], function (tools, THREE) {
 
   
     var spriteList = [],

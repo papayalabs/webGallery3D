@@ -1,5 +1,5 @@
 define(["blocker", "hud", "tools", "sprites", "three", "PointerLockControls", "AssimpJSONLoader"],
-	function (blocker, hud, tools, sprites) {
+	function (blocker, hud, tools, sprites, THREE, PointerLockControls, AssimpJSONLoader) {
 
 		var camera, scene, renderer, skyBox, controls, raycaster,
 			labelConfiguration,			
@@ -20,7 +20,7 @@ define(["blocker", "hud", "tools", "sprites", "three", "PointerLockControls", "A
 			prevTime = performance.now(),
 			velocity = new THREE.Vector3(),
 			manager = new THREE.LoadingManager(),
-			loader1 = new THREE.AssimpJSONLoader(manager),
+			loader1 = new AssimpJSONLoader(manager),
 		
 
 		
@@ -427,7 +427,7 @@ define(["blocker", "hud", "tools", "sprites", "three", "PointerLockControls", "A
 			var light = new THREE.AmbientLight(0x404040); // soft white light
 			scene.add(light);
 
-			controls = new THREE.PointerLockControls(camera);
+			controls = new PointerLockControls(camera);
 			scene.add(controls.getObject());
 
 			

@@ -7,9 +7,7 @@ module.exports = function(grunt) {
 	qunit: {
 		all: {
 		  options: {
-			urls: [
-				'http://localhost:8000/test/basic/test.html',
-				'http://localhost:8000/test/basic/testRequire.html',
+			urls: [				
 				'http://localhost:8000/test/models/test.html',
 				'http://localhost:8000/test/rooms/test.html',
 				'http://localhost:8000/test/rooms/testManager.html',

@@ -1,8 +1,9 @@
-define(["QUnit", "baseTest", "bridge"], function(QUnit, test1) {
+define(["QUnit", "local/baseTest", "local/roomManagerTest", "bridge"], function(QUnit, test1, roomManagerTest) {
 	return {
 	
 		run : function() {
-			test1.run();			
+			test1.run();		
+			roomManagerTest.run();			
 		},
 	}
 });

@@ -1,4 +1,4 @@
-define(["engine", "three"], function (engine) {
+define(["engine", "three"], function (engine, THREE) {
 
 	// Constructor-function which creates a room-instance
 	var Room = function(configuration) {
@@ -8,7 +8,7 @@ define(["engine", "three"], function (engine) {
 			speed,
 			roomName,
 			enterCallback,
-            labelConfiguration,
+			labelConfiguration,
 			startPosition = new THREE.Vector3(0, 0, 0),
 
 			// callback which gets executed when this room has to be left.
@@ -40,7 +40,7 @@ define(["engine", "three"], function (engine) {
 				// Set walking-speed for this room
 				engine.configureMovement(speed);
 
-                // Configure the label-sprites
+				// Configure the label-sprites
 				engine.configureLabels(labelConfiguration);
 				
 				// Register the engine-callback for checking the doors
