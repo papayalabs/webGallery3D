@@ -148,6 +148,56 @@ define(["engine", "room", "three"], function (engine, roomFactory, THREE) {
 				}
 			}
 		],
+
+		labels: [
+            {
+                position: {	x: 338, y: 10, z: 685 },
+                rotation : 205,
+                text: {
+                    'de': 'Rinde||2015, Acryl auf Leinwand|Holger Pfaff',
+                    'en': 'Bark||2015, Acrylic on canvas|Holger Pfaff'
+                }
+            },
+
+            {
+                position: { x: 125, y: 10, z: 850 },
+                rotation: 180,
+                text: {
+                    'de': 'Wiedersehen||2015, Acryl auf Leinwand|Holger Pfaff',
+                    'en': 'Reunion||2015, Acrylic on canvas|Holger Pfaff'
+                }
+            },
+
+
+            {
+                position: { x: 0, y: 10, z: 850 },
+                rotation: 180,
+                text: {
+                    'de': 'Kassiopeia||2015, Acryl auf Leinwand|Holger Pfaff',
+                    'en': 'Kassiopeia||2015, Acrylic on canvas|Holger Pfaff'
+                }
+            },
+
+            {
+                position: { x: -128, y: 10, z: 850 },
+                rotation: 180,
+                text: {
+                    'de': 'Fernsehabend||2015, Acryl auf Leinwand|Holger Pfaff',
+                    'en': 'TV evening||2015, Acrylic on canvas|Holger Pfaff'
+                }
+            },
+
+             {
+                 position: { x: -405, y: 70, z: 660 },
+                 rotation: 159,
+                 text: {
+                     'de': 'Abend||2012, Acryl auf Leinwand|Holger Pfaff',
+                     'en': 'Dawn||2012, Acrylic on canvas|Holger Pfaff'
+                 }
+             },
+
+
+        ],
 	});
 	
 	
