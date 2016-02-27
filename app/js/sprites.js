@@ -160,6 +160,7 @@
 
                         sprite = makeTextSprite(txt, spriteConfig);
                         sprite.position.set(label.position.x, label.position.y, label.position.z);
+                        sprite.rotation.y = tools.deg2rad(label.rotation);
                         scene.add(sprite);
                         spriteList.push(sprite);
                     }
