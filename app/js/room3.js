@@ -108,5 +108,16 @@
 				}
 			}
 		],
+
+		labels: [
+            {
+                position: {	x: 0, y: 70, z: -130 },
+                rotation : 0,
+                text: {
+                    'de': '(Baustelle)',
+                    'en': '(under Construction)'
+                }
+            },
+        ],
 	});
 });
