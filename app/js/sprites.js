@@ -117,6 +117,7 @@
             // canvas contents will be used for a texture
             texture = new THREE.Texture(canvas);
             texture.needsUpdate = true;
+            texture.minFilter = THREE.NearestFilter;
             
             material = new THREE.MeshBasicMaterial(
                 {
@@ -125,7 +126,7 @@
                     transparent: true,
                 });
 
-            geometry = new THREE.PlaneGeometry(width / 4 , height / 4);
+            geometry = new THREE.PlaneBufferGeometry(width / 4, height / 4);
             plane = new THREE.Mesh(geometry, material);
             return plane;            
         };
