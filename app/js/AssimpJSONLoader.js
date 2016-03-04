@@ -171,13 +171,15 @@ define(["three"], function(THREE)
 		parseMaterial: function (json) {
 
 			// hp :
-			var opacity = 1;
-			var mat = null,            
-			scope = this, i, prop, has_textures = [],
+			var i, prop,
+				opacity = 1,
+				mat = null,            
+				scope = this,            
+				has_textures = [],
 
-			init_props = {
-				shading : THREE.SmoothShading
-			};
+				init_props = {
+					shading : THREE.SmoothShading
+				};
 
 			function toColor(value_arr) {
 				var col = new THREE.Color();
@@ -219,15 +221,15 @@ define(["three"], function(THREE)
 					if (tex) {
 						// TODO: read texture settings from assimp.
 						// Wrapping is the default, though.
-					    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+						tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
 
-					    // HP: Race condition: This fails if the loader is too fast, because 'mat' is still NULL!
+						// HP: Race condition: This fails if the loader is too fast, because 'mat' is still NULL!
 
 						if (mat !== null) {						   
-						    mat[keyname] = tex;
-						    mat.needsUpdate = true;
+							mat[keyname] = tex;
+							mat.needsUpdate = true;
 						} else {
-						    init_props[keyname] = tex;
+							init_props[keyname] = tex;
 						}
 					}
 				});
@@ -278,8 +280,13 @@ define(["three"], function(THREE)
 			// has been rendered once, see http://stackoverflow.com/questions/16531759/.
 			// for this reason we fill all slots upfront with default textures
 			if (has_textures.length) {
-				for (i = has_textures.length - 1; i >= 0; -- i) {
-					init_props[has_textures[i]] = defaultTexture();
+				for (i = has_textures.length - 1; i >= 0; --i) {
+
+					// hp: Only set the default texture if the propery is not yet set,
+					// because the texture could have been applied already by a fast loader
+					if (init_props[has_textures[i]] === undefined) {
+						init_props[has_textures[i]] = defaultTexture();
+					}
 				}
 			}
 			
