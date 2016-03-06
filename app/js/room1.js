@@ -72,43 +72,33 @@ define(["engine", "room", "three"], function (engine, roomFactory, THREE) {
 		},
 
 		loadLight = function () {
+		
 
+		    var speed = 300,
+		        wayX = 300,
+		        wayZ = 300,
+		        angle = 0.8,
+                frameCounter = 0,
+		        triggerPosX = false,
+		        triggerNegX = false,
+		        triggerPosZ = false,
+		        triggerNegZ = false,
+		        d = 400;
 
-			var boxTarget = new THREE.Mesh(
-				new THREE.BoxGeometry(0, 0, 0),
-				new THREE.MeshBasicMaterial({
-					color: 0x000000
-				}));
-
-			var sphere = new THREE.Mesh(
-				new THREE.SphereGeometry(50, 32, 16),
-				new THREE.MeshBasicMaterial({
-					color: 0xFFFFFF
-				}));
-
-			boxTarget.position.set(0, 0, 0);
-			engine.addObject(boxTarget);
+		    var xPosMin = -wayX,
+		        xPosMax = wayX,
+		        xPos = xPosMin,
+		        zPosMin = -wayZ,
+		        zPosMax = wayZ,
+		        zPos = zPosMax,
+		    		  
+			    sphere = new THREE.Mesh(
+				    new THREE.SphereGeometry(50, 32, 16),
+				    new THREE.MeshBasicMaterial({
+					    color: 0xFFFFFF
+				    }));
+								
 			engine.addObject(sphere);
-
-
-			var speed = 300;
-			var wayX = 300;
-			var wayZ = 300;
-			var angle = 0.8;
-
-			var xPosMin = -wayX;
-			var xPosMax = wayX;
-			var xPos = xPosMin;
-			var zPosMin = -wayZ;
-			var zPosMax = wayZ;
-			var zPos = zPosMax;
-			var frameCounter = 0;
-
-			var triggerPosX = false;
-			var triggerNegX = false;
-			var triggerPosZ = false;
-			var triggerNegZ = false;
-			var d = 400;
 
 			var directionalLight1 = new THREE.DirectionalLight(0xffffff, 1.5);
 			directionalLight1.position.set(xPos, 350, zPos);

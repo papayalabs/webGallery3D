@@ -34,43 +34,20 @@
 		
 		loadLight = function () {
 
-			var d = 300,
+			var light1 = new THREE.SpotLight(0xffffff);
+			var light2 = new THREE.SpotLight(0xffffff);
+		
+			light1.target.position.set(0, 70, -140);
+			light1.position.set(0, 200, 0);
 
-				boxTarget = new THREE.Mesh(
-					new THREE.BoxGeometry(0, 0, 0),
-					new THREE.MeshBasicMaterial({
-						color: 0x000000
-					})),
+			light2.target.position.set(0, 70, 140);
+			light2.position.set(0, 200, 50);
+						
+			engine.addObject(light1.target);
+			engine.addObject(light1);
 
-				sphere = new THREE.Mesh(
-				   new THREE.SphereGeometry(30, 32, 16),
-				   new THREE.MeshBasicMaterial({
-					   color: 0xFFFFFF
-				   })),
-
-				light = new THREE.DirectionalLight(0xffffff);
-
-			engine.addObject(boxTarget);
-			engine.addObject(sphere);
-			boxTarget.position.set(-400, 0, 0);
-			light.position.set(-180, 400, 0);
-			light.target = boxTarget;
-			light.castShadow = false;
-			light.shadowDarkness = 0.5;
-			light.shadowCameraVisible = true; // only for debugging       
-			light.shadowCameraNear = 3;
-			light.shadowCameraFar = 1000;
-			light.shadowMapWidth = 4096;
-			light.shadowMapHeight = 4096;
-			light.shadowCameraLeft = -d;
-			light.shadowCameraRight = d;
-			light.shadowCameraTop = d;
-			light.shadowCameraBottom = -d;
-
-			engine.addObject(light);
-
-			sphere.position.set(light.position.x, light.position.y, light.position.z);
-
+			engine.addObject(light2.target);
+			engine.addObject(light2);
 		};
 
 
@@ -111,11 +88,11 @@
 
 		labels: [
             {
-                position: {	x: 0, y: 70, z: -130 },
+                position: {	x: 0, y: 15, z: -160 },
                 rotation : 0,
                 text: {
-                    'de': '(Baustelle)',
-                    'en': '(under Construction)'
+                    'de': 'Steinherz||2016, Acryl auf Leinwand|Holger Pfaff',
+                    'en': 'Heart of Stone||2016, Acrylic on canvas|Holger Pfaff'
                 }
             },
         ],

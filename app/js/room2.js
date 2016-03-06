@@ -68,13 +68,7 @@ define(["engine", "room", "three"], function (engine, roomFactory, THREE) {
 		loadLight = function () {
 
 			var d = 600,
-			
-				boxTarget = new THREE.Mesh(
-					new THREE.BoxGeometry(0, 0, 0),
-					new THREE.MeshBasicMaterial({
-						color: 0x000000
-					})),
-
+							
 				sphere = new THREE.Mesh(
 				   new THREE.SphereGeometry(30, 32, 16),
 				   new THREE.MeshBasicMaterial({
@@ -83,11 +77,10 @@ define(["engine", "room", "three"], function (engine, roomFactory, THREE) {
 				   
 				light = new THREE.DirectionalLight(0xffffff);
 
-			engine.addObject(boxTarget);
+			
 			engine.addObject(sphere);
-			boxTarget.position.set(0,0,100);					
-			light.position.set(0, 420, -250);
-			light.target = boxTarget;
+			light.target.position.set(0,0,100);					
+			light.position.set(0, 420, -250);			
 			light.castShadow = true;
 			light.shadowDarkness = 0.5;
 			//light.shadowCameraVisible = true; // only for debugging       
@@ -101,6 +94,7 @@ define(["engine", "room", "three"], function (engine, roomFactory, THREE) {
 			light.shadowCameraBottom = -d;
 
 			engine.addObject(light);
+			engine.addObject(light.target);
 
 			sphere.position.set(light.position.x, light.position.y, light.position.z);
 			  
