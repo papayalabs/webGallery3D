@@ -171,83 +171,89 @@ define(["three"], function(THREE)
 		parseMaterial: function (json) {
 
 			// hp :
-			var i, prop,
+		    var i, prop, 
 				opacity = 1,
-				mat = null,            
-				scope = this,            
-				has_textures = [],
+				mat = null,
+				scope = this,				
+                textures = [],
 
 				init_props = {
-					shading : THREE.SmoothShading
-				};
+				    shading: THREE.SmoothShading
+				},
 
-			function toColor(value_arr) {
-				var col = new THREE.Color();
-				col.setRGB(value_arr[0], value_arr[1], value_arr[2]);
-				return col;
-			}
+			toColor = function (value_arr) {
+			    var col = new THREE.Color();
+			    col.setRGB(value_arr[0], value_arr[1], value_arr[2]);
+			    return col;
+			},
 
-			function defaultTexture() {
-				var im = new Image();
-				im.width = 1;
-				im.height = 1;
-				return new THREE.Texture(im);
-			}
-			
-			function loadTexture(semantic, value) {
-				var loader = new THREE.TextureLoader(scope.manager),
-				keyname;
+			defaultTexture = function () {
+			    var im = new Image();
+			    im.width = 1;
+			    im.height = 1;
+			    return new THREE.Texture(im);
+			},
 
-				if (semantic === 1) {
-					keyname = 'map';
-				}
-				else if (semantic === 5) {
-					keyname = 'bumpMap';
-				}
-				else if (semantic === 6) {
-					keyname = 'normalMap';
-				}
-				else if (semantic === 2) {
-					keyname = 'specularMap';
-				}
+            getKeyName = function (semantic) {
 
-				has_textures.push(keyname);
+                // prop.semantic gives the type of the texture
+                // 1: diffuse
+                // 2: specular map
+                // 5: height map (bumps)
+                // 6: normal map
+                // more values (i.e. emissive, environment) are known by assimp and may be relevant
 
-				loader.setCrossOrigin(this.crossOrigin);
-				var material_url = scope.texturePath + '/' + value;
-				material_url = material_url.replace(/\\/g, '/');
+                if (semantic === 1) {
+                    return 'map';
+                }
+                else if (semantic === 5) {
+                    return 'bumpMap';
+                }
+                else if (semantic === 6) {
+                    return 'normalMap';
+                }
+                else if (semantic === 2) {
+                    return 'specularMap';
+                }              
+            },
 
-				loader.load(material_url, function(tex) {
-					if (tex) {
-						// TODO: read texture settings from assimp.
-						// Wrapping is the default, though.
-						tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+			loadTexture = function (keyname, value) {
 
-						// HP: Race condition: This fails if the loader is too fast, because 'mat' is still NULL!
+			    var loader = new THREE.TextureLoader(scope.manager);
+				
+			    if (keyname === undefined) {
+			        return;
+			    }
+			   
+			    loader.setCrossOrigin(this.crossOrigin);
+			    var material_url = scope.texturePath + '/' + value;
+			    material_url = material_url.replace(/\\/g, '/');
 
-						if (mat !== null) {						   
-							mat[keyname] = tex;
-							mat.needsUpdate = true;
-						} else {
-							init_props[keyname] = tex;
-						}
-					}
-				});
-			}
+			    loader.load(material_url, function (tex) {
+			        if (tex) {
+			            // TODO: read texture settings from assimp.
+			            // Wrapping is the default, though.
+			            tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
 
+			            // HP: Material will not be null at this time
+			            if (mat !== null) {
+			                mat[keyname] = tex;
+			                mat.needsUpdate = true;
+			            }
+			        }
+			    });
+			};
+
+          
 			for (var p in json.properties) {
 				prop = json.properties[p];
 
 				if (prop.key === '$tex.file') {
-					// prop.semantic gives the type of the texture
-					// 1: diffuse
-					// 2: specular mao
-					// 5: height map (bumps)
-					// 6: normal map
-					// more values (i.e. emissive, environment) are known by assimp and may be relevant
-					if (prop.semantic === 1 || prop.semantic === 5 || prop.semantic === 6 || prop.semantic === 2) {
-						loadTexture(prop.semantic, prop.value);
-					}
+									   				    
+				    textures.push({				            
+				        keyName: getKeyName(prop.semantic),
+				        value: prop.value
+				    });				    					
 				}
 				else if (prop.key === '?mat.name') {
 					init_props.name = prop.value;
@@ -279,14 +285,11 @@ define(["three"], function(THREE)
 			// note: three.js does not like it when a texture is added after the geometry
 			// has been rendered once, see http://stackoverflow.com/questions/16531759/.
 			// for this reason we fill all slots upfront with default textures
-			if (has_textures.length) {
-				for (i = has_textures.length - 1; i >= 0; --i) {
-
-					// hp: Only set the default texture if the propery is not yet set,
-					// because the texture could have been applied already by a fast loader
-					if (init_props[has_textures[i]] === undefined) {
-						init_props[has_textures[i]] = defaultTexture();
-					}
+			if (textures.length) {
+			    for (i = textures.length - 1; i >= 0; --i) {
+			        if (textures[i].keyName) {
+			            init_props[textures[i].keyName] = defaultTexture();					
+			        }
 				}
 			}
 			
@@ -297,6 +300,16 @@ define(["three"], function(THREE)
 				mat.transparent = true;
 				mat.opacity = opacity;
 			}
+
+            // Start loading the textures after the material was created
+			if (textures.length) {
+			    for (i = textures.length - 1; i >= 0; --i) {
+			        if (textures[i].keyName) {
+			            loadTexture(textures[i].keyName, textures[i].value);
+			        }
+			    }
+			}
+
 			return mat;
 		},
 
