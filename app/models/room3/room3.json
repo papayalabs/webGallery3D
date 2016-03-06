@@ -20475,7 +20475,7 @@
 					,"semantic": 1
 					,"index": 0
 					,"type": 3
-					,"value": "STONES1.JPG"
+					,"value": "LEAVES1.JPG"
 				}
 				,{
 					 "key": "$tex.blend"
@@ -20516,7 +20516,7 @@
 					,"semantic": 5
 					,"index": 0
 					,"type": 3
-					,"value": "STONES1.JPG"
+					,"value": "LEAVES1.JPG"
 				}
 				,{
 					 "key": "$tex.blend"
@@ -20678,7 +20678,7 @@
 					,"semantic": 0
 					,"index": 0
 					,"type": 3
-					,"value": "09 - Default"
+					,"value": "frame"
 				}
 				,{
 					 "key": "$clr.ambient"
@@ -20686,9 +20686,9 @@
 					,"index": 0
 					,"type": 1
 					,"value": [
-						 0.164706
-						,0.137255
-						,0.054902
+						 0.192157
+						,0.192157
+						,0.192157
 					]
 				}
 				,{
@@ -20697,9 +20697,9 @@
 					,"index": 0
 					,"type": 1
 					,"value": [
-						 0.164706
-						,0.137255
-						,0.054902
+						 0.192157
+						,0.192157
+						,0.192157
 					]
 				}
 				,{

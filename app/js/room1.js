@@ -101,8 +101,7 @@ define(["engine", "room", "three"], function (engine, roomFactory, THREE) {
 			engine.addObject(sphere);
 
 			var directionalLight1 = new THREE.DirectionalLight(0xffffff, 1.5);
-			directionalLight1.position.set(xPos, 350, zPos);
-			directionalLight1.target = boxTarget;
+			directionalLight1.position.set(xPos, 350, zPos);			
 			directionalLight1.castShadow = true;
 			//directionalLight1.shadowCameraVisible = true;
 			directionalLight1.shadowDarkness = 0.7;
