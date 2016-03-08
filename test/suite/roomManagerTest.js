@@ -3,8 +3,15 @@ define(["QUnit", "roomManager"], function(QUnit, roomManager) {
 
 	var testVars = {
 		enterCallback : function() {},	
+	},
+	
+	performance = performance || {
+		now : function() {
+			return Date.now();
+		}
 	};
 
+	
 	
 	return {	
 		run : function() {
