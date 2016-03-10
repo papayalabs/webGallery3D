@@ -104,8 +104,13 @@ define(["engine", "room", "three"], function (engine, roomFactory, THREE) {
 	// Create a new room-instance
 	return roomFactory.createRoom({
 			
-		speed : 700,
+		// The walking-speed
+		speed: 700,
+
+		// The index of the skybox: Load 'Space'
 		sky: 0,
+
+		// The name of the room
 		name : "Room2",	
 		
 		// Define the callback which gets executed after the room was loaded

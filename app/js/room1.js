@@ -180,8 +180,11 @@ define(["engine", "room", "three"], function (engine, roomFactory, THREE) {
 
 	// Create a new room-instance
 	return roomFactory.createRoom({
-			
+		
+		// Name of the room
 		name: "Room1",
+
+		// The index of the skybox: Load 'Space'
 		sky: 0,
 			
 		// Define the callback which gets executed after the room was loaded

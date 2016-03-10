@@ -3,12 +3,15 @@
 
     var loadedSkyBoxIndex = -1,
         skyBox,
+
+
         config = [
-        {            
-            'prefix': 'images/skybox/purplenebula_',
-            'directions': ["ft", "bk", "up", "dn", "rt", "lf"],
-            'suffix': '.png'
-        }
+            // Skybox 0: Space
+            {            
+                'prefix': 'images/skybox/purplenebula_',
+                'directions': ["ft", "bk", "up", "dn", "rt", "lf"],
+                'suffix': '.png'
+            }
     ];
 
     
@@ -16,13 +19,7 @@
    
 
     return {
-
-        // Removes the skybox without loading another one.
-        SKYBOX_NONE: -1,
-         
-        // Load the space-skybox
-        SKYBOX_SPACE: 0,
-
+      
         // Set the position of the skybox
         setPosition: function(position) {
             if (!!skyBox) {

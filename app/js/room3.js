@@ -54,7 +54,10 @@
 	// Create a new room-instance
 	return roomFactory.createRoom({
 		
+		// The name of the room
 		name: "Room3",
+
+		// Load no skybox
 		sky: -1,
 		
 		// Define the callback which gets executed after the room was loaded
