@@ -152,14 +152,14 @@ define(["blocker", "hud", "tools", "sprites", "sky", "three", "PointerLockContro
 
 
 		showRoom = function () {
+
+		    //sky.loadSkyBox(0, scene);
 		    blocker.setMessageReady();
 
 		    if (showLabels && !sprites.spritesLoaded()) {
 		        sprites.addSprites(scene, blocker.getCulture(), labelConfiguration);
 		    }
-
-		    sky.loadSkyBox(0, scene);
-
+		   
 		    isLoadingComplete = true;
 		    if (!isLockInitialized) {
 		        initializeLock();
@@ -521,21 +521,24 @@ define(["blocker", "hud", "tools", "sprites", "sky", "three", "PointerLockContro
 			return untouchableObjects.length + collisionObjects.length === 0;
 		},
 
-		// Sets the speed of movement and the length of the collision detection
-		configureMovement: function (speedInc) {
+		
 
-			if (typeof speedInc === 'number') {
-				speed = speedInc;
-			} else {
-				speed = 400.0;
-			}
+		configure: function (speedInc, labelConfig, skyBox) {
 
-			raycaster.far = speed / 20;          
-		},
+		    // Sets the speed of movement and the length of the collision detection
+		    if (typeof speedInc === 'number') {
+		        speed = speedInc;
+		    } else {
+		        speed = 400.0;
+		    }
 
-		// Set the label-configuration for the current room
-		configureLabels: function (config) {
-			labelConfiguration = config;
+		    raycaster.far = speed / 20;
+
+		    // Set the label-configuration for the current room
+		    labelConfiguration = labelConfig;
+		   
+
+		    sky.loadSkyBox( skyBox || 0 , scene);		   
 		},
 		
 	};

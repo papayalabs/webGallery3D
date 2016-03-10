@@ -54,7 +54,8 @@
 	// Create a new room-instance
 	return roomFactory.createRoom({
 		
-		name : "Room3",	
+		name: "Room3",
+		sky: -1,
 		
 		// Define the callback which gets executed after the room was loaded
 		onEnter: function () {
@@ -87,14 +88,14 @@
 		],
 
 		labels: [
-            {
-                position: {	x: 0, y: 15, z: -160 },
-                rotation : 0,
-                text: {
-                    'de': 'Steinherz||2016, Acryl auf Leinwand|Holger Pfaff',
-                    'en': 'Heart of Stone||2016, Acrylic on canvas|Holger Pfaff'
-                }
-            },
-        ],
+			{
+				position: {	x: 0, y: 15, z: -160 },
+				rotation : 0,
+				text: {
+					'de': 'Steinherz||2016, Acryl auf Leinwand|Holger Pfaff',
+					'en': 'Heart of Stone||2016, Acrylic on canvas|Holger Pfaff'
+				}
+			},
+		],
 	});
 });

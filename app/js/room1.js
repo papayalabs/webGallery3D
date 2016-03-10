@@ -74,29 +74,29 @@ define(["engine", "room", "three"], function (engine, roomFactory, THREE) {
 		loadLight = function () {
 		
 
-		    var speed = 300,
-		        wayX = 300,
-		        wayZ = 300,
-		        angle = 0.8,
-                frameCounter = 0,
-		        triggerPosX = false,
-		        triggerNegX = false,
-		        triggerPosZ = false,
-		        triggerNegZ = false,
-		        d = 400;
+			var speed = 300,
+				wayX = 300,
+				wayZ = 300,
+				angle = 0.8,
+				frameCounter = 0,
+				triggerPosX = false,
+				triggerNegX = false,
+				triggerPosZ = false,
+				triggerNegZ = false,
+				d = 400;
 
-		    var xPosMin = -wayX,
-		        xPosMax = wayX,
-		        xPos = xPosMin,
-		        zPosMin = -wayZ,
-		        zPosMax = wayZ,
-		        zPos = zPosMax,
-		    		  
-			    sphere = new THREE.Mesh(
-				    new THREE.SphereGeometry(50, 32, 16),
-				    new THREE.MeshBasicMaterial({
-					    color: 0xFFFFFF
-				    }));
+			var xPosMin = -wayX,
+				xPosMax = wayX,
+				xPos = xPosMin,
+				zPosMin = -wayZ,
+				zPosMax = wayZ,
+				zPos = zPosMax,
+					  
+				sphere = new THREE.Mesh(
+					new THREE.SphereGeometry(50, 32, 16),
+					new THREE.MeshBasicMaterial({
+						color: 0xFFFFFF
+					}));
 								
 			engine.addObject(sphere);
 
@@ -181,7 +181,8 @@ define(["engine", "room", "three"], function (engine, roomFactory, THREE) {
 	// Create a new room-instance
 	return roomFactory.createRoom({
 			
-		name : "Room1",	
+		name: "Room1",
+		sky: 0,
 			
 		// Define the callback which gets executed after the room was loaded
 		onEnter : function() {
@@ -214,49 +215,49 @@ define(["engine", "room", "three"], function (engine, roomFactory, THREE) {
 
 
 		labels: [
-            {
+			{
 				position: {	x: 0, y: 20, z: -200 },
-                rotation : 0,
+				rotation : 0,
 				text: {
 					'de': 'America\'s Cupper||2015, Acryl auf Leinwand|Holger Pfaff',
 					'en': 'America\'s Cupper||2015, Acrylic on canvas|Holger Pfaff'
 				}
-            },
-            {
-                position: { x: 170, y: 140, z: -98 },
-                rotation: 270,
-                text: {
-                    'de': 'Winter 1||2012, Acryl auf Leinwand|Holger Pfaff',
-                    'en': 'Winter 1||2012, Acrylic on canvas|Holger Pfaff'
-                }
-            },
+			},
+			{
+				position: { x: 170, y: 140, z: -98 },
+				rotation: 270,
+				text: {
+					'de': 'Winter 1||2012, Acryl auf Leinwand|Holger Pfaff',
+					'en': 'Winter 1||2012, Acrylic on canvas|Holger Pfaff'
+				}
+			},
 
-            {
-                position: { x: 170, y: 140, z: -12 },
-                rotation: 270,
-                text: {
-                    'de': 'Stadt an der Sonne||2013, Acryl auf Leinwand|Holger Pfaff',
-                    'en': 'City near the Sun||2013, Acrylic on canvas|Holger Pfaff'
-                }
-            },
+			{
+				position: { x: 170, y: 140, z: -12 },
+				rotation: 270,
+				text: {
+					'de': 'Stadt an der Sonne||2013, Acryl auf Leinwand|Holger Pfaff',
+					'en': 'City near the Sun||2013, Acrylic on canvas|Holger Pfaff'
+				}
+			},
 
-            {
-                position: { x: 170, y: 140, z: 78 },
-                rotation: 270,
-                text: {
-                    'de': 'Regenwald||2014, Acryl auf Leinwand|Holger Pfaff',
-                    'en': 'Rainforest||2014, Acrylic on canvas|Holger Pfaff'
-                }
-            },
+			{
+				position: { x: 170, y: 140, z: 78 },
+				rotation: 270,
+				text: {
+					'de': 'Regenwald||2014, Acryl auf Leinwand|Holger Pfaff',
+					'en': 'Rainforest||2014, Acrylic on canvas|Holger Pfaff'
+				}
+			},
 
-            {
-                position: { x: -220, y: 70, z: -90 },
-                 rotation: 90,
-                 text: {
-                     'de': 'Felsen und Brandung||2015, Acryl auf Leinwand|Holger Pfaff',
-                     'en': 'Rock and Surf||2015, Acrylic on canvas|Holger Pfaff'
-                 }
-             },
+			{
+				position: { x: -220, y: 70, z: -90 },
+				 rotation: 90,
+				 text: {
+					 'de': 'Felsen und Brandung||2015, Acryl auf Leinwand|Holger Pfaff',
+					 'en': 'Rock and Surf||2015, Acrylic on canvas|Holger Pfaff'
+				 }
+			 },
 		],
 	});
 	
