@@ -1,7 +1,7 @@
 define(["blocker", "hud", "tools", "sprites", "sky", "three", "PointerLockControls", "AssimpJSONLoader"],
 	function (blocker, hud, tools, sprites, sky, THREE, PointerLockControls, AssimpJSONLoader) {
 
-	    var camera, scene, renderer, controls, raycaster,
+		var camera, scene, renderer, controls, raycaster,
 			labelConfiguration,
 			collisionObjects = [],
 			untouchableObjects = [],
@@ -27,30 +27,30 @@ define(["blocker", "hud", "tools", "sprites", "sky", "three", "PointerLockContro
 
 		setShadow = function (obj, cast, receive) {
 
-		    if (obj === undefined)
-		        return;
+			if (obj === undefined)
+				return;
 
-		    obj.castShadow = cast;
-		    obj.receiveShadow = receive;
+			obj.castShadow = cast;
+			obj.receiveShadow = receive;
 
-		    if (obj.children !== undefined) {
-		        obj.children.forEach(function (c) {
-		            setShadow(c, cast, receive);
-		        });
-		    }
+			if (obj.children !== undefined) {
+				obj.children.forEach(function (c) {
+					setShadow(c, cast, receive);
+				});
+			}
 		},
 
 
 
 		stopMovement = function () {
-		    controlsEnabled = false;
-		    controls.enabled = false;
-		    velocity.x = 0;
-		    velocity.z = 0;
-		    moveForward = false;
-		    moveBackward = false;
-		    moveLeft = false;
-		    moveRight = false;
+			controlsEnabled = false;
+			controls.enabled = false;
+			velocity.x = 0;
+			velocity.z = 0;
+			moveForward = false;
+			moveBackward = false;
+			moveLeft = false;
+			moveRight = false;
 		},
 
 
@@ -59,302 +59,292 @@ define(["blocker", "hud", "tools", "sprites", "sky", "three", "PointerLockContro
 		// get the lock.
 		initializeLock = function () {
 
+			var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
+
+			if (havePointerLock) {
+				var element = document.body;
+				var pointerlockchange = function () {
+
+					isLocked = document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element;
+
+					if (isLocked) {
+						controlsEnabled = true;
+						controls.enabled = true;
+						blocker.hide();
+					} else {
+						stopMovement();
+						blocker.show();
+					}
+
+				};
+
+				var pointerlockerror = function () {
+					blocker.setErrorMessageLocking();
+				};
+
+				var enterLock = function () {
 
 
-		    var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
+					blocker.hideContent();
 
-		    if (havePointerLock) {
-		        var element = document.body;
-		        var pointerlockchange = function () {
+					// Ask the browser to lock the pointer
+					element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
 
-		            isLocked = document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element;
+					if (/Firefox/i.test(navigator.userAgent)) {
+						//console.log('it is firefox');
+						var fullscreenchange = function () {
 
-		            if (isLocked) {
-		                controlsEnabled = true;
-		                controls.enabled = true;
-		                blocker.hide();
-		            } else {
-		                stopMovement();
-		                blocker.show();
-		            }
+							if (document.fullscreenElement === element || document.mozFullscreenElement === element || document.mozFullScreenElement === element) {
 
-		        };
+								document.removeEventListener('fullscreenchange', fullscreenchange);
+								document.removeEventListener('mozfullscreenchange', fullscreenchange);
 
-		        var pointerlockerror = function () {
-		            blocker.setErrorMessageLocking();
-		        };
+								element.requestPointerLock();
+							}
 
-		        var enterLock = function () {
+						};
 
+						document.addEventListener('fullscreenchange', fullscreenchange, false);
+						document.addEventListener('mozfullscreenchange', fullscreenchange, false);
 
-		            blocker.hideContent();
+						element.requestFullscreen = element.requestFullscreen || element.mozRequestFullscreen || element.mozRequestFullScreen || element.webkitRequestFullscreen;
 
-		            // Ask the browser to lock the pointer
-		            element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
+						element.requestFullscreen();
 
-		            if (/Firefox/i.test(navigator.userAgent)) {
-		                //console.log('it is firefox');
-		                var fullscreenchange = function () {
+					} else {
+						element.requestPointerLock();
+					}
+				};
 
-		                    if (document.fullscreenElement === element || document.mozFullscreenElement === element || document.mozFullScreenElement === element) {
+				// Hook pointer lock state change events
+				document.addEventListener('pointerlockchange', pointerlockchange, false);
+				document.addEventListener('mozpointerlockchange', pointerlockchange, false);
+				document.addEventListener('webkitpointerlockchange', pointerlockchange, false);
 
-		                        document.removeEventListener('fullscreenchange', fullscreenchange);
-		                        document.removeEventListener('mozfullscreenchange', fullscreenchange);
+				document.addEventListener('pointerlockerror', pointerlockerror, false);
+				document.addEventListener('mozpointerlockerror', pointerlockerror, false);
+				document.addEventListener('webkitpointerlockerror', pointerlockerror, false);
 
-		                        element.requestPointerLock();
-		                    }
+				blocker.setCallbacks({
 
-		                };
+					start: function () {
+						if (isLoadingComplete) {
+							enterLock();
+						}
+					},
 
-		                document.addEventListener('fullscreenchange', fullscreenchange, false);
-		                document.addEventListener('mozfullscreenchange', fullscreenchange, false);
+					loadRequest: function (room) {
+						// TODO
+						console.log(room);
+					}
+				});
 
-		                element.requestFullscreen = element.requestFullscreen || element.mozRequestFullscreen || element.mozRequestFullScreen || element.webkitRequestFullscreen;
-
-		                element.requestFullscreen();
-
-		            } else {
-		                element.requestPointerLock();
-		            }
-		        };
-
-		        // Hook pointer lock state change events
-		        document.addEventListener('pointerlockchange', pointerlockchange, false);
-		        document.addEventListener('mozpointerlockchange', pointerlockchange, false);
-		        document.addEventListener('webkitpointerlockchange', pointerlockchange, false);
-
-		        document.addEventListener('pointerlockerror', pointerlockerror, false);
-		        document.addEventListener('mozpointerlockerror', pointerlockerror, false);
-		        document.addEventListener('webkitpointerlockerror', pointerlockerror, false);
-
-		        blocker.setCallbacks({
-
-		            start: function () {
-		                if (isLoadingComplete) {
-		                    enterLock();
-		                }
-		            },
-
-		            loadRequest: function (room) {
-		                // TODO
-		                console.log(room);
-		            }
-		        });
-
-		        isLockInitialized = true;
+				isLockInitialized = true;
 
 
-		    } else {
-		        blocker.setErrorMessageNoAPI();
-		    }
+			} else {
+				blocker.setErrorMessageNoAPI();
+			}
 
 		},
 
 
 		showRoom = function () {
 
-		    //sky.loadSkyBox(0, scene);
-		    blocker.setMessageReady();
+			//sky.loadSkyBox(0, scene);
+			blocker.setMessageReady();
 
-		    if (showLabels && !sprites.spritesLoaded()) {
-		        sprites.addSprites(scene, blocker.getCulture(), labelConfiguration);
-		    }
+			if (showLabels && !sprites.spritesLoaded()) {
+				sprites.addSprites(scene, blocker.getCulture(), labelConfiguration);
+			}
 		   
-		    isLoadingComplete = true;
-		    if (!isLockInitialized) {
-		        initializeLock();
-		    } else if (isLocked) {
-		        controlsEnabled = true;
-		        controls.enabled = true;
-		        blocker.hide();
-		    }
+			isLoadingComplete = true;
+			if (!isLockInitialized) {
+				initializeLock();
+			} else if (isLocked) {
+				controlsEnabled = true;
+				controls.enabled = true;
+				blocker.hide();
+			}
 		},
 
 		onKeyDown = function (event) {
-		    if (controlsEnabled) {
+			if (controlsEnabled) {
 
 
-		        switch (event.keyCode) {
+				switch (event.keyCode) {
 
-		            case 38: // up
-		            case 87: // w
-		                moveForward = true;
-		                break;
+					case 38: // up
+					case 87: // w
+						moveForward = true;
+						break;
 
-		            case 37: // left
-		            case 65: // a
-		                moveLeft = true;
-		                break;
+					case 37: // left
+					case 65: // a
+						moveLeft = true;
+						break;
 
-		            case 40: // down
-		            case 83: // s
-		                moveBackward = true;
-		                break;
+					case 40: // down
+					case 83: // s
+						moveBackward = true;
+						break;
 
-		            case 39: // right
-		            case 68: // d
-		                moveRight = true;
-		                break;
+					case 39: // right
+					case 68: // d
+						moveRight = true;
+						break;
 
-		            case 80: // p
+					case 80: // p
 
-		                showStats = !showStats;
+						showStats = !showStats;
 
-		                if (showStats) {
-		                    hud.show();
-		                } else {
-		                    hud.hide();
-		                }
+						if (showStats) {
+							hud.show();
+						} else {
+							hud.hide();
+						}
 
-		                break;
+						break;
 
-		            case 81:
-		                showLabels = !showLabels;
-		                if (showLabels) {
-		                    sprites.addSprites(scene, blocker.getCulture(), labelConfiguration);
-		                } else {
-		                    sprites.removeAllSprites(scene);
-		                }
-		                break;
+					case 81:
+						showLabels = !showLabels;
+						if (showLabels) {
+							sprites.addSprites(scene, blocker.getCulture(), labelConfiguration);
+						} else {
+							sprites.removeAllSprites(scene);
+						}
+						break;
 
-		        }
-		    }
+				}
+			}
 		},
 
 		onKeyUp = function (event) {
 
 
-		    switch (event.keyCode) {
+			switch (event.keyCode) {
 
-		        case 38: // up
-		        case 87: // w
-		            moveForward = false;
-		            break;
+				case 38: // up
+				case 87: // w
+					moveForward = false;
+					break;
 
-		        case 37: // left
-		        case 65: // a
-		            moveLeft = false;
-		            break;
+				case 37: // left
+				case 65: // a
+					moveLeft = false;
+					break;
 
-		        case 40: // down
-		        case 83: // s
-		            moveBackward = false;
-		            break;
+				case 40: // down
+				case 83: // s
+					moveBackward = false;
+					break;
 
-		        case 39: // right
-		        case 68: // d
-		            moveRight = false;
-		            break;
+				case 39: // right
+				case 68: // d
+					moveRight = false;
+					break;
 
-		    }
+			}
 
 		},
 
 		animate = function () {
 
+			var time, moveDirection, delta, camObject, 
+				isCollision = false;
+
+			if (showStats) {
+				hud.beginMeasure();
+			}
+
+			time = performance.now();
+			if (controlsEnabled) {
+				moveDirection = new THREE.Vector3();
+
+				// Limit delta to the max of 1 to avoid jumping on low framerates.
+				// Better move slower on low framerates than to jump large steps and run into walls
+				delta = Math.min(1, (time - prevTime) / 1000);
+				
+				// Set speed and move-direction
+
+				velocity.x -= velocity.x * 10.0 * delta;
+				velocity.z -= velocity.z * 10.0 * delta;
+
+				if (moveForward) {
+					velocity.z -= speed * delta;
+					moveDirection.z = -1;
+				} else if (moveBackward) {
+					velocity.z += speed * delta;
+					moveDirection.z = 1;
+				}
+
+				if (moveLeft) {
+					velocity.x -= speed * delta;
+					moveDirection.x = -1;
+				} else if (moveRight) {
+					velocity.x += speed * delta;
+					moveDirection.x = 1;
+				}
+					
+			
+				camObject = controls.getObject();
+				
+				if (moveDirection.length() > 0) {
+
+					// rotate the move-direction by the camera-angle		           
+					moveDirection.applyAxisAngle(new THREE.Vector3(0, 1, 0), camObject.rotation.y);
+
+					// Set the length of the collision-detection. Get the length of the current movement-vector
+					raycaster.far = Math.max(speed / 20, velocity.length() * delta);
+
+					// set origin and direction of the raycaster
+					raycaster.set(camObject.position, moveDirection);
+
+					// detect collisions. Note: Only one ray is used to detect the collision, but this ray always points in the direction of the movement		         
+					isCollision = raycaster.intersectObjects(collisionObjects, true).length > 0;
+				}
 
 
-		    if (showStats) {
-		        hud.beginMeasure();
-		    }
-
-		    var time = performance.now();
-		    if (controlsEnabled) {
-
-
-
-		        var moveDirection = new THREE.Vector3();
-
-		        var delta = (time - prevTime) / 1000;
-
-		        // Set speed and move-direction
-
-		        velocity.x -= velocity.x * 10.0 * delta;
-		        velocity.z -= velocity.z * 10.0 * delta;
-
-		        if (moveForward) {
-		            velocity.z -= speed * delta;
-		            moveDirection.z = -1;
-		        } else if (moveBackward) {
-		            velocity.z += speed * delta;
-		            moveDirection.z = 1;
-		        }
-
-		        if (moveLeft) {
-		            velocity.x -= speed * delta;
-		            moveDirection.x = -1;
-		        } else if (moveRight) {
-		            velocity.x += speed * delta;
-		            moveDirection.x = 1;
-		        }
-
-
-		        var camObject = controls.getObject();
-
-		        var isCollision = false;
-		        if (moveDirection.length() > 0) {
-
-		            // rotate the move-direction by the camera-angle
-		            var axis = new THREE.Vector3(0, 1, 0);
-		            moveDirection.applyAxisAngle(axis, camObject.rotation.y);
-
-		            // set origin and direction of the raycaster
-		            raycaster.set(camObject.position, moveDirection);
-
-		            // detect collisions. Note: Only one ray is used to detect the collision, but this ray always points in the direction of the movement
-		            var intersections = raycaster.intersectObjects(collisionObjects, true);
-		            isCollision = intersections.length > 0;
-		        }
-
-
-		        // Do not move on collision. Changing the moving direction or stopping moving resets the collision
-		        if (isCollision) {
-		            velocity.x = 0;
-		            velocity.z = 0;
-		        }
-
-		        var len = velocity.length() * delta;
-		        if (len > raycaster.far) {
-		            console.log('Raycasting error: The moving-distance is bigger than the raycasting-length: ' + len);
-		            velocity.x = 0;
-		            velocity.z = 0;
-		        }
-
-		        camObject.translateX(velocity.x * delta);
-		        camObject.translateZ(velocity.z * delta);
-
-		        if (showStats) {
-		            hud.setMessage(
+				// Do not move on collision. Changing the moving direction or stopping moving resets the collision
+				if (isCollision) {
+					velocity.x = 0;
+					velocity.z = 0;
+				} else {
+					camObject.translateX(velocity.x * delta);
+					camObject.translateZ(velocity.z * delta);
+					sky.setPosition(camObject.position);
+				}
+				
+				if (showStats) {
+					hud.setMessage(
 						'X:' + Math.floor(camObject.position.x) +
 						' Y:' + Math.floor(camObject.position.y) +
 						' Z:' + Math.floor(camObject.position.z) +
-						' Dir:' + Math.abs(Math.floor(tools.rad2deg(camObject.rotation.y) % 360)));
-		        }
+						' Dir:' + Math.abs(Math.floor(tools.rad2deg(camObject.rotation.y) % 360)) +
+						' Spd:' + Math.floor(velocity.length()) +
+						' Ray1:' + Math.floor(raycaster.far));
+				}
+		
+				renderCallbacks.forEach(function (c) {
+					c(scene, camObject, delta);
+				});
+			}
+			prevTime = time;
+			renderer.render(scene, camera);
 
+			if (showStats) {
+				hud.endMeasure();
+			}
 
-		        sky.setPosition(camObject.position);
-
-
-		        renderCallbacks.forEach(function (c) {
-		            c(scene, camObject, delta);
-		        });
-		    }
-		    prevTime = time;
-		    renderer.render(scene, camera);
-
-		    if (showStats) {
-		        hud.endMeasure();
-		    }
-
-		    requestAnimationFrame(animate);
+			requestAnimationFrame(animate);
 		},
 
 		onWindowResize = function () {
 
-		    camera.aspect = window.innerWidth / window.innerHeight;
-		    camera.updateProjectionMatrix();
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
 
-		    renderer.setSize(window.innerWidth, window.innerHeight);
+			renderer.setSize(window.innerWidth, window.innerHeight);
 
 		};
 
@@ -525,20 +515,18 @@ define(["blocker", "hud", "tools", "sprites", "sky", "three", "PointerLockContro
 
 		configure: function (speedInc, labelConfig, skyBox) {
 
-		    // Sets the speed of movement and the length of the collision detection
-		    if (typeof speedInc === 'number') {
-		        speed = speedInc;
-		    } else {
-		        speed = 400.0;
-		    }
-
-		    raycaster.far = speed / 20;
-
-		    // Set the label-configuration for the current room
-		    labelConfiguration = labelConfig;
+			// Sets the speed of movement and the length of the collision detection
+			if (typeof speedInc === 'number') {
+				speed = speedInc;
+			} else {
+				speed = 400.0;
+			}
+		
+			// Set the label-configuration for the current room
+			labelConfiguration = labelConfig;
 		   
 
-		    sky.loadSkyBox( skyBox || 0 , scene);		   
+			sky.loadSkyBox( skyBox || 0 , scene);		   
 		},
 		
 	};
