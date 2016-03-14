@@ -1,8 +1,8 @@
 define(["blocker", "hud", "tools", "sprites", "sky", "three", "PointerLockControls", "AssimpJSONLoader"],
 	function (blocker, hud, tools, sprites, sky, THREE, PointerLockControls, AssimpJSONLoader) {
 
-	    var camera, scene, renderer, controls, raycaster,
-           
+		var camera, scene, renderer, controls, raycaster,
+		   
 			labelConfiguration,
 			collisionObjects = [],
 			untouchableObjects = [],
@@ -17,13 +17,16 @@ define(["blocker", "hud", "tools", "sprites", "sky", "three", "PointerLockContro
 			isLoadingComplete = false,
 			showStats = false,
 			showLabels = true,
-            isCollision = false,
+			isCollision = false,
 			speed = 400.0,
+			rayAngle1 = tools.deg2rad(20),
+			rayAngle2 = tools.deg2rad(40),
+			zVector = new THREE.Vector3(0, 1, 0),
 			prevTime = performance.now(),
 			velocity = new THREE.Vector3(),
 			manager = new THREE.LoadingManager(),
 			loader1 = new AssimpJSONLoader(manager),
-            moveDirection = new THREE.Vector3(),
+			moveDirection = new THREE.Vector3(),
 
 
 
@@ -252,7 +255,7 @@ define(["blocker", "hud", "tools", "sprites", "sky", "three", "PointerLockContro
 
 		animate = function () {
 
-		    var time, delta, camObject;
+			var time, delta, camObject, cnt;
 				
 
 			if (showStats) {
@@ -285,53 +288,53 @@ define(["blocker", "hud", "tools", "sprites", "sky", "three", "PointerLockContro
 				}
 
 				if (velocity.x > 0) {
-				    moveDirection.x = 1;
+					moveDirection.x = 1;
 				} else if (velocity.x < 0) {
-				    moveDirection.x = -1;
+					moveDirection.x = -1;
 				} else {
-				    moveDirection.x = 0;
+					moveDirection.x = 0;
 				}
 
 				if (velocity.z > 0) {
-				    moveDirection.z = 1;
+					moveDirection.z = 1;
 				} else if (velocity.z < 0) {
-				    moveDirection.z = -1;				
-			    } else {
-			        moveDirection.z = 0;
-			    }
+					moveDirection.z = -1;				
+				} else {
+					moveDirection.z = 0;
+				}
 					
 			
 				camObject = controls.getObject();
 				
-				//moveDirection.normalize();
-
+				
 				if (moveDirection.length() > 0) {
 
-				    // Set the length of the collision-detection. Get the length of the current movement-vector
-				    raycaster.far = Math.max(speed / 20, velocity.length() * delta);
+					// Set the length of the collision-detection. Ensure that the ray is not shorter than the travel-distance
+					raycaster.far = Math.max(speed / 20, velocity.length() * delta);
 
-				    var cnt = 0;
+					cnt = 0;
 
+					// The ray is used twice in each frame. After the first scanning, it is rotated for the second scan.
 
-					// rotate the move-direction by the camera-angle		           
-				    moveDirection.applyAxisAngle(new THREE.Vector3(0, 1, 0), camObject.rotation.y - tools.deg2rad(20));
+					// rotate the move-direction by the camera-angle minus the half angle (20 deg)		           
+					moveDirection.applyAxisAngle(zVector, camObject.rotation.y - rayAngle1);
 
 					
 					// set origin and direction of the raycaster
 					raycaster.set(camObject.position, moveDirection);
 
-					// detect collisions. Note: Only one ray is used to detect the collision, but this ray always points in the direction of the movement		         
+					// detect collisions. 	         
 					cnt += raycaster.intersectObjects(collisionObjects, true).length;
 
 
-				    // rotate the move-direction by the camera-angle		           
-					moveDirection.applyAxisAngle(new THREE.Vector3(0, 1, 0), tools.deg2rad(40));
+					// rotate the move-direction by the full angle (40 deg)
+					moveDirection.applyAxisAngle(zVector, rayAngle2);
 
 
-				    // set origin and direction of the raycaster
+					// set origin and direction of the raycaster
 					raycaster.set(camObject.position, moveDirection);
 
-				    // detect collisions. Note: Only one ray is used to detect the collision, but this ray always points in the direction of the movement		         
+					// detect collisions.		         
 					cnt += raycaster.intersectObjects(collisionObjects, true).length;
 
 
