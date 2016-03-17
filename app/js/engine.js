@@ -1,34 +1,21 @@
-define(["blocker", "hud", "tools", "sprites", "sky", "three", "PointerLockControls", "AssimpJSONLoader"],
-	function (blocker, hud, tools, sprites, sky, THREE, PointerLockControls, AssimpJSONLoader) {
+define(["blocker", "hud", "tools", "sprites", "sky", "movement", "three", "PointerLockControls", "AssimpJSONLoader"],
+	function (blocker, hud, tools, sprites, sky, movement, THREE, PointerLockControls, AssimpJSONLoader) {
 
-		var camera, scene, renderer, controls, raycaster,
+		var camera, scene, renderer, controls, 
 		   
 			labelConfiguration,
 			collisionObjects = [],
 			untouchableObjects = [],
-			renderCallbacks = [],
-			controlsEnabled = false,
-			moveForward = false,
-			moveBackward = false,
-			moveLeft = false,
-			moveRight = false,
+			renderCallbacks = [],					
 			isLocked = false,
 			isLockInitialized = false,
 			isLoadingComplete = false,
 			showStats = false,
-			showLabels = true,
-			isCollision = false,
-			speed = 400.0,
-			rayAngle1 = tools.deg2rad(20),
-			rayAngle2 = tools.deg2rad(40),
-			zVector = new THREE.Vector3(0, 1, 0),
-			prevTime = performance.now(),
-			velocity = new THREE.Vector3(),
+			showLabels = true,												
+			prevTime = performance.now(),			
 			manager = new THREE.LoadingManager(),
 			loader1 = new AssimpJSONLoader(manager),
-			moveDirection = new THREE.Vector3(),
-
-
+			
 
 		setShadow = function (obj, cast, receive) {
 
@@ -44,22 +31,7 @@ define(["blocker", "hud", "tools", "sprites", "sky", "three", "PointerLockContro
 				});
 			}
 		},
-
-
-
-		stopMovement = function () {
-			controlsEnabled = false;
-			controls.enabled = false;
-			velocity.x = 0;
-			velocity.z = 0;
-			moveForward = false;
-			moveBackward = false;
-			moveLeft = false;
-			moveRight = false;
-		},
-
-
-
+		
 
 		// get the lock.
 		initializeLock = function () {
@@ -73,11 +45,12 @@ define(["blocker", "hud", "tools", "sprites", "sky", "three", "PointerLockContro
 					isLocked = document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element;
 
 					if (isLocked) {
-						controlsEnabled = true;
+					    movement.enable();
 						controls.enabled = true;
 						blocker.hide();
 					} else {
-						stopMovement();
+					    controls.enabled = false;
+					    movement.disable();
 						blocker.show();
 					}
 
@@ -167,38 +140,18 @@ define(["blocker", "hud", "tools", "sprites", "sky", "three", "PointerLockContro
 			if (!isLockInitialized) {
 				initializeLock();
 			} else if (isLocked) {
-				controlsEnabled = true;
+			    movement.enable();
 				controls.enabled = true;
 				blocker.hide();
 			}
 		},
 
 		onKeyDown = function (event) {
-			if (controlsEnabled) {
+			if (movement.isEnabled()) {
 
 
 				switch (event.keyCode) {
-
-					case 38: // up
-					case 87: // w
-						moveForward = true;
-						break;
-
-					case 37: // left
-					case 65: // a
-						moveLeft = true;
-						break;
-
-					case 40: // down
-					case 83: // s
-						moveBackward = true;
-						break;
-
-					case 39: // right
-					case 68: // d
-						moveRight = true;
-						break;
-
+				
 					case 80: // p
 
 						showStats = !showStats;
@@ -224,38 +177,11 @@ define(["blocker", "hud", "tools", "sprites", "sky", "three", "PointerLockContro
 			}
 		},
 
-		onKeyUp = function (event) {
-
-
-			switch (event.keyCode) {
-
-				case 38: // up
-				case 87: // w
-					moveForward = false;
-					break;
-
-				case 37: // left
-				case 65: // a
-					moveLeft = false;
-					break;
-
-				case 40: // down
-				case 83: // s
-					moveBackward = false;
-					break;
-
-				case 39: // right
-				case 68: // d
-					moveRight = false;
-					break;
-
-			}
-
-		},
+		
 
 		animate = function () {
 
-			var time, delta, camObject, cnt;
+			var time, delta, camObject;
 				
 
 			if (showStats) {
@@ -263,103 +189,27 @@ define(["blocker", "hud", "tools", "sprites", "sky", "three", "PointerLockContro
 			}
 
 			time = performance.now();
-			if (controlsEnabled) {
+			if (movement.isEnabled()) {
 				
 
 				// Limit delta to the max of 1 to avoid jumping on low framerates.
 				// Better move slower on low framerates than to jump large steps and run into walls
 				delta = Math.min(1, (time - prevTime) / 1000);
 				
-				// Set speed and move-direction
-
-				velocity.x -= velocity.x * 10.0 * delta;
-				velocity.z -= velocity.z * 10.0 * delta;
-
-				if (moveForward) {
-					velocity.z -= speed * delta;					
-				} else if (moveBackward) {
-					velocity.z += speed * delta;					
-				}
-
-				if (moveLeft) {
-					velocity.x -= speed * delta;					
-				} else if (moveRight) {
-					velocity.x += speed * delta;					
-				}
-
-				if (velocity.x > 0) {
-					moveDirection.x = 1;
-				} else if (velocity.x < 0) {
-					moveDirection.x = -1;
-				} else {
-					moveDirection.x = 0;
-				}
-
-				if (velocity.z > 0) {
-					moveDirection.z = 1;
-				} else if (velocity.z < 0) {
-					moveDirection.z = -1;				
-				} else {
-					moveDirection.z = 0;
-				}
-					
-			
 				camObject = controls.getObject();
 				
 				
-				if (moveDirection.length() > 0) {
-
-					// Set the length of the collision-detection. Ensure that the ray is not shorter than the travel-distance
-					raycaster.far = Math.max(speed / 20, velocity.length() * delta);
-
-					cnt = 0;
-
-					// The ray is used twice in each frame. After the first scanning, it is rotated for the second scan.
-
-					// rotate the move-direction by the camera-angle minus the half angle (20 deg)		           
-					moveDirection.applyAxisAngle(zVector, camObject.rotation.y - rayAngle1);
-
-					
-					// set origin and direction of the raycaster
-					raycaster.set(camObject.position, moveDirection);
-
-					// detect collisions. 	         
-					cnt += raycaster.intersectObjects(collisionObjects, true).length;
-
-
-					// rotate the move-direction by the full angle (40 deg)
-					moveDirection.applyAxisAngle(zVector, rayAngle2);
-
-
-					// set origin and direction of the raycaster
-					raycaster.set(camObject.position, moveDirection);
-
-					// detect collisions.		         
-					cnt += raycaster.intersectObjects(collisionObjects, true).length;
-
-
-					isCollision = cnt > 0;
+				if (movement.move(camObject, delta, collisionObjects)) {
+				    sky.setPosition(camObject.position);
 				}
 
-
-				// Do not move on collision. Changing the moving direction or stopping moving resets the collision
-				if (isCollision) {
-					velocity.x = 0;
-					velocity.z = 0;
-				} else {
-					camObject.translateX(velocity.x * delta);
-					camObject.translateZ(velocity.z * delta);
-					sky.setPosition(camObject.position);
-				}
 				
 				if (showStats) {
 					hud.setMessage(
 						'X:' + Math.floor(camObject.position.x) +
 						' Y:' + Math.floor(camObject.position.y) +
 						' Z:' + Math.floor(camObject.position.z) +
-						' Dir:' + Math.abs(Math.floor(tools.rad2deg(camObject.rotation.y) % 360)) +
-						' Spd:' + Math.floor(velocity.length()) +
-						' Ray1:' + Math.floor(raycaster.far));
+						' Dir:' + Math.abs(Math.floor(tools.rad2deg(camObject.rotation.y) % 360)));
 				}
 		
 				renderCallbacks.forEach(function (c) {
@@ -385,10 +235,6 @@ define(["blocker", "hud", "tools", "sprites", "sky", "three", "PointerLockContro
 
 		};
 
-
-
-
-		
 
 	return {
 
@@ -440,12 +286,10 @@ define(["blocker", "hud", "tools", "sprites", "sky", "three", "PointerLockContro
 			scene.add(controls.getObject());
 
 			
-			document.addEventListener('keydown', onKeyDown, false);
-			document.addEventListener('keyup', onKeyUp, false);
-
-			raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, -1, 0), 0, 10);
-			raycaster.near = 0;
-
+			document.addEventListener('keydown', onKeyDown, false);			
+			document.addEventListener('keydown', movement.onKeyDown, false);
+			document.addEventListener('keyup', movement.onKeyUp, false);
+		
 			renderer = new THREE.WebGLRenderer({
 				antialias: true
 			});
@@ -472,7 +316,8 @@ define(["blocker", "hud", "tools", "sprites", "sky", "three", "PointerLockContro
 		// Sets the camera to a new position, if required rotates the camera into a new direction
 		setCamera: function (pos, angle) {
 
-			stopMovement();
+		    controls.enabled = false;
+		    movement.disable();
 			var camObject = controls.getObject();
 			
 			if(pos instanceof THREE.Vector3) {					
@@ -519,7 +364,8 @@ define(["blocker", "hud", "tools", "sprites", "sky", "three", "PointerLockContro
 			isLoadingComplete = false;
 			blocker.setMessageProgress(0);
 			
-			stopMovement();
+			controls.enabled = false;
+			movement.disable();
 			
 			blocker.show(function() {
 				collisionObjects.forEach( function (mesh) {
@@ -553,12 +399,7 @@ define(["blocker", "hud", "tools", "sprites", "sky", "three", "PointerLockContro
 
 		configure: function (speedInc, labelConfig, skyBox) {
 
-			// Sets the speed of movement and the length of the collision detection
-			if (typeof speedInc === 'number') {
-				speed = speedInc;
-			} else {
-				speed = 400.0;
-			}
+		    movement.setSpeed(speedInc);
 		
 			// Set the label-configuration for the current room
 			labelConfiguration = labelConfig;
