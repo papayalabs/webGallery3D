@@ -95,10 +95,10 @@ define(["three"], function(THREE)
 		},
 
 		parseMesh : function(json) {
-			var geometry, i, e, in_data, src;
+		    var geometry, i, e, in_data, src, face;
 
 			var convertTextureCoords = function (in_uv, out_faces, out_vertex_uvs) {
-				var i, e, face, a, b, c;
+				var i, e, a, b, c;
 
 				for (i = 0, e = out_faces.length; i < e; ++ i) {
 					face = out_faces[i];
@@ -114,7 +114,7 @@ define(["three"], function(THREE)
 			};
 			
 			var convertNormals = function (in_nor, out_faces) {
-				var i, e, face, a, b, c;
+				var i, e, a, b, c;
 
 				for (i = 0, e = out_faces.length; i < e; ++ i) {
 					face = out_faces[i];
@@ -171,89 +171,89 @@ define(["three"], function(THREE)
 		parseMaterial: function (json) {
 
 			// hp :
-		    var i, prop, 
+			var i, prop, 
 				opacity = 1,
 				mat = null,
 				scope = this,				
-                textures = [],
+				textures = [],
 
 				init_props = {
-				    shading: THREE.SmoothShading
+					shading: THREE.SmoothShading
 				},
 
 			toColor = function (value_arr) {
-			    var col = new THREE.Color();
-			    col.setRGB(value_arr[0], value_arr[1], value_arr[2]);
-			    return col;
+				var col = new THREE.Color();
+				col.setRGB(value_arr[0], value_arr[1], value_arr[2]);
+				return col;
 			},
 
 			defaultTexture = function () {
-			    var im = new Image();
-			    im.width = 1;
-			    im.height = 1;
-			    return new THREE.Texture(im);
+			    var im = new Image(); // jshint ignore:line
+				im.width = 1;
+				im.height = 1;
+				return new THREE.Texture(im);
 			},
 
-            getKeyName = function (semantic) {
+			getKeyName = function (semantic) {
 
-                // prop.semantic gives the type of the texture
-                // 1: diffuse
-                // 2: specular map
-                // 5: height map (bumps)
-                // 6: normal map
-                // more values (i.e. emissive, environment) are known by assimp and may be relevant
+				// prop.semantic gives the type of the texture
+				// 1: diffuse
+				// 2: specular map
+				// 5: height map (bumps)
+				// 6: normal map
+				// more values (i.e. emissive, environment) are known by assimp and may be relevant
 
-                if (semantic === 1) {
-                    return 'map';
-                }
-                else if (semantic === 5) {
-                    return 'bumpMap';
-                }
-                else if (semantic === 6) {
-                    return 'normalMap';
-                }
-                else if (semantic === 2) {
-                    return 'specularMap';
-                }              
-            },
+				if (semantic === 1) {
+					return 'map';
+				}
+				else if (semantic === 5) {
+					return 'bumpMap';
+				}
+				else if (semantic === 6) {
+					return 'normalMap';
+				}
+				else if (semantic === 2) {
+					return 'specularMap';
+				}              
+			},
 
 			loadTexture = function (keyname, value) {
 
-			    var loader = new THREE.TextureLoader(scope.manager);
+				var loader = new THREE.TextureLoader(scope.manager);
 				
-			    if (keyname === undefined) {
-			        return;
-			    }
+				if (keyname === undefined) {
+					return;
+				}
 			   
-			    loader.setCrossOrigin(this.crossOrigin);
-			    var material_url = scope.texturePath + '/' + value;
-			    material_url = material_url.replace(/\\/g, '/');
+				loader.setCrossOrigin(this.crossOrigin);
+				var material_url = scope.texturePath + '/' + value;
+				material_url = material_url.replace(/\\/g, '/');
 
-			    loader.load(material_url, function (tex) {
-			        if (tex) {
-			            // TODO: read texture settings from assimp.
-			            // Wrapping is the default, though.
-			            tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+				loader.load(material_url, function (tex) {
+					if (tex) {
+						// TODO: read texture settings from assimp.
+						// Wrapping is the default, though.
+						tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
 
-			            // HP: Material will not be null at this time
-			            if (mat !== null) {
-			                mat[keyname] = tex;
-			                mat.needsUpdate = true;
-			            }
-			        }
-			    });
+						// HP: Material will not be null at this time
+						if (mat !== null) {
+							mat[keyname] = tex;
+							mat.needsUpdate = true;
+						}
+					}
+				});
 			};
 
-          
+		  
 			for (var p in json.properties) {
 				prop = json.properties[p];
 
 				if (prop.key === '$tex.file') {
-									   				    
-				    textures.push({				            
-				        keyName: getKeyName(prop.semantic),
-				        value: prop.value
-				    });				    					
+														
+					textures.push({				            
+						keyName: getKeyName(prop.semantic),
+						value: prop.value
+					});				    					
 				}
 				else if (prop.key === '?mat.name') {
 					init_props.name = prop.value;
@@ -286,10 +286,10 @@ define(["three"], function(THREE)
 			// has been rendered once, see http://stackoverflow.com/questions/16531759/.
 			// for this reason we fill all slots upfront with default textures
 			if (textures.length) {
-			    for (i = textures.length - 1; i >= 0; --i) {
-			        if (textures[i].keyName) {
-			            init_props[textures[i].keyName] = defaultTexture();					
-			        }
+				for (i = textures.length - 1; i >= 0; --i) {
+					if (textures[i].keyName) {
+						init_props[textures[i].keyName] = defaultTexture();					
+					}
 				}
 			}
 			
@@ -301,13 +301,13 @@ define(["three"], function(THREE)
 				mat.opacity = opacity;
 			}
 
-            // Start loading the textures after the material was created
+			// Start loading the textures after the material was created
 			if (textures.length) {
-			    for (i = textures.length - 1; i >= 0; --i) {
-			        if (textures[i].keyName) {
-			            loadTexture(textures[i].keyName, textures[i].value);
-			        }
-			    }
+				for (i = textures.length - 1; i >= 0; --i) {
+					if (textures[i].keyName) {
+						loadTexture(textures[i].keyName, textures[i].value);
+					}
+				}
 			}
 
 			return mat;

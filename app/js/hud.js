@@ -15,7 +15,7 @@
         if (hudExists()) {
             hud.hide();
 
-            stats = new Stats();
+            stats = new Stats(); // jshint ignore:line
             stats.setMode(0);
             div = $('<div></div>');
             div.appendTo(hud);

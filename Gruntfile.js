@@ -44,8 +44,9 @@ module.exports = function(grunt) {
 			// more options here if you want to override JSHint defaults
 			bitwise: true,
 			curly: false,
-			undef: false,
+			undef: true,
 			unused: true,
+			predef: ["define", "performance", "document", "window", "requestAnimationFrame", "require", "requirejs", "navigator"],
 		  
 		globals: {
 			
