@@ -75,7 +75,7 @@
 		},
 
 		// Set the start-position which is used when no door-number was provided
-		start: new THREE.Vector3(0, 70, 0),
+		start: new THREE.Vector3(0, 90, 0),
 
 		// Set the array of doors.
 		// Each door must have a 'entryPosition' which is used on entering the room and
@@ -83,7 +83,7 @@
 		// The return value must be an boolean.
 		doors: [
 			{
-				entryPosition: new THREE.Vector3(0, 70, 150),
+				entryPosition: new THREE.Vector3(0, 90, 150),
 				isLeaving: function (position) {
 					return position.z > 160;
 				}

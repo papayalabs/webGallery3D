@@ -106,9 +106,9 @@
 
 
 			if (typeof height === 'number') {
-			    raycasterFloor.far = height;
+				raycasterFloor.far = height;
 			} else {
-			    raycasterFloor.far = 70;
+				raycasterFloor.far = 70;
 			}
 		},
 
@@ -124,13 +124,13 @@
 			velocity.z -= velocity.z * 10.0 * delta;
 
 			if (!isOnFloor) {
-			    velocity.y -= (10 * delta * gravityFactor);
-			    gravityFactor += 0.9;
+				velocity.y -= (10 * delta * gravityFactor);
+				gravityFactor += 6;
 			}
 
 			if (jump) {
 				jump = false;
-				velocity.y = 70;
+				velocity.y = 100;
 			}
 			
 		
@@ -170,13 +170,13 @@
 			isOnFloor = !!floorCollisions.length;
 
 			if (isOnFloor) {
-			    if (velocity.y < 0) {
-			        velocity.y = 0;
-			        gravityFactor = 1;
-			    }
-			    // Substract 5 from the distance, to ensure that the camera stays on the floor.
-			    // Otherwise it will jump aound the floor, because 'isOnFloor' toggles constantly
-			    floorOffset = Math.max(0, raycasterFloor.far - floorCollisions[0].distance - 5);
+				if (velocity.y < 0) {
+					velocity.y = 0;
+					gravityFactor = 1;
+				}
+				// Substract 5 from the distance, to ensure that the camera stays on the floor.
+				// Otherwise it will jump aound the floor, because 'isOnFloor' toggles constantly
+				floorOffset = Math.max(0, raycasterFloor.far - floorCollisions[0].distance - 5);
 			}
 
 			if (moveDirection.length() > 0) {
@@ -224,7 +224,8 @@
 			}
 
 			if (velocity.y !== 0 || floorOffset !== 0) {
-			    camObject.translateY(floorOffset + velocity.y * delta);
+				// Do not fall faster than the length of the floor-raycaster
+				camObject.translateY(floorOffset + Math.max(- raycasterFloor.far, velocity.y * delta));
 			}
 
 			return !isCollision;
