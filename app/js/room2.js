@@ -105,8 +105,8 @@ define(["engine", "room", "three"], function (engine, roomFactory, THREE) {
 	return roomFactory.createRoom({
 			
 		// The walking-speed
-		speed: 700,
-
+	    speed: 700,
+	   
 		// The index of the skybox: Load 'Space'
 		sky: 0,
 
@@ -127,7 +127,7 @@ define(["engine", "room", "three"], function (engine, roomFactory, THREE) {
 		},
 		
 		// Set the start-position which is used when no door-number was provided
-		start : new THREE.Vector3(0, 70, 0),
+		start : new THREE.Vector3(0, 100, 0),
 		
 		// Set the array of doors.
 		// Each door must have a 'entryPosition' which is used on entering the room and

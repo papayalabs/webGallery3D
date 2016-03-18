@@ -5,7 +5,7 @@ define(["engine", "three"], function (engine, THREE) {
 	
 		var i, doors = [], 
 			leaveCallback,			
-			speed,
+			speed,			
 			roomName,
 			enterCallback,
 			labelConfiguration,
@@ -41,7 +41,7 @@ define(["engine", "three"], function (engine, THREE) {
 			
 
 				// Set walking-speed and label-sprites for this room
-				engine.configure(speed, labelConfiguration, sky);
+				engine.configure(speed, startPosition.y, labelConfiguration, sky);
 				
 				// Register the engine-callback for checking the doors
 				engine.addRenderCallback(function (scene, camObject) {
@@ -102,8 +102,7 @@ define(["engine", "three"], function (engine, THREE) {
 				startPosition = config.start;
 			}
 			
-			speed = config.speed;
-			
+			speed = config.speed;			
 			roomName = config.name;
 
 			sky = config.sky;

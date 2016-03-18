@@ -10,18 +10,22 @@
 		moveRight = false,
 		isCollision = false,
 		controlsEnabled = false,
-		speed = 400,
+		isOnFloor = true,
+		jump = false,
+		speed = 400,		
+		gravityFactor = 1,
 		moveDirection = new THREE.Vector3(),
+		floorDirection = new THREE.Vector3(0, -1, 0),
 		rayAngle1 = tools.deg2rad(20),
 		rayAngle2 = tools.deg2rad(40),
 		zVector = new THREE.Vector3(0, 1, 0),		
 		velocity = new THREE.Vector3(),
-		raycaster;
+		raycasterWall, raycasterFloor;
 
 
 	(function () {			
-		raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, -1, 0), 0, 10);
-		raycaster.near = 0;
+		raycasterWall = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, -1, 0), 0, 10);		
+		raycasterFloor = new THREE.Raycaster(new THREE.Vector3(), floorDirection, 0, 70);
 	})();
 
 
@@ -54,7 +58,11 @@
 						moveRight = true;
 						break;
 
-
+					case 32: // space
+						if (isOnFloor) {
+							jump = true;
+						}
+						break;
 				}
 			}
 		},
@@ -89,22 +97,43 @@
 		},
 
 		// Sets the speed of the movement
-		setSpeed: function (spd) {			
+		configure: function (spd, height) {			
 			if (typeof spd === 'number') {
 				speed = spd;
 			} else {
 				speed = 400.0;
 			}
+
+
+			if (typeof height === 'number') {
+			    raycasterFloor.far = height;
+			} else {
+			    raycasterFloor.far = 70;
+			}
 		},
 
 		// Moves the given camObject and returns TRUE if no collision occured
 		move: function (camObject, delta, collisionObjects) {
-			var cnt = 0;
+			var cnt = 0,
+				floorOffset = 0,
+				floorCollisions = [];
+
 			// Set speed and move-direction
 
-			velocity.x -= velocity.x * 10.0 * delta;
+			velocity.x -= velocity.x * 10.0 * delta;			
 			velocity.z -= velocity.z * 10.0 * delta;
 
+			if (!isOnFloor) {
+			    velocity.y -= (10 * delta * gravityFactor);
+			    gravityFactor += 0.9;
+			}
+
+			if (jump) {
+				jump = false;
+				velocity.y = 70;
+			}
+			
+		
 			if (moveForward) {
 				velocity.z -= speed * delta;
 			} else if (moveBackward) {
@@ -134,10 +163,26 @@
 			}
 
 
+
+			// set origin and direction of the raycaster
+			raycasterFloor.set(camObject.position, floorDirection);
+			floorCollisions = raycasterFloor.intersectObjects(collisionObjects, true);
+			isOnFloor = !!floorCollisions.length;
+
+			if (isOnFloor) {
+			    if (velocity.y < 0) {
+			        velocity.y = 0;
+			        gravityFactor = 1;
+			    }
+			    // Substract 5 from the distance, to ensure that the camera stays on the floor.
+			    // Otherwise it will jump aound the floor, because 'isOnFloor' toggles constantly
+			    floorOffset = Math.max(0, raycasterFloor.far - floorCollisions[0].distance - 5);
+			}
+
 			if (moveDirection.length() > 0) {
 
 				// Set the length of the collision-detection. Ensure that the ray is not shorter than the travel-distance
-				raycaster.far = Math.max(speed / 20, velocity.length() * delta);
+				raycasterWall.far = Math.max(speed / 20, velocity.length() * delta);
 
 				cnt = 0;
 
@@ -148,10 +193,10 @@
 
 
 				// set origin and direction of the raycaster
-				raycaster.set(camObject.position, moveDirection);
+				raycasterWall.set(camObject.position, moveDirection);
 
 				// detect collisions. 	         
-				cnt += raycaster.intersectObjects(collisionObjects, true).length;
+				cnt += raycasterWall.intersectObjects(collisionObjects, true).length;
 
 
 				// rotate the move-direction by the full angle (40 deg)
@@ -159,10 +204,10 @@
 
 
 				// set origin and direction of the raycaster
-				raycaster.set(camObject.position, moveDirection);
+				raycasterWall.set(camObject.position, moveDirection);
 
 				// detect collisions.		         
-				cnt += raycaster.intersectObjects(collisionObjects, true).length;
+				cnt += raycasterWall.intersectObjects(collisionObjects, true).length;
 
 
 				isCollision = cnt > 0;
@@ -176,6 +221,10 @@
 			} else {
 				camObject.translateX(velocity.x * delta);
 				camObject.translateZ(velocity.z * delta);
+			}
+
+			if (velocity.y !== 0 || floorOffset !== 0) {
+			    camObject.translateY(floorOffset + velocity.y * delta);
 			}
 
 			return !isCollision;
@@ -195,6 +244,7 @@
 		disable: function () {
 			controlsEnabled = false;
 			velocity.x = 0;
+			velocity.y = 0;
 			velocity.z = 0;
 			moveForward = false;
 			moveBackward = false;

@@ -397,9 +397,9 @@ define(["blocker", "hud", "tools", "sprites", "sky", "movement", "three", "Point
 
 		
 
-		configure: function (speedInc, labelConfig, skyBox) {
+		configure: function (speedInc, cameraHeight, labelConfig, skyBox) {
 
-		    movement.setSpeed(speedInc);
+		    movement.configure(speedInc, cameraHeight);
 		
 			// Set the label-configuration for the current room
 			labelConfiguration = labelConfig;
