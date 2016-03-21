@@ -13,7 +13,7 @@
 		isOnFloor = true,
 		jump = false,
 		speed = 400,		
-		gravityFactor = 1,
+		gravityFactor = 1,		
 		moveDirection = new THREE.Vector3(),
 		floorDirection = new THREE.Vector3(0, -1, 0),
 		rayAngle1 = tools.deg2rad(20),
@@ -59,8 +59,9 @@
 						break;
 
 					case 32: // space
-						if (isOnFloor) {
+						if (isOnFloor && !jump) {
 							jump = true;
+							velocity.y = 100;
 						}
 						break;
 				}
@@ -123,16 +124,6 @@
 			velocity.x -= velocity.x * 10.0 * delta;			
 			velocity.z -= velocity.z * 10.0 * delta;
 
-			if (!isOnFloor) {
-				velocity.y -= (10 * delta * gravityFactor);
-				gravityFactor += 6;
-			}
-
-			if (jump) {
-				jump = false;
-				velocity.y = 100;
-			}
-			
 		
 			if (moveForward) {
 				velocity.z -= speed * delta;
@@ -170,13 +161,34 @@
 			isOnFloor = !!floorCollisions.length;
 
 			if (isOnFloor) {
-				if (velocity.y < 0) {
+
+				gravityFactor = 1;
+
+				// On the floor and not jumping
+				if (velocity.y < 0) {  // Avoid sinking in the floor                       
 					velocity.y = 0;
-					gravityFactor = 1;
+					
+					jump = false;
 				}
-				// Substract 5 from the distance, to ensure that the camera stays on the floor.
-				// Otherwise it will jump aound the floor, because 'isOnFloor' toggles constantly
-				floorOffset = Math.max(0, raycasterFloor.far - floorCollisions[0].distance - 5);
+				
+				if (!jump) {
+					// Calculte how deep we are stuck in the floor. Between 0 and 5 is OK.
+					floorOffset = Math.max(0, raycasterFloor.far - floorCollisions[0].distance - 5);
+
+					if (floorOffset) {
+						velocity.y = Math.min(floorOffset * 10, floorOffset / delta);
+					}
+				}
+								
+			} else {
+
+				velocity.y -= (10 * delta * gravityFactor);
+				gravityFactor += 6;
+
+				// Stop the movement when raising into the air and not jumping
+				if (!jump && velocity.y > 0) {
+					velocity.y = 0;
+				}
 			}
 
 			if (moveDirection.length() > 0) {
@@ -223,9 +235,9 @@
 				camObject.translateZ(velocity.z * delta);
 			}
 
-			if (velocity.y !== 0 || floorOffset !== 0) {
+			if (velocity.y !== 0) {
 				// Do not fall faster than the length of the floor-raycaster
-				camObject.translateY(floorOffset + Math.max(- raycasterFloor.far, velocity.y * delta));
+				camObject.translateY(Math.max(- raycasterFloor.far, velocity.y * delta));
 			}
 
 			return !isCollision;
