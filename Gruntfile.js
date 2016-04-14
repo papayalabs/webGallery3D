@@ -43,16 +43,20 @@ module.exports = function(grunt) {
 	  options: {
 			// more options here if you want to override JSHint defaults
 			bitwise: true,
-			curly: false,
+			curly: true,
 			undef: true,
 			unused: true,
+			eqeqeq: true,
+			forin:  false,
+			latedef: true,
+			maxcomplexity: 20,
+			maxdepth: 3,	
+			noarg: true,				
 			predef: ["define", "performance", "document", "window", "requestAnimationFrame", "require", "requirejs", "navigator"],
 		  
-		globals: {
-			
-			jQuery: true,
-			console: true,
-			module: true,			
+		globals: {					
+			console: false,
+			module: false,			
 		},		
 		reporter:'jslint',
 		reporterOutput: 'lint/hints.xml'

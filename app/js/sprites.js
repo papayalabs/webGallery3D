@@ -58,7 +58,9 @@
                 context = canvas.getContext('2d');
 
 
-            if (parameters === undefined) parameters = {};
+            if (parameters === undefined) {
+				parameters = {};
+			}
 
 
             margin = parameters.hasOwnProperty("margin") ?

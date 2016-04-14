@@ -19,9 +19,10 @@ define(["blocker", "hud", "tools", "sprites", "sky", "movement", "three", "Point
 
 		setShadow = function (obj, cast, receive) {
 
-			if (obj === undefined)
+			if (obj === undefined) {		
 				return;
-
+			}
+			
 			obj.castShadow = cast;
 			obj.receiveShadow = receive;
 
